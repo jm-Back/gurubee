@@ -21,5 +21,6 @@ public class MainServlet extends MyServlet {
 		if(uri.indexOf("main.do") != -1) {
 			forward(req, resp, "/WEB-INF/views/main/main.jsp");
 		}
+		
 	}
 }

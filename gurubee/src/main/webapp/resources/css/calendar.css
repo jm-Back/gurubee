@@ -1,0 +1,83 @@
+@charset "UTF-8";
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+*, *::after, *::before { box-sizing: border-box; }
+
+body { font-size: 14px; font-family: "맑은 고딕", 나눔고딕, 돋움, sans-serif; }
+
+a { color: #000; text-decoration: none; cursor: pointer; }
+a:active, a:hover { text-decoration: underline; color: #98E0AD; }
+
+.btn {
+	padding: 5px 10px;
+	font-size: 14px; font-family: "맑은 고딕", 나눔고딕, 돋움, sans-serif;
+	color: #333; font-weight: 500;
+	border: 1px solid #999; border-radius: 4px;
+	background-color: #fff;
+	cursor:pointer;
+	vertical-align: baseline;
+}
+.btn:active, .btn:focus, .btn:hover {
+	color:#333;
+	background-color: #f8f9fa;
+}
+.btn[disabled], fieldset[disabled] .btn {
+	pointer-events: none;
+	cursor: default;
+	opacity: .65;
+}
+
+.form-control {
+	padding: 5px 5px; 
+	font-family: "맑은 고딕", 나눔고딕, 돋움, sans-serif;
+	border: 1px solid #999; border-radius: 4px; background-color: #fff;
+	vertical-align: baseline;
+}
+.form-control[readonly] { background-color:#f8f9fa; }
+
+textarea.form-control { height: 170px; resize : none; }
+
+.form-select {
+	padding: 4px 5px; 
+	font-family: "맑은 고딕", 나눔고딕, 돋움, sans-serif;
+	border: 1px solid #999; border-radius: 4px; background-color: #fff;
+	vertical-align: baseline;
+}
+.form-select[readonly] { background-color:#f8f9fa; }
+
+textarea:focus, input:focus { outline: none; }
+input[type=checkbox], input[type=radio] { vertical-align: middle; }
+
+/* table */
+.table { width: 100%; border-spacing: 0; border-collapse: collapse; }
+.table th, .table td { padding-top: 10px; padding-bottom: 10px; }
+
+.table-border thead > tr { border-top: 2px solid #212529; border-bottom: 1px solid #ced4da; }
+.table-border tbody > tr { border-bottom: 1px solid #ced4da; }
+.table-border tfoot > tr { border-bottom: 1px solid #ced4da; }
+.td-border td { border: 1px solid #ced4da; }
+
+/* layout */
+#calendarLayout {
+	width: 280px;
+	margin: 30px auto;
+}
+#calendarLayout .subject{
+	height: 37px;
+	line-height: 37px;
+	text-align: center;
+	font-weight: 600;
+}
+
+#calendarLayout table tr:first-child { background: #f8f9fa; }
+#calendarLayout table td { text-align: center; }
+#calendarLayout table td:nth-child(7n+1) { color: red; }
+#calendarLayout table td:nth-child(7n) { color: blue; }
+#calendarLayout table td.gray { color: #ccc; }
+#calendarLayout table td.today { font-weight:700; background: #E6FFFF; }
+
+#calendarLayout .footer { height: 25px; line-height: 25px;
+	text-align: right; font-size: 12px; }
+
+.subject>span, .footer>span { cursor: pointer; }
+.subject>span:hover, .footer>span:hover { color: #98E0AD; }
