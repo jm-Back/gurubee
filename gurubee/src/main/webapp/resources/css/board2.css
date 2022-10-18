@@ -1,0 +1,145 @@
+﻿@charset "UTF-8";
+
+/* 글 리스트 */
+.board-list-header {
+	padding-top: 7px; padding-bottom: 7px;
+}
+.board-list {
+	width: 100%;
+}
+.board-list tr>th, .board-list tr>td {
+	text-align: center;
+}
+.board-list .left {
+	text-align: left; padding-left: 5px; 
+}
+
+.board-list .chk {
+	width: 40px; color: #787878;
+}
+.board-list .num {
+	width: 60px; color: #787878;
+}
+.board-list .subject {
+	color: #787878;
+}
+.board-list .name {
+	width: 100px; color: #787878;
+}
+.board-list .date {
+	width: 100px; color: #787878;
+}
+.board-list .hit {
+	width: 70px; color: #787878;
+}
+.board-list .file {
+	width: 50px; color: #787878;
+}
+.board-list-footer {
+	padding-top: 7px; padding-bottom: 7px;
+}
+
+/* 글 쓰기 폼 */
+.write-form tr>td {
+	vertical-align: middle;
+}
+.write-form p {
+	line-height: 200%;
+}
+.write-form tr:first-child {
+	border-top: 2px solid #212529; 
+}
+.write-form tr>td:first-child {
+	text-align: center;
+}
+.write-form tr>td:nth-child(2) {
+	padding-left: 10px;
+}
+.write-form textarea {
+	height: 150px;
+	resize : none;
+}
+
+/* 글 보기 */
+
+
+/* 댓글 */
+.reply {
+	clear: both; padding: 20px 0 10px;
+}
+.reply .bold {
+	font-weight: 600;
+}
+
+.reply .form-header {
+	padding-bottom: 7px;
+}
+.reply-form  tr>td {
+	padding: 2px 0 2px;
+}
+.reply-form textarea {
+	width: 100%; height: 75px; resize: none;
+}
+.reply-form button {
+	padding: 8px 25px;
+}
+
+.reply .reply-info {
+	padding-top: 25px; padding-bottom: 7px;
+}
+.reply .reply-info  .reply-count {
+	color: #3EA9CD; font-weight: 700;
+}
+
+.reply .reply-list tr>td {
+	padding: 7px 5px;
+}
+.reply .reply-list .bold {
+	font-weight: 600;
+}
+
+.reply .deleteReply, .reply .deleteReplyAnswer {
+	cursor: pointer;
+}
+.reply .notifyReply {
+	cursor: pointer;
+}
+
+.reply-list .list-header {
+	border: 1px solid #ccc; background: #f8f9fa;
+}
+.reply-list tr>td {
+	padding-left: 7px; padding-right: 7px;
+}
+
+.reply-answer {
+	display: none;
+}
+.reply-answer .answer-left {
+	float: left; width: 5%;
+}
+.reply-answer .answer-right {
+	float: left; width: 95%;
+}
+.reply-answer .answer-list {
+	border-top: 1px solid #ccc; padding: 0 10px 7px;
+}
+.reply-answer .answer-form {
+	clear: both; padding: 3px 10px 5px;
+}
+.reply-answer .answer-form textarea {
+	width: 100%; height: 75px; resize: none;
+}
+.reply-answer .answer-footer {
+	clear: both; padding: 7px 13px 10px 10px; text-align: right;
+}
+
+.answer-article {
+	clear: both;
+}
+.answer-article .answer-article-header {
+	clear: both; padding-top: 5px;
+}
+.answer-article .answer-article-body {
+	clear:both; padding: 5px 5px; border-bottom: 1px solid #ccc;
+}

@@ -1,0 +1,24 @@
+※ bootstrap
+ - 사이트
+   https://getbootstrap.com/
+
+ - 한글 doc 
+    https://getbootstrap.kr/docs/5.2/content/tables/
+
+ - container-fluid
+  : 화면전체 폭
+
+ - p-* : 패딩
+   p-1, pt-1, pb-1, ps-1, ...
+ - m-* : 마진
+   m-1
+   mt-1 : margin-top, mb-1 : margin-bottom, ms-1 : margin-left, me-1 : margin-right
+   mx-1 : left & right, my-1 : top & bottom
+
+ - Grid 시스템
+   - col-md-3 : md-x - 992px 이하에서 수평으로 배치
+   - g-3 : 거터(Gutters)는 열 사이의 패딩으로, Bootstrap 그리드 시스템에서 콘텐츠의 간격을 맞추고 정렬하는 데에 사용
+     g-*, gx-*, gy-*
+
+ - Layout - 열
+   .offset-* : 옵셋 지정

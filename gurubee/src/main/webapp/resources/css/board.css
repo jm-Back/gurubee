@@ -1,0 +1,145 @@
+﻿@charset "UTF-8";
+
+/* 글 리스트 */
+.table-list thead>tr:first-child {
+	background: #f8f9fa;
+}
+.table-list tr>th, .table-list tr>td {
+	text-align: center;
+}
+.table-list .left {
+	text-align: left; padding-left: 5px; 
+}
+.table-list .chk {
+	width: 40px; color: #787878;
+}
+.table-list .num {
+	width: 60px; color: #787878;
+}
+.table-list .subject {
+	color: #787878;
+}
+.table-list .name {
+	width: 100px; color: #787878;
+}
+.table-list .date {
+	width: 100px; color: #787878;
+}
+.table-list .hit {
+	width: 70px; color: #787878;
+}
+.table-list .file {
+	width: 50px; color: #787878;
+}
+.table-list input[type=checkbox]{
+	vertical-align: middle;
+}
+
+/* 글 쓰기 폼 */
+.table-form tr>td {
+	padding: 7px 0;
+}
+.table-form p {
+	line-height: 200%;
+}
+.table-form tr:first-child {
+	border-top: 2px solid #212529; 
+}
+.table-form tr>td:first-child {
+	width: 110px; text-align: center; background: #f8f9fa;
+}
+.table-form tr>td:nth-child(2) {
+	padding-left: 10px;
+}
+.table-form input[type=text], .table-form input[type=file], .table-form textarea {
+	width: 96%;
+}
+.table-form input[type=checkbox] {
+	vertical-align: middle;
+}
+
+/* 글 보기 */
+.table-article tr>td {
+	padding-left: 5px; padding-right: 5px;
+}
+
+/* 댓글 */
+.reply {
+	clear: both; padding: 20px 0 10px;
+}
+.reply .bold {
+	font-weight: 600;
+}
+
+.reply .form-header {
+	padding-bottom: 7px;
+}
+.reply-form tr>td {
+	padding: 2px 0 2px;
+}
+.reply-form textarea {
+	width: 100%; height: 75px; resize: none;
+}
+.reply-form button {
+	padding: 8px 25px;
+}
+
+.reply .reply-info {
+	padding-top: 25px; padding-bottom: 7px;
+}
+.reply .reply-info  .reply-count {
+	color: #3ea9cd; font-weight: 700;
+}
+
+.reply .reply-list tr>td {
+	padding: 7px 5px;
+}
+.reply .reply-list .bold {
+	font-weight: 600;
+}
+
+.reply .deleteReply, .reply .deleteReplyAnswer {
+	cursor: pointer;
+}
+.reply .notifyReply {
+	cursor: pointer;
+}
+
+.reply-list .list-header {
+	border: 1px solid #ccc; background: #f8f9fa;
+}
+.reply-list tr>td {
+	padding-left: 7px; padding-right: 7px;
+}
+
+.reply-answer {
+	display: none;
+}
+.reply-answer .answer-left {
+	float: left; width: 5%;
+}
+.reply-answer .answer-right {
+	float: left; width: 95%;
+}
+.reply-answer .answer-list {
+	border-top: 1px solid #ccc; padding: 0 10px 7px;
+}
+.reply-answer .answer-form {
+	clear: both; padding: 3px 10px 5px;
+}
+.reply-answer .answer-form textarea {
+	width: 100%; height: 75px; resize: none;
+}
+.reply-answer .answer-footer {
+	clear: both; padding: 0 13px 10px 10px; text-align: right;
+}
+
+.answer-article {
+	clear: both;
+}
+.answer-article .answer-article-header {
+	clear: both; padding-top: 5px;
+}
+.answer-article .answer-article-body {
+	clear:both; padding: 5px 5px; border-bottom: 1px solid #ccc;
+}
