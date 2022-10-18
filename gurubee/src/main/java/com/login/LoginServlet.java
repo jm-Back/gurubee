@@ -17,7 +17,8 @@ public class LoginServlet extends MyServlet {
 	@Override
 	protected void execute(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		req.setCharacterEncoding("utf-8");
-
+		
+		
 		String uri = req.getRequestURI();
 
 		if (uri.indexOf("login.do") != -1) {
@@ -26,6 +27,10 @@ public class LoginServlet extends MyServlet {
 			loginSubmit(req, resp);
 		} else if (uri.indexOf("logout.do") != -1) {
 			logout(req, resp);
+		} else if (uri.indexOf("sitemap.do") != -1) {
+			String path = "/WEB-INF/views/member/sitemap.jsp";
+			forward(req, resp, path);
+			return;
 		}
 	}
 

@@ -91,7 +91,7 @@
     </a>
 
     <ul class="nav1 col-md-4 justify-content-end d-flex">
-      <li class="nav-item"><a href="#" class="nav-link text-muted">사이트맵</a></li>
+      <li class="nav-item"><a href="${pageContext.request.contextPath}/member/sitemap.do" class="nav-link text-muted">사이트맵</a></li>
       <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Features</a></li>
       <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Mypage</a></li>
       <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">FAQs</a></li>
