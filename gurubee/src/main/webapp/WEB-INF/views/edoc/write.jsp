@@ -14,6 +14,11 @@
 	type="text/css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/calendar.css"
 	type="text/css">	
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/se2/js/service/HuskyEZCreator.js" charset="utf-8"></script>
+
 
 <style>
 .bd-placeholder-img {
@@ -135,11 +140,19 @@
 
 </style>
 
+<script type="text/javascript">
+function check() {
+  const f = document.boardForm;
+
+  return true;
+}
+</script>
 
 </head>
 <body>
 
 	<main>
+
 		<!-- 메인 화면 -->
 		<div class="container py-4">
 			<header class="pb-3 mb-4 border-bottom">
@@ -148,8 +161,22 @@
 			</header>
 			
 		<div>
-			<form>
+			<form action="" method="post" name="writeForm">
 				<table class="table table-border table-form">
+					<tr>
+						<th>문서구분</th>
+						<td>
+							<div class="btn-group-vertical" role="group" aria-label="Vertical button group">	
+							<button type="button" class="btn btn-dark" id="">휴가신청서</button>
+							<button type="button" class="btn btn-dark" id="">DB접근권한신청서</button>
+							<button type="button" class="btn btn-dark" id="">구매요청의뢰서</button>
+							<button type="button" class="btn btn-dark" id="">재택근무신청서</button>
+							<button type="button" class="btn btn-dark" id="">법인카드지출의뢰서</button>
+							<button type="button" class="btn btn-dark" id="">출장신청서</button>
+							</div>
+						</td>
+					</tr>
+					
 					<tr>
 						<th>결재라인</th>
 					</tr>
@@ -157,24 +184,22 @@
 					<tr>
 						<th>수신자</th>
 						<td>
-						<input type="text" name="userId" id="userId" class="form-control" maxlength="10" style="width: 50%;">
-						<span id="userIdState" style='display:none;'></span>
-						<button type="button" class="btn btn-outline-success">수신자 추가</button>
+						<input type="text" name="userId" id="sendId" class="form-control" maxlength="10" style="width: 50%;">
+						<button type="button">수신자 추가</button>
 						</td>
 					</tr>
 			
 					<tr>
-						<th>제목</th>
+						<th>상세내용</th>
 						<td>
-							<input type="password" name="userPwd" class="form-control" maxlength="10" style="width: 50%;">
+							<textarea name="content" id="ir1" class="form-control" style="width: 95%; height:270px; ">${dto.content}</textarea>
+							
 						</td>
 					</tr>
 				</table>
 			</form>
 		</div>
-			
-			
-			
+	
 		</div>
 		
 	</main>
@@ -183,6 +208,27 @@
 		<jsp:include page="/WEB-INF/views/layout/footer.jsp" />
 	</footer>
 
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/se2/js/service/HuskyEZCreator.js" charset="utf-8"></script>
+<script type="text/javascript">
+var oEditors = [];
+nhn.husky.EZCreator.createInIFrame({
+	oAppRef: oEditors,
+	elPlaceHolder: "ir1",
+	sSkinURI: "${pageContext.request.contextPath}/resources/se2/SmartEditor2Skin.html",
+	fCreator: "createSEditor2"
+});
+
+function submitContents(elClickedObj) {
+	 oEditors.getById["ir1"].exec("UPDATE_CONTENTS_FIELD", []);
+	 try {
+		// elClickedObj.form.submit();
+		return check();
+	} catch(e) {
+	}
+}
+</script>
+	
 </body>
 
 </html>

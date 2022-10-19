@@ -1,0 +1,81 @@
+※ 네이버 스마트 에디터 2.10.0
+   - 주소
+      https://github.com/naver/smarteditor2
+      http://naver.github.io/smarteditor2/user_guide/
+
+   - 다운로드
+     https://github.com/naver/smarteditor2/releases/tag/v2.10.0
+     에서
+     smarteditor2-2.10.0.tgz 파일을 다운받아 압축 풀면 /dist/ 폴더에 있는 파일 사용
+
+   - 스마트 에디터 2.9 부터 이미지 업로드 기능은 기본적으로 지원하지 않음
+   - 스마트 에디터 2는 더이상 지원하지 않으며 SmartEditor ONE 으로 통합
+
+
+※ 스마트에디터 적용
+<script type="text/javascript">
+function check() {
+  const f = document.boardForm;
+
+  return true;
+}
+</script>
+
+<form name="boardForm" method="post" onsubmit="return submitContents(this);">
+    <textarea name="content" id="ir1" class="form-control" style="width: 95%; height:270px; ">${dto.content}</textarea>
+
+    <button type="submit">등록하기</button>
+</form>
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/se2/js/service/HuskyEZCreator.js" charset="utf-8"></script>
+
+<script type="text/javascript">
+var oEditors = [];
+nhn.husky.EZCreator.createInIFrame({
+	oAppRef: oEditors,
+	elPlaceHolder: "ir1",
+	sSkinURI: "${pageContext.request.contextPath}/resources/se2/SmartEditor2Skin.html",
+	fCreator: "createSEditor2"
+});
+
+function submitContents(elClickedObj) {
+	 oEditors.getById["ir1"].exec("UPDATE_CONTENTS_FIELD", []);
+	 try {
+		// elClickedObj.form.submit();
+		return check();
+	} catch(e) {
+	}
+}
+</script>
+
+
+※ 이미지 파일 업로드
+ - 이미지 업로드 기능은 2.10.0에서 제거 되었으므로 v2.8.2.3 버전을 다운 받아 sample폴더에 있는 사진 업로드 예제를 참고한다.
+   https://github.com/naver/smarteditor2/releases/tag/v2.8.2.3
+
+ - 이미지 파일 업로드가 가능하도록 변경
+   1) v2.8.2.3 에서 이미지를 업로드할 수 있는 sample 폴더를 v2.10.0 폴더에 복사한다.
+   2) 툴바사진버튼을 추가 :  SmartEditor2Skin.html 파일 534-535라인 사이에 다음과 같이 마크업 추가한다
+       <ul class="se2_multy">
+             <li class="se2_mn husky_seditor_ui_photo_attach"><button type="button" class="se2_photo ico_btn"><span class="se2_icon"></span><span class="se2_mntxt">사진</span></button></li>
+      </ul>
+   3)  SmartEditor2Skin.html 파일 <head> 태그에 다음을 추가한다.
+       <!-- 사진첨부샘플  --> 
+       <script type="text/javascript" src="./sample/js/plugin/hp_SE2M_AttachQuickPhoto.js" charset="utf-8"></script>
+
+
+※  se2/sample/photo_uploader/attach_photo.js 파일 수정
+  1) html5Upload() 함수 수정(HTML 5를 지원하는 브라우저용) - 337 라인
+         sUploadURL= '/app/image/html5Upload.do'; //upload URL(이미지파일업로드주소). app를 컨텍스트패스명으로 변경
+
+
+  2) callFileUploader() 함수 수정(HTML 5를 지원하지 않는 브라우저용) - 482 라인
+        sUrl : '/app/image/generalUpload.do', //upload URL(이미지파일업로드주소). app를 컨텍스트패스명으로 변경
+
+
+  3) onAjaxError() 함수에서 -- 문번호 461
+     // alert("[가이드]사진 업로더할 서버URL셋팅이 필요합니다.-onAjaxError"); //설치 가이드 안내 문구임. 실 서비스에서는 삭제. 
+     alert("업로드중 에러가 발생하였습니다. 다시 시도해 주세요."); 
+
+     기본 경고 문을 적절하게 수정한다. 
+
