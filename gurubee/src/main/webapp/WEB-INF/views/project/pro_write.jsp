@@ -9,151 +9,138 @@
 <title>Insert title here</title>
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp" />
 <link rel="canonical"href="https://getbootstrap.com/docs/5.2/examples/jumbotron/">
-<link rel="icon" href="data:;base64,iVBORw0KGgo=">
-<link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board2.css"
 	type="text/css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/calendar.css"
 	type="text/css">	
 
-<style>
-.bd-placeholder-img {
-	font-size: 1.125rem;
-	text-anchor: middle;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	user-select: none;
-}
 
-@media ( min-width : 768px) {
-	.bd-placeholder-img-lg {
-		font-size: 3.5rem;
-	}
-}
+<script type="text/javascript">
+$(function(){
+	$(".attend_btn").click(function(){
+		$("#attend_Modal").modal("show");
+	});
+});
 
-.b-example-divider {
-	height: 3rem;
-	background-color: rgba(0, 0, 0, .1);
-	border: solid rgba(0, 0, 0, .15);
-	border-width: 1px 0;
-	box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em
-		rgba(0, 0, 0, .15);
-}
-
-.b-example-vr {
-	flex-shrink: 0;
-	width: 1.5rem;
-	height: 100vh;
-}
-
-.bi {
-	vertical-align: -.125em;
-	fill: currentColor;
-}
-
-.nav-scroller {
-	position: relative;
-	z-index: 2;
-	height: 2.75rem;
-	overflow-y: hidden;
-}
-
-.nav-scroller .nav {
-	display: flex;
-	flex-wrap: nowrap;
-	padding-bottom: 1rem;
-	margin-top: -1px;
-	overflow-x: auto;
-	text-align: center;
-	white-space: nowrap;
-	-webkit-overflow-scrolling: touch;
-}
-
-#boardmenu ul li {
-	list-style: none;
-	float: left;
-	margin-right: 10px;
-	text-align: center;
-}
-
-#boardmenu ul:nth-child(4) {
-	list-style: none;
-	float: right;
-	color: #ccc
-}
-
-#boardmenu ul li a:hover {
-	background: #98E0AD;
-	color: #fff;
-}
-
-#boardlist {
-	width: 100%;
-	height: 80%;
-	overflow: auto;
-}
-
-#notelist {
-	table-layout: fixed;
-}
-
-#notelist tr td {
-	text-overflow:ellipsis; 
-	overflow:hidden; 
-	white-space:nowrap;"
-}
-
-#infomenu div a:hover{
-	color: #98E0AD;	
-}
-
-.header-top div a:hover{
-	color: #98E0AD;	
-}
-
-#nav-item a:hover {
-	color: #98E0AD;	
-}
-
-.profile {
-	width: 120px;
-    height: 120px; 
-    object-fit: cover;
-    border-radius: 100%;
-    border: 5px solid aquamarine ;
-    padding: 4px;
-}
-
-.box_photo{
-
-    overflow: visible;
-    text-align: center;
-   	width: 100%;
-    height: 100%;
-    padding-bottom: 20px;
-}
-
-
-</style>
-
+</script>
 
 </head>
 <body>
 
-	<main>
-		<!-- 메인 화면 -->
-		<div class="container py-4">
-			<header class="pb-3 mb-4 border-bottom">
-				<jsp:include page="/WEB-INF/views/layout/header.jsp" />
-				<jsp:include page="/WEB-INF/views/layout/sidebar.jsp" />
-			</header>
+<main>
+	<!-- 메인 화면 -->
+	<div class="container py-4">
+		<header class="pb-3 mb-4 border-bottom">
+			<jsp:include page="/WEB-INF/views/layout/header.jsp" />
+			<jsp:include page="/WEB-INF/views/layout/sidebar.jsp" />
+		</header>
+	</div>
+			
+			
+	'<div class="container">
+	
+		<div>프로젝트 등록</div>
+		<table> 
+			<tr>
+				<td>프로젝트명</td>
+				<td>
+					<input type="text" name="pro_name">
+					<input type="hidden" name="id" value="">
+					<input type="hidden" name="pro_clear" value="진행중">
+				</td>
+			</tr>
+			<tr>
+				<td>프로젝트 종류</td>
+				<td>
+					<input type="checkbox" value="DEPT"> DEPT
+					<input type="checkbox" value="TEAM"> TEAM
+					<input type="checkbox" value="TFT"> TFT
+				</td>
+			</tr>
+			<tr>
+				<td>프로젝트 개요</td>
+				<td>
+					<input type="text" name="pro_outline">
+				</td>
+			</tr>
+			<tr>
+				<td>프로젝트 설명</td>
+				<td>
+					<input type="text" name="pro_content">
+				</td>
+			</tr>
+			<tr>
+				<td>프로젝트 총괄자</td>
+				<td>
+					<input type="text" name="pro_master">
+				</td>
+			</tr>
+			<tr>
+				<td>프로젝트 시작일</td>
+				<td>
+					<input type="date" name="pro_sdate">
+				</td>
+			</tr>
+			<tr>
+				<td>프로젝트 종료일</td>
+				<td>
+					<input type="date" name="pro_edate">
+				</td>
+			</tr>
+		</table>
+		<br>
+		
+		<div>참여자 목록</div>
+		<table>
+			<tr>
+				<td>참여자 등록</td>
+				<td>
+					<input type="text">
+							<button type="button" class="attend_btn">선택하기</button>
+				</td>
+			</tr>
+			<tr>
+				<td>프로젝트 종류</td>
+				<td>
+					<input type="checkbox" value="DEPT"> DEPT
+					<input type="checkbox" value="TEAM"> TEAM
+					<input type="checkbox" value="TFT"> TFT
+				</td>
+			</tr>
+		</table>
+		
+		
+		
+	</div>	
+	
+	
+	<!-- 참여자 선택 모달창 -->
+<div class="modal fade" id="attend_Modal" tabindex="-1" 
+		data-bs-backdrop="static" data-bs-keyboard="false"
+		aria-labelledby="myDialogModalLabel2" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="attend_ModalLabel2">프로젝트 참여자 목록</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+        		<h4>프로젝트 참여자를 선택하세요.</h4>
+        		<p>대화상자 밖을 클릭해도 대화상자는 사라지지 않는다.</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary btnClose">닫기</button>
+				<button type="button" class="btn btn-primary">등록하기</button>
+			</div>
 		</div>
-			
-			
-	'
-			
-
-	</main>
+	</div>
+</div>
+	
+	
+	
+	
+</main>
 	<footer>
 		<jsp:include page="/WEB-INF/views/layout/footer.jsp" />
 	</footer>
