@@ -20,139 +20,55 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/se2/js/service/HuskyEZCreator.js" charset="utf-8"></script>
 
 
-<style>
-.bd-placeholder-img {
-	font-size: 1.125rem;
-	text-anchor: middle;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	user-select: none;
-}
-
-@media ( min-width : 768px) {
-	.bd-placeholder-img-lg {
-		font-size: 3.5rem;
-	}
-}
-
-.b-example-divider {
-	height: 3rem;
-	background-color: rgba(0, 0, 0, .1);
-	border: solid rgba(0, 0, 0, .15);
-	border-width: 1px 0;
-	box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em
-		rgba(0, 0, 0, .15);
-}
-
-.b-example-vr {
-	flex-shrink: 0;
-	width: 1.5rem;
-	height: 100vh;
-}
-
-.bi {
-	vertical-align: -.125em;
-	fill: currentColor;
-}
-
-.nav-scroller {
-	position: relative;
-	z-index: 2;
-	height: 2.75rem;
-	overflow-y: hidden;
-}
-
-.nav-scroller .nav {
-	display: flex;
-	flex-wrap: nowrap;
-	padding-bottom: 1rem;
-	margin-top: -1px;
-	overflow-x: auto;
-	text-align: center;
-	white-space: nowrap;
-	-webkit-overflow-scrolling: touch;
-}
-
-#boardmenu ul li {
-	list-style: none;
-	float: left;
-	margin-right: 10px;
-	text-align: center;
-}
-
-#boardmenu ul:nth-child(4) {
-	list-style: none;
-	float: right;
-	color: #ccc
-}
-
-#boardmenu ul li a:hover {
-	background: #98E0AD;
-	color: #fff;
-}
-
-#boardlist {
-	width: 100%;
-	height: 80%;
-	overflow: auto;
-}
-
-#notelist {
-	table-layout: fixed;
-}
-
-#notelist tr td {
-	text-overflow:ellipsis; 
-	overflow:hidden; 
-	white-space:nowrap;"
-}
-
-#infomenu div a:hover{
-	color: #98E0AD;	
-}
-
-.header-top div a:hover{
-	color: #98E0AD;	
-}
-
-#nav-item a:hover {
-	color: #98E0AD;	
-}
-
-.profile {
-	width: 120px;
-    height: 120px; 
-    object-fit: cover;
-    border-radius: 100%;
-    border: 5px solid aquamarine ;
-    padding: 4px;
-}
-
-.box_photo{
-
-    overflow: visible;
-    text-align: center;
-   	width: 100%;
-    height: 100%;
-    padding-bottom: 20px;
-}
-
-
-</style>
-
 <script type="text/javascript">
 function check() {
   const f = document.boardForm;
 
   return true;
 }
+
+$(function(){
+    $(".empAddBtn").click(function(){
+        $(".empRemoveBtn").show();
+        const p = $(this).parent().parent().find("div:first-child  :first").clone().wrapAll("<div>").parent().html();
+        $(p).find("input").each(function(){
+        	$(this).val("");
+        });
+
+        $(this).parent().parent().find("div:first").append(p);
+    });
+    
+    $("body").on("click", ".empRemoveBtn", function(){
+        if($(this).closest("div").find("p").length<=1) {
+            return;
+        }
+        
+        $(this).parent().remove();
+        
+        if($(".empRemoveBtn").closest("div").find("p").length<=1) {
+            $(".empRemoveBtn").hide();
+        }
+    });
+    /*
+    $("form input[name=empSearch]").click(function() {
+		alert("사원 검색");
+		// EdocDAO - insertEmp() AJAX 로 가져오기
+	});
+    */
+    
+    $("body").on("click", ".empSearch", function() {
+		alert("사원 검색");
+		// EdocDAO - insertEmp() AJAX 로 가져오기
+	});
+    
+});
+
 </script>
 
 </head>
 <body>
 
 	<main>
-
 		<!-- 메인 화면 -->
 		<div class="container py-4">
 			<header class="pb-3 mb-4 border-bottom">
@@ -164,39 +80,79 @@ function check() {
 			<form action="" method="post" name="writeForm">
 				<table class="table table-border table-form">
 					<tr>
-						<th>문서구분</th>
+						<th class="fs-5">문서구분</th>
 						<td>
+							<!-- 
 							<div class="btn-group-vertical" role="group" aria-label="Vertical button group">	
 							<button type="button" class="btn btn-dark" id="">휴가신청서</button>
 							<button type="button" class="btn btn-dark" id="">DB접근권한신청서</button>
 							<button type="button" class="btn btn-dark" id="">구매요청의뢰서</button>
 							<button type="button" class="btn btn-dark" id="">재택근무신청서</button>
-							<button type="button" class="btn btn-dark" id="">법인카드지출의뢰서</button>
+							<button type="button" class="btn btn-dark" id="">법인카드지출결의서</button>
 							<button type="button" class="btn btn-dark" id="">출장신청서</button>
 							</div>
+							 -->
+							<select class="form-select" aria-label="Default select example" name="doc" style="width: 50%;">
+								<option selected>문서구분 선택</option>
+								<option value="1">휴가신청서 - 각종 휴가 신청서 사용 양식</option>
+								<option value="2">DB접근권한신청서 - DB 계정 신청시 사용 양식</option>
+								<option value="3">구매요청의뢰서 - 회사 비품 구매 신청서 사용 양식</option>
+								<option value="4">재택근무신청서 - 재택근무 신청 양식</option>
+								<option value="5">법인카드지출결의서 - 법인카드 지출결의를 위한 양식</option>
+								<option value="6">출장신청서 - 출장 전 품의 결재시 사용 양식</option>
+							</select>
 						</td>
 					</tr>
 					
 					<tr>
-						<th>결재라인</th>
+						<th class="fs-5">작성자</th>
+						<td class="fw-bold fs-6">개발팀 김자바 사원</td>
 					</tr>
-				
+					
 					<tr>
-						<th>수신자</th>
+						<th class="fs-5">수신자</th>
 						<td>
-						<input type="text" name="userId" id="sendId" class="form-control" maxlength="10" style="width: 50%;">
-						<button type="button">수신자 추가</button>
+							<div>
+								<div>
+                            		<p>
+                                		<input type="text" name="empSearch" class="form-control empSearch" style="width: 27%;"
+                                   		placeholder="사원 검색" readonly="readonly">
+                                 		<span class="empRemoveBtn" style="float: right;"><i class="far fa-minus-square"></i></span>
+                            		</p>
+                        		</div>
+                        		<div style="margin-top: 10px;">
+                            		<button type="button" class="btn btn-success empAddBtn">수신자 추가</button>
+                        		</div>
+							</div>
 						</td>
 					</tr>
 			
 					<tr>
-						<th>상세내용</th>
+						<th class="fs-5">상세내용</th>
 						<td>
-							<textarea name="content" id="ir1" class="form-control" style="width: 95%; height:270px; ">${dto.content}</textarea>
+							<textarea name="content" id="ir1" class="form-control" style="width: 50%; height:270px; ">${dto.content}</textarea>
 							
 						</td>
 					</tr>
+					
+					<tr>
+						<th class="fs-5">첨부파일</th>
+						<td> 
+							<div class="mb-3">
+  							<input class="form-control" type="file" id="formFileMultiple" multiple style="width: 50%;">
+							</div>
+						</td>
+					</tr>
 				</table>
+				
+				<div style="text-align: right;">
+					<button type="button" name="tempOk();" class="btn btn-secondary" style="font-size: 17px;">임시작성</button>
+				</div>
+				
+				<div style="text-align: center;">
+					<button type="button" name="sendOk();" class="btn btn-success" style="font-size: 20px;">결제요청</button>
+				</div>
+				
 			</form>
 		</div>
 	
