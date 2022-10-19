@@ -1,1 +1,1 @@
-<jsp:forward page="/edoc/write.do"/>
+<jsp:forward page="/member/login.do"/>
