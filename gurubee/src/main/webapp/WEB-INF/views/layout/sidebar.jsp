@@ -2,15 +2,7 @@
 <%@page trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-<jsp:include page="/WEB-INF/views/layout/staticHeader.jsp" />
-<link rel="canonical"href="https://getbootstrap.com/docs/5.2/examples/jumbotron/">
-<link rel="icon" href="data:;base64,iVBORw0KGgo=">
-<link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
 <script src="https://kit.fontawesome.com/6bed0ac21e.js" ></script>
 
 <style type="text/css">
@@ -32,34 +24,13 @@
 
     /* z index */
     --z-fixed: 10;
-}
+} 
 
 /* BASE */
 *, ::before, ::after {
     box-sizing: border-box;
 }
 
-body {
-    position: relative;
-    margin: 0;
-    padding: 20px;
-    font-size: var(--normal-font-size);
-}
-
-
-h1 {
-    margin: 0;
-}
-
-ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-a {
-    text-decoration: none;
-}
 
 /* l NAV */
 .l-navbar {
@@ -139,8 +110,6 @@ a {
 
 </style>
 
-</head>
-<body>
 
 <body id="body-pd">
     <div class="l-navbar" id="navbar">
@@ -184,9 +153,3 @@ a {
         </nav>
     </div>
 
-    <!-- IONICONS -->
-    <script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script>
-    <!-- JS -->
-    <script src="assets/js/main.js"></script>
-</body>
-</html>
