@@ -9,8 +9,7 @@
 <title>Insert title here</title>
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp" />
 <link rel="canonical"href="https://getbootstrap.com/docs/5.2/examples/jumbotron/">
-<link rel="icon" href="data:;base64,iVBORw0KGgo=">
-<link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board2.css"
 	type="text/css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/calendar.css"

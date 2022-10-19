@@ -44,14 +44,16 @@ public class ProjectServlet extends MyServlet{
 
 	private void projectForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
-		//프로젝트 처음에 작성
-		req.setAttribute("mode", "write");
+		
 		forward(req, resp, "/WEB-INF/views/project/pro_main.jsp");
 		
 	}
 
-	private void projectWriteForm(HttpServletRequest req, HttpServletResponse resp) {
-		// TODO Auto-generated method stub
+	private void projectWriteForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+		//프로젝트 처음에 작성
+		req.setAttribute("mode", "write");
+		forward(req, resp, "/WEB-INF/views/project/pro_write.jsp");
 		
 	}
 
