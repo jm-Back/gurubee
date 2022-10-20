@@ -4,7 +4,32 @@ public class ProjectDTO {
 	
 	//프로젝트
 	private String pro_code;
-	private String id;
+	private String id_p;
+	private String name_p;
+	
+	private String date_iss;
+	public String getDate_iss() {
+		return date_iss;
+	}
+	public void setDate_iss(String date_iss) {
+		this.date_iss = date_iss;
+	}
+
+	private String dep_name;
+	private String pos_name;
+	public String getDep_name() {
+		return dep_name;
+	}
+	public void setDep_name(String dep_name) {
+		this.dep_name = dep_name;
+	}
+	public String getPos_name() {
+		return pos_name;
+	}
+	public void setPos_name(String pos_name) {
+		this.pos_name = pos_name;
+	}
+	
 	private String pro_name;
 	private String pro_clear;
 	private String pro_type;
@@ -13,6 +38,7 @@ public class ProjectDTO {
 	private String pro_content;
 	private String pro_sdate;
 	private String pro_edate;
+	
 	
 	//프로젝트 상세
 	private String pd_code;
@@ -28,6 +54,9 @@ public class ProjectDTO {
 	private String pj_code;
 	private String pj_role;
 	
+	//추가 부서
+	
+	
 	
 	public String getPro_code() {
 		return pro_code;
@@ -35,11 +64,18 @@ public class ProjectDTO {
 	public void setPro_code(String pro_code) {
 		this.pro_code = pro_code;
 	}
-	public String getId() {
-		return id;
+
+	public String getId_p() {
+		return id_p;
 	}
-	public void setId(String id) {
-		this.id = id;
+	public void setId_p(String id_p) {
+		this.id_p = id_p;
+	}
+	public String getName_p() {
+		return name_p;
+	}
+	public void setName_p(String name_p) {
+		this.name_p = name_p;
 	}
 	public String getPro_name() {
 		return pro_name;

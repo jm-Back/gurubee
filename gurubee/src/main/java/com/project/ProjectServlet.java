@@ -1,6 +1,7 @@
 package com.project;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -41,6 +42,7 @@ public class ProjectServlet extends MyServlet{
 		}
 		
 	}
+	
 
 	private void projectForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
@@ -50,9 +52,25 @@ public class ProjectServlet extends MyServlet{
 	}
 
 	private void projectWriteForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-		//프로젝트 처음에 작성
-		req.setAttribute("mode", "write");
+		ProjectDAO dao = new ProjectDAO();
+		
+		try {
+			
+			List<ProjectDTO> list_e = null;
+			List<ProjectDTO> list_m = null;
+			list_e = dao.listemployee();
+			list_m = dao.listMaster();
+			
+			//프로젝트 처음에 작성
+			req.setAttribute("mode", "write");
+			req.setAttribute("list_e", list_e);
+			req.setAttribute("list_m", list_m);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
 		forward(req, resp, "/WEB-INF/views/project/pro_write.jsp");
 		
 	}
