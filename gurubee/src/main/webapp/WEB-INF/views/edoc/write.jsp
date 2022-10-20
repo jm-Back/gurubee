@@ -21,13 +21,20 @@
 
 
 <script type="text/javascript">
-function check() {
-  const f = document.boardForm;
+
+var app_doc
+
+
+function sendOk() {
+
+  const f = document.writeForm;
 
   return true;
 }
 
 $(function(){
+	$(".empRemoveBtn").hide();
+	
     $(".empAddBtn").click(function(){
         $(".empRemoveBtn").show();
         const p = $(this).parent().parent().find("div:first-child  :first").clone().wrapAll("<div>").parent().html();
@@ -39,7 +46,7 @@ $(function(){
     });
     
     $("body").on("click", ".empRemoveBtn", function(){
-        if($(this).closest("div").find("p").length<=1) {
+        if($(this).closest("div").find("p").length<=1) { // data-empSearch="1"
             return;
         }
         
@@ -61,7 +68,16 @@ $(function(){
 		// EdocDAO - insertEmp() AJAX 로 가져오기
 	});
     
+    
 });
+
+function changeEdocValue() { // 문서구분 값 가져오기
+	var edoc = document.getElementById("edoc");
+	app_doc = edoc.options[edoc.selectedIndex].value;
+	
+	// alert("셀렉트 : "+value);
+}
+
 
 </script>
 
@@ -80,7 +96,7 @@ $(function(){
 			<form action="" method="post" name="writeForm">
 				<table class="table table-border table-form">
 					<tr>
-						<th class="fs-5">문서구분</th>
+						<th class="fs-6">문서구분</th>
 						<td>
 							<!-- 
 							<div class="btn-group-vertical" role="group" aria-label="Vertical button group">	
@@ -92,31 +108,39 @@ $(function(){
 							<button type="button" class="btn btn-dark" id="">출장신청서</button>
 							</div>
 							 -->
-							<select class="form-select" aria-label="Default select example" name="doc" style="width: 50%;">
+							<select class="form-select" aria-label="Default select example" name="edoc" id="edoc"
+								onchange="changeEdocValue()" style="width: 50%;">
 								<option selected>문서구분 선택</option>
-								<option value="1">휴가신청서 - 각종 휴가 신청서 사용 양식</option>
-								<option value="2">DB접근권한신청서 - DB 계정 신청시 사용 양식</option>
-								<option value="3">구매요청의뢰서 - 회사 비품 구매 신청서 사용 양식</option>
-								<option value="4">재택근무신청서 - 재택근무 신청 양식</option>
-								<option value="5">법인카드지출결의서 - 법인카드 지출결의를 위한 양식</option>
-								<option value="6">출장신청서 - 출장 전 품의 결재시 사용 양식</option>
+								<option value="휴가신청서">휴가신청서 - 각종 휴가 신청서 사용 양식</option>
+								<option value="접근권한신청서">DB접근권한신청서 - DB 계정 신청시 사용 양식</option>
+								<option value="구매요청의뢰서">구매요청의뢰서 - 회사 비품 구매 신청서 사용 양식</option>
+								<option value="재택근무신청서">재택근무신청서 - 재택근무 신청 양식</option>
+								<option value="법인카드지출결의서">법인카드지출결의서 - 법인카드 지출결의를 위한 양식</option>
+								<option value="출장신청서">출장신청서 - 출장 전 품의 결재시 사용 양식</option>
 							</select>
 						</td>
 					</tr>
 					
 					<tr>
-						<th class="fs-5">작성자</th>
-						<td class="fw-bold fs-6">개발팀 김자바 사원</td>
+						<th class="fs-6">작성자</th>
+						<td class="fs-6">
+							<input type="text" name="name" value="${logindto.name}" class="form-control" readonly="readonly">
+						</td>
 					</tr>
 					
 					<tr>
-						<th class="fs-5">수신자</th>
+						<th class="fs-6">작성일자</th>
+						<td class="fs-6" id="today"></td>
+					</tr>
+					
+					<tr>
+						<th class="fs-6">수신자</th>
 						<td>
 							<div>
 								<div>
                             		<p>
-                                		<input type="text" name="empSearch" class="form-control empSearch" style="width: 27%;"
-                                   		placeholder="사원 검색" readonly="readonly">
+                                		<input type="text" name="empSearch" class="form-control empSearch"
+                                		style="width: 27%;" placeholder="사원 검색" readonly="readonly">
                                  		<span class="empRemoveBtn" style="float: right;"><i class="far fa-minus-square"></i></span>
                             		</p>
                         		</div>
@@ -128,7 +152,7 @@ $(function(){
 					</tr>
 			
 					<tr>
-						<th class="fs-5">상세내용</th>
+						<th class="fs-6">상세내용</th>
 						<td>
 							<textarea name="content" id="ir1" class="form-control" style="width: 50%; height:270px; ">${dto.content}</textarea>
 							
@@ -136,7 +160,7 @@ $(function(){
 					</tr>
 					
 					<tr>
-						<th class="fs-5">첨부파일</th>
+						<th class="fs-6">첨부파일</th>
 						<td> 
 							<div class="mb-3">
   							<input class="form-control" type="file" id="formFileMultiple" multiple style="width: 50%;">
@@ -167,6 +191,16 @@ $(function(){
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/se2/js/service/HuskyEZCreator.js" charset="utf-8"></script>
 <script type="text/javascript">
+
+const date = new Date();
+
+const year = date.getFullYear();
+const month = date.getMonth() + 1;
+const day = date.getDate();
+var app_doc
+
+document.getElementById("today").innerHTML = year+"-"+month+"-"+day;
+
 var oEditors = [];
 nhn.husky.EZCreator.createInIFrame({
 	oAppRef: oEditors,
@@ -183,8 +217,10 @@ function submitContents(elClickedObj) {
 	} catch(e) {
 	}
 }
+
 </script>
-	
+
+<jsp:include page="/WEB-INF/views/layout/staticFooter.jsp"/>	
 </body>
 
 </html>
