@@ -241,6 +241,8 @@
 	<footer>
 		<jsp:include page="/WEB-INF/views/layout/footer.jsp" />
 	</footer>
+	
+	<jsp:include page="/WEB-INF/views/layout/staticFooter.jsp"/>
 
 </body>
 

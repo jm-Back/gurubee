@@ -15,13 +15,28 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/calendar.css"
 	type="text/css">	
 
-
 <script type="text/javascript">
+
 $(function(){
-	$(".attend_btn").click(function(){
+	//프로젝트 참여자 버튼
+	$(".att_employee_btn").click(function(){
+		$("#attend_Modal").modal("show");
+	});
+	
+	//프로젝트 마스터 선택 버튼
+	$(".att_employee_btn").click(function(){
 		$("#attend_Modal").modal("show");
 	});
 });
+
+function sendOk(){
+	const f = document.projectForm;
+	
+	f.action = "${pageContext.request.contextPath}/project/${mode}_ok.do";
+    f.submit();
+	
+}
+
 
 </script>
 
@@ -37,9 +52,10 @@ $(function(){
 		</header>
 	</div>
 			
-			
-	'<div class="container">
 	
+	<!-- 프로젝트 등록화면 -->
+<div class="container">
+	<form name="projectForm">
 		<div>프로젝트 등록</div>
 		<table> 
 			<tr>
@@ -67,13 +83,14 @@ $(function(){
 			<tr>
 				<td>프로젝트 설명</td>
 				<td>
-					<input type="text" name="pro_content">
+					<textarea name="pro_content"></textarea>
 				</td>
 			</tr>
 			<tr>
 				<td>프로젝트 총괄자</td>
 				<td>
 					<input type="text" name="pro_master">
+					<button type="button" class="att_master_btn">선택하기</button>
 				</td>
 			</tr>
 			<tr>
@@ -89,6 +106,7 @@ $(function(){
 				</td>
 			</tr>
 		</table>
+		
 		<br>
 		
 		<div>참여자 목록</div>
@@ -97,7 +115,7 @@ $(function(){
 				<td>참여자 등록</td>
 				<td>
 					<input type="text">
-							<button type="button" class="attend_btn">선택하기</button>
+					<button type="button" class="att_employee_btn">선택하기</button>
 				</td>
 			</tr>
 			<tr>
@@ -109,11 +127,17 @@ $(function(){
 				</td>
 			</tr>
 		</table>
-		
-		
-		
-	</div>	
+	</form>
+</div>	
 	
+	
+	<div class="container" style="text-align: center;">
+		<button type="button" onclick="sendOk();">등록하기</button>
+		<button type="button">취소하기</button>
+	</div>
+	
+	
+
 	
 	<!-- 참여자 선택 모달창 -->
 <div class="modal fade" id="attend_Modal" tabindex="-1" 
@@ -127,7 +151,7 @@ $(function(){
 			</div>
 			<div class="modal-body">
         		<h4>프로젝트 참여자를 선택하세요.</h4>
-        		<p>대화상자 밖을 클릭해도 대화상자는 사라지지 않는다.</p>
+        		<textarea rows="" cols="">텍스트</textarea>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary btnClose">닫기</button>
@@ -144,6 +168,8 @@ $(function(){
 	<footer>
 		<jsp:include page="/WEB-INF/views/layout/footer.jsp" />
 	</footer>
+
+<jsp:include page="/WEB-INF/views/layout/staticFooter.jsp"/>
 
 </body>
 
