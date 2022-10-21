@@ -1,6 +1,6 @@
 package com.comp_notice;
 
-public class compNoticeDTO {
+public class CompNoticeDTO {
 	private long num; // 공지사항 번호
 	private String id; // 작성자 사원번호 
 	private String name; // 작성자 이름

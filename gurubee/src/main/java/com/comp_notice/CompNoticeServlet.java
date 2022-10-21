@@ -2,6 +2,7 @@ package com.comp_notice;
 
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -32,7 +33,7 @@ public class CompNoticeServlet extends MyServlet {
 	protected void list(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 전체 공지사항 리스트
 		// 공지사항 메뉴 클릭 or 페이지 번호 클릭시 마다 실행
-		compNoticeDAO dao = new compNoticeDAO();
+		CompNoticeDAO dao = new CompNoticeDAO();
 		MyUtil util = new MyUtilBootstrap();
 		
 		String cp = req.getContextPath();
@@ -66,6 +67,28 @@ public class CompNoticeServlet extends MyServlet {
 			// 공지사항 갯수
 			int dataCount;
 			if(keyword.length() == 0) {
+				dataCount = dao.dataCount();
+			} else {
+				dataCount = dao.dataCount(condition, keyword);
+			}
+			
+			// 전체 페이지수
+			int size = 10;
+			int total_page = util.pageCount(dataCount, size);
+			if(current_page > total_page) {
+				current_page = total_page;
+			}
+			
+			// 게시글 가져오기
+			int offset = (current_page - 1) * size;
+			if(offset < 0) offset = 0;
+			
+			List<CompNoticeDTO> list = null;
+			
+			// 검색 안 할시
+			if(keyword.length() == 0) {
+				list = dao.listBoard(offset, size);
+			} else { // 검색시
 				
 			}
 			

@@ -92,14 +92,14 @@ function searchList() {
 						<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/comp_notice/list.do';">새로고침</button>
 					</div>
 					<div class="col-6 text-center">
-						<form class="row" name="searchForm" action="${pageContext.request.contextPath}/sbbs/list.do" method="post">
+						<form class="row" name="searchForm" action="${pageContext.request.contextPath}/comp_notice/list.do" method="post">
 							<div class="col-auto p-1">
 								<select name="condition" class="form-select">
 									<option value="all" ${condition=="all"?"selected='selected'":""}>제목+내용</option>
-									<option value="userName" ${condition=="userName"?"selected='selected'":""}>작성자</option>
+									<option value="name" ${condition=="name"?"selected='selected'":""}>작성자</option>
 									<option value="reg_date" ${condition=="reg_date"?"selected='selected'":""}>등록일</option>
-									<option value="subject" ${condition=="subject"?"selected='selected'":""}>제목</option>
-									<option value="content" ${condition=="content"?"selected='selected'":""}>내용</option>
+									<option value="notice_title" ${condition=="notice_title"?"selected='selected'":""}>제목</option>
+									<option value="notice_content" ${condition=="notice_content"?"selected='selected'":""}>내용</option>
 								</select>
 							</div>
 							<div class="col-auto p-1">
@@ -111,7 +111,7 @@ function searchList() {
 						</form>
 					</div>
 					<div class="col text-end">
-						<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/sbbs/write.do';">글올리기</button>
+						<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/comp_notice/write.do';">글올리기</button>
 					</div>
 				</div>
 			</div>
