@@ -50,17 +50,44 @@ $(function(){
 		$("#attend_Modal2").modal("hide");
 	});
 	
-	//값 선택해서 등록하기 눌렀을 때
+	
+	
+	//참여자 값 선택해서 등록하기 눌렀을 때 input 에 값 넣기
 	$("#employee").click(function(){
+
+		var employeeList = $("#selectEmployee option").get();
+		console.log(employeeList);
+		
+		for(var i=0; i<employeeList.length; i++){
+/* 			if( $("#selectEmployee option").indexof(employeeList[i].innerText) != -1){
+				break;
+			} */
+			$(".e_e").append("<span class='delete_emp'>" + employeeList[i].innerHTML + "</span>");
+		}
+		
 		$("#attend_Modal1").modal("hide");
+	
 	});
 	
+	//참여자 삭제 버튼
+	$(".delete_emp").click(function(){
+		$("#selectEmployee option").remove();
+		
+	});
+	
+	//마스터를 선택했을 때, input에 값 넣기
 	$("#master").click(function(){
-		var data = $("#mitem").val();
-		$("#pro_master").val(data);
+		var data = $("#selectMaster option:selected").attr("data-name");
+		
+		if($("#selectMaster option:selected").length > 1){
+			alert("프로젝트 총괄자는 1명만 선택 가능합니다.");
+			return false;
+		}
 		
 		
+		$("input[name=pro_master]").val(data);
 		$("#attend_Modal2").modal("hide");
+		
 	});
 	
 });
@@ -123,6 +150,14 @@ function sendOk(){
 	
 }
 
+//체크박스 하나만
+function clickCheck(target){
+	document.querySelectorAll("input[type=checkbox]").forEach((el) => {
+		el.checked = false;
+	});
+	
+	target.checked = true;
+}
 
 
 
@@ -151,15 +186,15 @@ function sendOk(){
 				<td>
 					<input type="text" name="pro_name">
 					<input type="hidden" name="id" value="">
-					<input type="hidden" name="pro_clear" value="진행중">
+					<input type="hidden" name="pro_clear" >
 				</td>
 			</tr>
 			<tr>
 				<td>프로젝트 종류</td>
 				<td>
-					<input type="checkbox" value="DEPT"> DEPT
-					<input type="checkbox" value="TEAM"> TEAM
-					<input type="checkbox" value="TFT"> TFT
+					<input type="checkbox" onclick="clickCheck(this)" name="pro_type" value="DEPT"> DEPT
+					<input type="checkbox" onclick="clickCheck(this)" name="pro_type" value="TEAM"> TEAM
+					<input type="checkbox" onclick="clickCheck(this)" name="pro_type" value="TFT"> TFT
 				</td>
 			</tr>
 			<tr>
@@ -177,7 +212,7 @@ function sendOk(){
 			<tr>
 				<td>프로젝트 총괄자</td>
 				<td>
-					<input type="text" id="pro_master" readonly="readonly">
+					<input type="text" name="pro_master" >
 					<button type="button" class="att_master_btn">선택하기</button>
 				</td>
 			</tr>
@@ -197,13 +232,15 @@ function sendOk(){
 		
 		<br>
 		
-		<div>참여자 목록</div>
+		<div>참여자 등록</div>
 		<table>
 			<tr>
-				<td>참여자 등록</td>
+				<td>참여자 선택하기</td>
 				<td>
-					<input type="text" readonly="readonly">
+					<input type="hidden" name="pj_id">
 					<button type="button" class="att_employee_btn">선택하기</button>
+				</td>
+				<td class="e_e">
 				</td>
 			</tr>
 		</table>
@@ -242,9 +279,9 @@ function sendOk(){
 							
 							<tr>
 							    <td class="left">
-							        <select name="itemLeft" multiple="multiple" class="form-select" style="width:150px; height:120px;">
+							        <select id="total" name="itemLeft" multiple="multiple" class="form-select" style="width:150px; height:120px;">
 							    		<c:forEach var="dto" items="${list_e}" varStatus="status">
-							    			<option value="${dto.id_p}">${dto.name_p}(${dto.pos_name})/${dto.dep_name}</option>
+							    			<option value="${dto.id_p}" data-name="${dto.name_p}">${dto.name_p}(${dto.pos_name})/${dto.dep_name}</option>
 							    		</c:forEach>
 							    	</select>
 							    </td>
@@ -255,7 +292,7 @@ function sendOk(){
 								    <button type="button" class="btn" onclick="itemAllMove('left');" style="display:block;width:80px;"> &lt;&lt; </button>
 							    </td>
 							    <td class="right">
-							        <select name="itemRight" multiple="multiple" class="form-select" style="width:150px; height:120px;">
+							        <select id="selectEmployee" name="itemRight" multiple="multiple" class="form-select" style="width:150px; height:120px;">
 							   
 							        </select>
 							    </td>
@@ -291,9 +328,9 @@ function sendOk(){
 							</tr>
 							<tr>
 							    <td class="left">
-							        <select id="mitem" name="itemLeft" multiple="multiple" class="form-select" style="width:100%; height:120px;">
+							        <select id="selectMaster" name="itemLeft" multiple="multiple" class="form-select" style="width:100%; height:120px;">
 							    		<c:forEach var="dto" items="${list_m}" varStatus="status">
-							    			<option value="${dto.id_p}">${dto.name_p}(${dto.pos_name})/${dto.dep_name}</option>
+							    			<option value="${dto.id_p}" data-name="${dto.name_p}">${dto.name_p}(${dto.pos_name})/${dto.dep_name}</option>
 							    		</c:forEach>
 							    	</select>
 							    </td>

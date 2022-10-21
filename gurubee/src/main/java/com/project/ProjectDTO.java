@@ -42,16 +42,24 @@ public class ProjectDTO {
 	
 	//프로젝트 상세
 	private String pd_code;
-	private String pd_rank;
+	private int pd_rank;
 	private String pd_subejct;
 	private String pd_content;
-	private String pd_part;
-	private String pd_ing;
+	private int pd_part;
+	private int pd_ing;
 	private String pd_sdate;
 	private String pd_edate;
 	
 	//프로젝트 참여자
 	private String pj_code;
+	private String pj_id;
+	public String getPj_id() {
+		return pj_id;
+	}
+	public void setPj_id(String pj_id) {
+		this.pj_id = pj_id;
+	}
+
 	private String pj_role;
 	
 	//추가 부서
@@ -131,10 +139,10 @@ public class ProjectDTO {
 	public void setPd_code(String pd_code) {
 		this.pd_code = pd_code;
 	}
-	public String getPd_rank() {
+	public int getPd_rank() {
 		return pd_rank;
 	}
-	public void setPd_rank(String pd_rank) {
+	public void setPd_rank(int pd_rank) {
 		this.pd_rank = pd_rank;
 	}
 	public String getPd_subejct() {
@@ -149,16 +157,16 @@ public class ProjectDTO {
 	public void setPd_content(String pd_content) {
 		this.pd_content = pd_content;
 	}
-	public String getPd_part() {
+	public int getPd_part() {
 		return pd_part;
 	}
-	public void setPd_part(String pd_part) {
+	public void setPd_part(int pd_part) {
 		this.pd_part = pd_part;
 	}
-	public String getPd_ing() {
+	public int getPd_ing() {
 		return pd_ing;
 	}
-	public void setPd_ing(String pd_ing) {
+	public void setPd_ing(int pd_ing) {
 		this.pd_ing = pd_ing;
 	}
 	public String getPd_sdate() {

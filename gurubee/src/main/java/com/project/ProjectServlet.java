@@ -1,6 +1,7 @@
 package com.project;
 
 import java.io.IOException;
+
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -9,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.catalina.Session;
 
 import com.login.SessionInfo;
 import com.util.MyServlet;
@@ -100,8 +100,20 @@ public class ProjectServlet extends MyServlet{
 			ProjectDTO dto = new ProjectDTO();
 			
 			//사원 테이블 정보는 session 에 있죠
+			dto.setId_p(info.getId());
+			
+			dto.setPro_name(req.getParameter("pro_name"));
+			dto.setPro_type(req.getParameter("pro_type"));
+			dto.setPro_master(req.getParameter("pro_master"));
+			dto.setPro_outline(req.getParameter("pro_outline"));
+			dto.setPro_content(req.getParameter("pro_content"));
+			dto.setPro_sdate(req.getParameter("pro_sdate"));
+			dto.setPro_edate(req.getParameter("pro_edate"));
+			
+			dto.setPj_id(req.getParameter("pj_id"));
 			
 			//파라미터들 넘겨서 dao 실행하기
+			dao.insertProject(dto);
 			
 			
 		} catch (Exception e) {
