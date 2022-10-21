@@ -2,19 +2,6 @@ package com.mypage;
 
 public class MypageDTO {
 
-	//마이페이지(개인정보 수정)
-	private String id; // 사번(출력만)
-	private int pos_code; // 부서(출력만)
-	private int dep_code; // 직급(출력만)
-	private String name; // 이름 (출력만)
-	private int reg; // 주민등록번호
-	private String mail; // 이메일
-	private int phone; // 개인전화번호
-	private int tel; // 내선번호
-	private String pwd; // 비밀번호
-	private String ori_filename; // 원본파일이름(사진)
-	private String save_filename; // 저장파일이름(사진)
-	
 	//마이페이지 근태관리
 	private int att_id; // 근태번호
 	private int att_start; // 출근시간
@@ -66,72 +53,6 @@ public class MypageDTO {
 	private int startdate; // 입사일
 	private int enddate; // 퇴사일
 	
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
-	public int getPos_code() {
-		return pos_code;
-	}
-	public void setPos_code(int pos_code) {
-		this.pos_code = pos_code;
-	}
-	public int getDep_code() {
-		return dep_code;
-	}
-	public void setDep_code(int dep_code) {
-		this.dep_code = dep_code;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public int getReg() {
-		return reg;
-	}
-	public void setReg(int reg) {
-		this.reg = reg;
-	}
-	public String getMail() {
-		return mail;
-	}
-	public void setMail(String mail) {
-		this.mail = mail;
-	}
-	public int getPhone() {
-		return phone;
-	}
-	public void setPhone(int phone) {
-		this.phone = phone;
-	}
-	public int getTel() {
-		return tel;
-	}
-	public void setTel(int tel) {
-		this.tel = tel;
-	}
-	public String getPwd() {
-		return pwd;
-	}
-	public void setPwd(String pwd) {
-		this.pwd = pwd;
-	}
-	public String getOri_filename() {
-		return ori_filename;
-	}
-	public void setOri_filename(String ori_filename) {
-		this.ori_filename = ori_filename;
-	}
-	public String getSave_filename() {
-		return save_filename;
-	}
-	public void setSave_filename(String save_filename) {
-		this.save_filename = save_filename;
-	}
 	public int getAtt_id() {
 		return att_id;
 	}
