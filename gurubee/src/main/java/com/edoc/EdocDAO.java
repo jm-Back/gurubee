@@ -66,6 +66,29 @@ public class EdocDAO {
 	
 	public List<EdocEmpDTO> deptEmpList(String id) {
 		List<EdocEmpDTO> list = new ArrayList<>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			sql = "";
+		} catch (Exception e) {
+			e.printStackTrace();
+		}  finally {
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e2) {
+				}
+			}
+			
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+				}
+			}
+		}
 		
 		return list;
 	} 
