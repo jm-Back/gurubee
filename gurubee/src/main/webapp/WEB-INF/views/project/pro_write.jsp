@@ -50,15 +50,21 @@ $(function(){
 		$("#attend_Modal2").modal("hide");
 	});
 	
+	//값 선택해서 등록하기 눌렀을 때
 	$("#employee").click(function(){
 		$("#attend_Modal1").modal("hide");
 	});
 	
 	$("#master").click(function(){
+		var data = $("#mitem").val();
+		$("#pro_master").val(data);
+		
+		
 		$("#attend_Modal2").modal("hide");
 	});
 	
 });
+
 
 
 function itemMove(pos) {
@@ -171,7 +177,7 @@ function sendOk(){
 			<tr>
 				<td>프로젝트 총괄자</td>
 				<td>
-					<input type="text" name="pro_master" readonly="readonly">
+					<input type="text" id="pro_master" readonly="readonly">
 					<button type="button" class="att_master_btn">선택하기</button>
 				</td>
 			</tr>
@@ -285,7 +291,7 @@ function sendOk(){
 							</tr>
 							<tr>
 							    <td class="left">
-							        <select name="itemLeft" multiple="multiple" class="form-select" style="width:100%; height:120px;">
+							        <select id="mitem" name="itemLeft" multiple="multiple" class="form-select" style="width:100%; height:120px;">
 							    		<c:forEach var="dto" items="${list_m}" varStatus="status">
 							    			<option value="${dto.id_p}">${dto.name_p}(${dto.pos_name})/${dto.dep_name}</option>
 							    		</c:forEach>

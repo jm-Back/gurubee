@@ -3,10 +3,13 @@ package com.project;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.util.DBConn;
+
+import oracle.jdbc.proxy.annotation.Pre;
 
 public class ProjectDAO {
 	private Connection conn = DBConn.getConnection();
@@ -127,6 +130,31 @@ public class ProjectDAO {
 			
 			
 			return list;
+		}
+		
+		
+		public void insertProject(ProjectDTO dto, String mode) throws SQLException  {
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql;
+			
+			try {
+				sql = "";
+			
+				
+			} catch (Exception e) {
+				// TODO: handle exception
+			
+			} finally {
+				if(pstmt !=null) {
+					try {
+						pstmt.close();
+					} catch (SQLException e2) {
+					}
+				}
+			}
+			
+			
 		}
 	
 	
