@@ -29,7 +29,23 @@ function check() {
 	const f = document.boardForm;
 	let str;
 	
+	str = f.notice_title.value.trim();
 	
+	if(!str) {
+		alert("제목을 입력하세요.");
+		f.notice_title.focus()
+		return false;
+	}
+	
+	str = f.notice_content.value.trim();
+	
+	if(!str) {
+		f.notice_content.focus();
+		return false;
+	}
+	
+	f.action = "${pageContext.request.contextPath}/comp_notice/${mode}_ok.do";
+	f.submit();
 }
 </script>
 </head>
@@ -53,21 +69,21 @@ function check() {
 						<tr>
 							<td class="table-light col-sm-2" scope="row">제 목</td>
 							<td>
-								<input type="text" name="subject" class="form-control" value="${dto.subject}">
+								<input type="text" name="notice_title" class="form-control" value="${dto.subject}">
 							</td>
 						</tr>
 	        
 						<tr>
 							<td class="table-light col-sm-2" scope="row">작성자명</td>
 	 						<td>
-								<p class="form-control-plaintext">${sessionScope.member.userName}</p>
+								<p class="form-control-plaintext">${sessionScope.member.name}</p>
 							</td>
 						</tr>
 	
 						<tr>
 							<td class="table-light col-sm-2" scope="row">내 용</td>
 							<td>
-								<textarea name="content" id="ir1" class="form-control" style="width: 95%; height: 270px;">${dto.content}</textarea>
+								<textarea name="notice_content" id="ir1" class="form-control" style="width: 95%; height: 270px;">${dto.content}</textarea>
 							</td>
 						</tr>
 						
@@ -82,7 +98,7 @@ function check() {
 								<td class="table-light col-sm-2" scope="row">첨부된파일</td>
 								<td> 
 									<p class="form-control-plaintext">
-										<c:if test="${not empty dto.saveFilename}">
+										<c:if test="${not empty dto.save_Filename}">
 											<a href="javascript:deleteFile('${dto.num}');"><i class="bi bi-trash"></i></a>
 											${dto.originalFilename}
 										</c:if>
@@ -103,8 +119,8 @@ function check() {
 								<c:if test="${mode=='update'}">
 									<input type="hidden" name="num" value="${dto.num}">
 									<input type="hidden" name="page" value="${page}">
-									<input type="hidden" name="saveFilename" value="${dto.saveFilename}">
-									<input type="hidden" name="originalFilename" value="${dto.originalFilename}">
+									<input type="hidden" name="saveFilename" value="${dto.save_Filename}">
+									<input type="hidden" name="originalFilename" value="${dto.ori_Filename}">
 								</c:if>
 							</td>
 						</tr>

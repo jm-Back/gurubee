@@ -27,7 +27,7 @@ public class CompNoticeDAO {
 			
 			pstmt.setString(1, dto.getNotice_title());
 			pstmt.setString(2, dto.getNotice_content());
-			pstmt.setString(3, dto.getId());
+			pstmt.setString(3, dto.getWriter_id());
 			
 			pstmt.executeUpdate();
 			
@@ -35,7 +35,7 @@ public class CompNoticeDAO {
 			pstmt = null;
 			
 			sql = " INSERT INTO noticeAllFile(file_num,save_filename,ori_filename,notice_num) "
-					+ " VALUES(NOTICEALLFILE_SEQ,?,?,NOTICEALL_SEQ.CURRVAL) ";
+					+ " VALUES(NOTICEALLFILE_SEQ.NEXTVAL,?,?,NOTICEALL_SEQ.CURRVAL) ";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -175,7 +175,7 @@ public class CompNoticeDAO {
 		
 		try {
 			
-			sql = " SELECT notice_num, name, notice_title, views, save_filename "
+			sql = " SELECT n.notice_num, name, notice_title, views, nf.save_filename, "
 					+ " TO_CHAR(regdate, 'YYYY-MM-DD') regdate "
 					+ " FROM noticeAll n "
 					+ " JOIN employee e ON n.id = e.id "
@@ -196,7 +196,7 @@ public class CompNoticeDAO {
 				CompNoticeDTO dto = new CompNoticeDTO();
 				// 리스트에 표기할 것들 DB에서 빼오기
 				dto.setNum(rs.getLong("notice_num"));
-				dto.setName(rs.getString("name"));
+				dto.setWriter_name(rs.getString("name"));
 				dto.setNotice_title(rs.getString("notice_title"));
 				dto.setViews(rs.getInt("views"));
 				dto.setRegdate(rs.getString("regdate"));
@@ -275,7 +275,7 @@ public class CompNoticeDAO {
 				dto.setNotice_title(rs.getString("notice_title"));
 				dto.setViews(rs.getInt("views"));
 				dto.setRegdate(rs.getString("regdate"));
-				dto.setName(rs.getString("name"));
+				dto.setWriter_name(rs.getString("name"));
 				dto.setSave_filename(rs.getString("save_filename"));
 				
 				list.add(dto);
@@ -309,7 +309,56 @@ public class CompNoticeDAO {
 	// 공지사항 클릭시 내용 출력
 	public CompNoticeDTO readBoard(Long notice_num) {
 		CompNoticeDTO dto = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
 		
+		try {
+			
+			sql = " SELECT notice_num, notice_title, notice_content, "
+					+ " save_filename, ori_filename, views,regdate "
+					+ " FROM noticeAll n "
+					+ " JOIN noticeAllFile nf ON n.notice_num = nf.notice_num "
+					+ " WHERE notice_num = ? ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, notice_num);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				dto = new CompNoticeDTO();
+				
+				dto.setNum(rs.getLong("notice_num"));
+				dto.setNotice_title(rs.getString("notice_title"));
+				dto.setNotice_content(rs.getString("notice_content"));
+				dto.setSave_filename(rs.getString("save_filename"));
+				dto.setOri_filename(rs.getString("ori_filename"));
+				dto.setRegdate(rs.getString("regdate"));
+				dto.setViews(rs.getInt("views"));
+				
+			}
+			
+		} catch (Exception e) {
+			
+		} finally {
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e2) {
+					
+				}
+			}
+			
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+					
+				}
+			}
+		}
 		
 		return dto;
 	}

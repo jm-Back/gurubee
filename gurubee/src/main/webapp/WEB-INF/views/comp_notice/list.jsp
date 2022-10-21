@@ -68,13 +68,13 @@ function searchList() {
 							<tr>
 								<td>${dataCount - (page-1) * size - status.index}</td>
 								<td class="left">
-									<a href="${articleUrl}&num=${dto.num}" class="text-reset">${dto.subject}</a>
+									<a href="${articleUrl}&num=${dto.num}" class="text-reset">${dto.notice_title}</a>
 								</td>
-								<td>${dto.userName}</td>
-								<td>${dto.reg_date}</td>
-								<td>${dto.hitCount}</td>
+								<td>${dto.writer_name}</td>
+								<td>${dto.regdate}</td>
+								<td>${dto.views}</td>
 								<td>
-									<c:if test="${not empty dto.saveFilename}">
+									<c:if test="${not empty dto.save_filename}">
 										<a href="${pageContext.request.contextPath}/"></a>
 									</c:if>
 								</td>

@@ -2,8 +2,8 @@ package com.comp_notice;
 
 public class CompNoticeDTO {
 	private long num; // 공지사항 번호
-	private String id; // 작성자 사원번호 
-	private String name; // 작성자 이름
+	private String writer_id; // 작성자 아이디
+	private String writer_name; // 작성자 이름
 	private String notice_title; // 공지사항 제목
 	private String notice_content; // 공지사항 내용
 	private int views; // 조회수
@@ -11,23 +11,24 @@ public class CompNoticeDTO {
 	private String save_filename; // 저장파일 이름
 	private String ori_filename;  // 원본파일 이름
 	
+	
+	public String getWriter_id() {
+		return writer_id;
+	}
+	public void setWriter_id(String writer_id) {
+		this.writer_id = writer_id;
+	}
+	public String getWriter_name() {
+		return writer_name;
+	}
+	public void setWriter_name(String writer_name) {
+		this.writer_name = writer_name;
+	}
 	public long getNum() {
 		return num;
 	}
 	public void setNum(long num) {
 		this.num = num;
-	}
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
 	}
 	public String getNotice_title() {
 		return notice_title;
