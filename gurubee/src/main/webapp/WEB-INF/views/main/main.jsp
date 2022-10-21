@@ -155,7 +155,7 @@
 							<div style="margin-bottom: 0px;" >
 								<div class="box_photo"><img class="profile" src="${pageContext.request.contextPath}/resources/images/profile.jpg" ></div>
 									<span class="fw-bold fs-6"> ${dto.id}&nbsp;${dto.name}님</span>
-									<div>${dto.dep_name } (${dto.pos_name}) </div>
+									<div>${dto.dep_name} (${dto.pos_name}) </div>
 							</div>
 							<div class="text-center col-12 p-4" >
 								<button type="button" class="btn"

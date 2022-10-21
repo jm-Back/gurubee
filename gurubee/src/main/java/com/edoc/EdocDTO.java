@@ -3,16 +3,7 @@ package com.edoc;
 public class EdocDTO {
 	// 결재 문서
 	
-	private String id;
-	private String name;
-	private String reg;
-	private String email;
-	private String phone;
-	private String tel;
-	private String pwd;
-	private String dept;
-	private String pisition;
-	
+	private String id_write; // 작성자 사번
 	private int app_num; // seq
 	private String app_doc; // 문서구분
 	private String app_date; // 문서작성일자
@@ -20,60 +11,12 @@ public class EdocDTO {
 	private String doc_form; // 문서폼. CLOB
 	private String doc_num; // 문서번호. 재무-20221014_4
 	private int temp; // 임시 구분. 0:임시, 1:제출
-	
-	public String getId() {
-		return id;
+
+	public String getId_write() {
+		return id_write;
 	}
-	public void setId(String id) {
-		this.id = id;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getReg() {
-		return reg;
-	}
-	public void setReg(String reg) {
-		this.reg = reg;
-	}
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	public String getPhone() {
-		return phone;
-	}
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-	public String getTel() {
-		return tel;
-	}
-	public void setTel(String tel) {
-		this.tel = tel;
-	}
-	public String getPwd() {
-		return pwd;
-	}
-	public void setPwd(String pwd) {
-		this.pwd = pwd;
-	}
-	public String getDept() {
-		return dept;
-	}
-	public void setDept(String dept) {
-		this.dept = dept;
-	}
-	public String getPisition() {
-		return pisition;
-	}
-	public void setPisition(String pisition) {
-		this.pisition = pisition;
+	public void setId_write(String id_write) {
+		this.id_write = id_write;
 	}
 	public int getApp_num() {
 		return app_num;
@@ -117,7 +60,7 @@ public class EdocDTO {
 	public void setTemp(int temp) {
 		this.temp = temp;
 	}
-
+	
 	
 	
 }

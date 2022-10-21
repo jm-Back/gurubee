@@ -40,15 +40,6 @@ public class EdocServlet extends MyServlet {
 		
 		
 		
-		EdocEmpDTO logindto = dao.loginMemberInfo(info.getUserId());
-
-		System.out.println(logindto.getName()); // 이렇게 하면 안됨 !
-		System.out.println(info.getUserName()); // session 에서 가져오기 !!
-		
-		System.out.println(logindto.getDept());
-		System.out.println(logindto.getPisition());
-		
-		req.setAttribute("logindto", logindto);
 		
 		String path = "/WEB-INF/views/edoc/write.jsp";
 		forward(req, resp, path);

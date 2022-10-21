@@ -3,6 +3,8 @@ package com.edoc;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.util.DBConn;
 
@@ -10,12 +12,14 @@ public class EdocDAO {
 	private Connection conn = DBConn.getConnection();
 	
 	public EdocEmpDTO loginMemberInfo(String id) {
-		EdocEmpDTO logindto = null;
+		EdocEmpDTO edocEmp = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String sql;
 		
 		try {
+			/*
+			LoginDAO 로 옮김
 			sql = "SELECT e.id, name, mail, phone, tel, pos_name, dep_name "
 					+ " FROM (SELECT his_no, date_iss, reason, id, pos_code, dep_code, division, "
 					+ "    now_working, type, startdate, enddate, "
@@ -25,6 +29,8 @@ public class EdocDAO {
 					+ " LEFT OUTER JOIN position p ON p.pos_code = his.pos_code "
 					+ " where e.id=? and now=1 and now_working='재직' "
 					+ " order by enddate DESC;";
+			*/
+			sql = "";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -34,14 +40,7 @@ public class EdocDAO {
 			rs = pstmt.executeQuery();
 			
 			if(rs.next()) {
-				logindto = new EdocEmpDTO();
-				logindto.setId(rs.getString("is"));
-				logindto.setName(rs.getString("name"));
-				logindto.setEmail("mail");
-				logindto.setPhone("phone");
-				logindto.setTel(rs.getString("tel"));
-				logindto.setDept(rs.getString("dep_name"));
-				logindto.setPisition(rs.getString("pos_name"));
+				// edocemp = new EdocEmpDTO();
 			}
 			
 		} catch (Exception e) {
@@ -61,8 +60,15 @@ public class EdocDAO {
 			}
 		}
 				
-		return logindto;
+		return null;
 	}
+	
+	
+	public List<EdocEmpDTO> deptEmpList(String id) {
+		List<EdocEmpDTO> list = new ArrayList<>();
+		
+		return list;
+	} 
 	
 	
 }

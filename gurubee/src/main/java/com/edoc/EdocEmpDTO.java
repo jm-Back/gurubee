@@ -3,15 +3,8 @@ package com.edoc;
 public class EdocEmpDTO {
 	// 결재자
 	
-	private String id;
-	private String name;
-	private String reg;
-	private String email;
-	private String phone;
-	private String tel;
-	private String pwd;
-	private String dept;
-	private String pisition;
+	private String id_apper; // 결재자 사번
+	private String pos_code; // 직급코드
 	
 	private String apper_num; // 결재자 번호
 	private String app_num; // 결재번호. (E_Approval - app_num)
@@ -20,59 +13,17 @@ public class EdocEmpDTO {
 	private String app_date;
 	private String memo;
 	
-	public String getId() {
-		return id;
+	public String getId_apper() {
+		return id_apper;
 	}
-	public void setId(String id) {
-		this.id = id;
+	public void setId_apper(String id_apper) {
+		this.id_apper = id_apper;
 	}
-	public String getName() {
-		return name;
+	public String getPos_code() {
+		return pos_code;
 	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getReg() {
-		return reg;
-	}
-	public void setReg(String reg) {
-		this.reg = reg;
-	}
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	public String getPhone() {
-		return phone;
-	}
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-	public String getTel() {
-		return tel;
-	}
-	public void setTel(String tel) {
-		this.tel = tel;
-	}
-	public String getPwd() {
-		return pwd;
-	}
-	public void setPwd(String pwd) {
-		this.pwd = pwd;
-	}
-	public String getDept() {
-		return dept;
-	}
-	public void setDept(String dept) {
-		this.dept = dept;
-	}
-	public String getPisition() {
-		return pisition;
-	}
-	public void setPisition(String pisition) {
-		this.pisition = pisition;
+	public void setPos_code(String pos_code) {
+		this.pos_code = pos_code;
 	}
 	public String getApper_num() {
 		return apper_num;

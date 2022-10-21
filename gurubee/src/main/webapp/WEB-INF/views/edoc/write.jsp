@@ -22,18 +22,29 @@
 
 <script type="text/javascript">
 
-var app_doc
-
-
 function sendOk() {
 
   const f = document.writeForm;
-
+  
+  let id_write = '<%=(String)session.getAttribute("id")%>';
+  let name_write = '<%=(String)session.getAttribute("name")%>';
+  let date = document.getElementById("today");
+  let id_apper = document.getElementById("id_apper");
+  
+  
+  str = f.subject.value.trim();
+  if(!str) {
+      alert("제목을 입력하세요. ");
+      f.subject.focus();
+      return false;
+  }
+  
   return true;
 }
 
 $(function(){
 	$(".empRemoveBtn").hide();
+	$('input[name=date]').attr('value', year+"-"+month+"-"+day);
 	
     $(".empAddBtn").click(function(){
         $(".empRemoveBtn").show();
@@ -124,13 +135,15 @@ function changeEdocValue() { // 문서구분 값 가져오기
 					<tr>
 						<th class="fs-6">작성자</th>
 						<td class="fs-6">
-							<input type="text" name="name" value="${sessionScope.member.userName}" class="form-control" readonly="readonly">
+							<input type="text" name="name" value="${sessionScope.member.name}" class="form-control" readonly="readonly">
 						</td>
 					</tr>
 					
 					<tr>
 						<th class="fs-6">작성일자</th>
-						<td class="fs-6" id="today"></td>
+						<td>
+							<input type="text" name="date" value="${sessionScope.member.name}" class="form-control" readonly="readonly">
+						</td>
 					</tr>
 					
 					<tr>
@@ -197,9 +210,6 @@ const date = new Date();
 const year = date.getFullYear();
 const month = date.getMonth() + 1;
 const day = date.getDate();
-var app_doc
-
-document.getElementById("today").innerHTML = year+"-"+month+"-"+day;
 
 var oEditors = [];
 nhn.husky.EZCreator.createInIFrame({
