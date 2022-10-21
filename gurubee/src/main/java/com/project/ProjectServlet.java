@@ -7,7 +7,11 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import org.apache.catalina.Session;
+
+import com.login.SessionInfo;
 import com.util.MyServlet;
 
 @WebServlet("/project/*")
@@ -46,12 +50,14 @@ public class ProjectServlet extends MyServlet{
 
 	private void projectForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
-		
+		//프로젝트 메인 리스트
 		forward(req, resp, "/WEB-INF/views/project/pro_main.jsp");
 		
 	}
 
 	private void projectWriteForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		//프로젝트 작성폼
 		ProjectDAO dao = new ProjectDAO();
 		
 		try {
@@ -75,8 +81,35 @@ public class ProjectServlet extends MyServlet{
 		
 	}
 
-	private void projectSubmit(HttpServletRequest req, HttpServletResponse resp) {
-		// TODO Auto-generated method stub
+	private void projectSubmit(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		// 프로젝트 등록하기
+		
+		ProjectDAO dao = new ProjectDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		String cp = req.getContextPath();
+		if(req.getMethod().equalsIgnoreCase("GET")) {
+			resp.sendRedirect(cp + "/project/list.do");
+			return ;
+		}
+		
+		try {
+			
+			ProjectDTO dto = new ProjectDTO();
+			
+			//사원 테이블 정보는 session 에 있죠
+			
+			//파라미터들 넘겨서 dao 실행하기
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		resp.sendRedirect(cp + "/project/list.do");
+		
 		
 	}
 
