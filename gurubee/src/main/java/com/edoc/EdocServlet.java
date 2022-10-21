@@ -38,16 +38,13 @@ public class EdocServlet extends MyServlet {
 		
 		EdocDAO dao = new EdocDAO();
 		
-		String cp = req.getContextPath();
-
-		if (req.getMethod().equalsIgnoreCase("GET")) {
-			resp.sendRedirect(cp + "/");
-			return;
-		}
+		
 		
 		EdocEmpDTO logindto = dao.loginMemberInfo(info.getUserId());
 
-		System.out.println(logindto.getName());
+		System.out.println(logindto.getName()); // 이렇게 하면 안됨 !
+		System.out.println(info.getUserName()); // session 에서 가져오기 !!
+		
 		System.out.println(logindto.getDept());
 		System.out.println(logindto.getPisition());
 		

@@ -154,8 +154,8 @@
 						<div class="h-100 p-5 text-center bg-light border rounded-3" style="font-size: 13px;">
 							<div style="margin-bottom: 0px;" >
 								<div class="box_photo"><img class="profile" src="${pageContext.request.contextPath}/resources/images/profile.jpg" ></div>
-									<span class="fw-bold fs-6">${dto.name} (10001)</span>
-									<div>해외 영업 2팀(사원) </div>
+									<span class="fw-bold fs-6"> ${dto.id}&nbsp;${dto.name}님</span>
+									<div>${dto.dep_name } (${dto.pos_name}) </div>
 							</div>
 							<div class="text-center col-12 p-4" >
 								<button type="button" class="btn"

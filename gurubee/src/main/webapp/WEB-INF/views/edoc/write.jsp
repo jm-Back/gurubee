@@ -124,7 +124,7 @@ function changeEdocValue() { // 문서구분 값 가져오기
 					<tr>
 						<th class="fs-6">작성자</th>
 						<td class="fs-6">
-							<input type="text" name="name" value="${logindto.name}" class="form-control" readonly="readonly">
+							<input type="text" name="name" value="${sessionScope.member.userName}" class="form-control" readonly="readonly">
 						</td>
 					</tr>
 					
