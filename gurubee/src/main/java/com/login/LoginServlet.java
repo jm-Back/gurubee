@@ -83,19 +83,20 @@ public class LoginServlet extends MyServlet {
 				return;
 			}
 
+			
 			// 유지시간: 120분
-			session.setMaxInactiveInterval(120 * 60);
+	         session.setMaxInactiveInterval(120 * 60);
 
-			// 세션에 저장할 내용
-			// SessionInfo info = new SessionInfo(); 
+	         // 세션에 저장할 내용
+	         // SessionInfo info = new SessionInfo(); 
 
-			// 세션에 member이라는 이름으로 저장
-			session.setAttribute("member", info);
+	         // 세션에 member이라는 이름으로 저장
+	         session.setAttribute("member", info);
 
-			req.setAttribute("dto", info);
+	         req.setAttribute("dto", info);
 
-			forward(req, resp, "/WEB-INF/views/main/main.jsp");
-			return;
+	         forward(req, resp, "/WEB-INF/views/main/main.jsp");
+	         return;
 
 		}
 

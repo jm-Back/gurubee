@@ -30,20 +30,38 @@
 .center { text-align: center; }
 .right { text-align: right; padding-right: 7px; }
 
+.e_e {padding-right: 10px;}
+.delete_emp { cursor:pointer;  display:inline; border: 1px solid gray; border-radius: 30px; padding-right: 10px; padding-left:10px; }
+.fa-padding {padding-left: 10px; padding-top: 4px;}
+
 </style>
 
 <script type="text/javascript">
 $(function(){
-	//프로젝트 참여자 버튼 (1)
-	$(".att_employee_btn").click(function(){
-		$("#attend_Modal1").modal("show");
-		
-	});
-	
 	//프로젝트 마스터 선택 버튼 (2)
 	$(".att_master_btn").click(function(){
 		$("#attend_Modal2").modal("show");
 	});
+	
+	//마스터를 선택했을 때, input에 값 넣기
+	$("#master").click(function(){
+		var data = $("#selectMaster option:selected").attr("data-name");
+		var data2 = $("#selectMaster option:selected").val();
+		
+		console.log(data);
+		
+		if($("#selectMaster option:selected").length > 1){
+			alert("프로젝트 총괄자는 1명만 선택 가능합니다.");
+			return false;
+		}
+		
+		
+		$("input[name=pro_master_name]").val(data);
+		$("input[name=pro_master]").val(data2);
+		$("#attend_Modal2").modal("hide");
+		
+	});
+	
 	
 	$(".btnClose").click(function(){
 		$("#attend_Modal1").modal("hide");
@@ -52,17 +70,22 @@ $(function(){
 	
 	
 	
+	//프로젝트 참여자 버튼 (1)
+	$(".att_employee_btn").click(function(){
+		$("#attend_Modal1").modal("show");
+		
+	});
+	
 	//참여자 값 선택해서 등록하기 눌렀을 때 input 에 값 넣기
 	$("#employee").click(function(){
 
 		var employeeList = $("#selectEmployee option").get();
-		console.log(employeeList);
-		
+
+		$(".e_e").empty();
 		for(var i=0; i<employeeList.length; i++){
-/* 			if( $("#selectEmployee option").indexof(employeeList[i].innerText) != -1){
-				break;
-			} */
-			$(".e_e").append("<span class='delete_emp'>" + employeeList[i].innerHTML + "</span>");
+ 			
+			$(".e_e").append("<div class='delete_emp' name='pj_id' value = '" + employeeList[i].value + "' >" + employeeList[i].innerHTML + " <i class='fa-solid fa-xmark fa-padding' id='deleteEmp'></i></div>");
+			
 		}
 		
 		$("#attend_Modal1").modal("hide");
@@ -71,26 +94,19 @@ $(function(){
 	
 	//참여자 삭제 버튼
 	$(".delete_emp").click(function(){
-		$("#selectEmployee option").remove();
-		
+		//var index = $(this).attr("id");
+		//tag[id] = "";
+		console.log("하하");
+		//$(this).parent().remove();
+		//$(this).remove();
+	
 	});
 	
-	//마스터를 선택했을 때, input에 값 넣기
-	$("#master").click(function(){
-		var data = $("#selectMaster option:selected").attr("data-name");
-		
-		if($("#selectMaster option:selected").length > 1){
-			alert("프로젝트 총괄자는 1명만 선택 가능합니다.");
-			return false;
-		}
-		
-		
-		$("input[name=pro_master]").val(data);
-		$("#attend_Modal2").modal("hide");
-		
-	});
+	
 	
 });
+
+
 
 
 
@@ -140,6 +156,15 @@ function itemAllMove(pos) {
 }
 
 
+//체크박스 하나만
+function clickCheck(target){
+	document.querySelectorAll("input[type=checkbox]").forEach((el) => {
+		el.checked = false;
+	});
+	
+	target.checked = true;
+}
+
 
 //프로젝트 등록
 function sendOk(){
@@ -150,14 +175,7 @@ function sendOk(){
 	
 }
 
-//체크박스 하나만
-function clickCheck(target){
-	document.querySelectorAll("input[type=checkbox]").forEach((el) => {
-		el.checked = false;
-	});
-	
-	target.checked = true;
-}
+
 
 
 
@@ -212,7 +230,8 @@ function clickCheck(target){
 			<tr>
 				<td>프로젝트 총괄자</td>
 				<td>
-					<input type="text" name="pro_master" >
+					<input type="text" name="pro_master_name">
+					<input type="text" name="pro_master">
 					<button type="button" class="att_master_btn">선택하기</button>
 				</td>
 			</tr>
@@ -235,12 +254,13 @@ function clickCheck(target){
 		<div>참여자 등록</div>
 		<table>
 			<tr>
-				<td>참여자 선택하기</td>
-				<td>
-					<input type="hidden" name="pj_id">
+				<td>참여자 선택하기
 					<button type="button" class="att_employee_btn">선택하기</button>
 				</td>
-				<td class="e_e">
+			</tr>
+			<tr>	
+				<td >
+					<div class="e_e" id="emlist"></div>
 				</td>
 			</tr>
 		</table>
@@ -281,7 +301,7 @@ function clickCheck(target){
 							    <td class="left">
 							        <select id="total" name="itemLeft" multiple="multiple" class="form-select" style="width:150px; height:120px;">
 							    		<c:forEach var="dto" items="${list_e}" varStatus="status">
-							    			<option value="${dto.id_p}" data-name="${dto.name_p}">${dto.name_p}(${dto.pos_name})/${dto.dep_name}</option>
+							    			<option value="${dto.id_p}" data-id="${dto.id_p}" data-name="${dto.name_p}">${dto.name_p}(${dto.pos_name})/${dto.dep_name}</option>
 							    		</c:forEach>
 							    	</select>
 							    </td>

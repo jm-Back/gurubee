@@ -4,6 +4,7 @@ import java.sql.Connection;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -131,7 +132,7 @@ public class ProjectDAO {
 			return list;
 		}
 		
-		
+		// 프로젝트 등록하기
 		public void insertProject(ProjectDTO dto)  {
 			PreparedStatement pstmt = null;
 			String sql;
@@ -141,7 +142,7 @@ public class ProjectDAO {
 				conn.setAutoCommit(false);
 				
 				//프로젝트 등록
-				sql = "INSERT INTO Project(pro_code, id, pro_name, pro_clear, pro_type, pro_master, pro_outline "
+				sql = "INSERT INTO Project(pro_code, id, pro_name, pro_clear, pro_type, pro_master, pro_outline, "
 						+ " pro_content, pro_sdate, pro_edate ) "
 						+ " VALUES(pro_seq.NEXTVAL, ?, ?, '진행중', ?, ?, ?, ?, ?, ? ) ";
 			
@@ -177,24 +178,53 @@ public class ProjectDAO {
 				pstmt.close();
 				pstmt = null;
 				
+				conn.commit();
+				
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			
+			} finally {
+				if(pstmt !=null) {
+					try {
+						pstmt.close();
+					} catch (Exception e) {
+					}
+				}
+				
+				try {
+					conn.setAutoCommit(true);
+				} catch (Exception e2) {
+				}
+			}
+			
+			
+		}
+		
+		//참여자 테이블 등록 
+		public void insertEmployee(ProjectDTO dto)  {
+			PreparedStatement pstmt = null;
+			String sql;
+			
+			try {
 				//참여자 테이블 등록 (참여자 목록만큼 돌려줌)
 
-				for(int i=0; i<dto.getPj_id().length(); i++) {
 					sql = "INSERT INTO Project_join(pj_code, id, pj_role ) "
 							+ " 	VALUES(pd_seq.CURRVAL, ?, '참여자') ";
 					
 					pstmt =conn.prepareStatement(sql);
 					pstmt.setString(1, dto.getPj_id());
 					
+					pstmt.executeUpdate();
+					
 					pstmt.close();
 					pstmt = null;
 
-				}
-				
+
 				conn.commit();
 				
 				
-			} catch (Exception e) {
+			} catch (SQLException e) {
 				e.printStackTrace();
 			
 			} finally {

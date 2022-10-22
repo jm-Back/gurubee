@@ -88,12 +88,14 @@ public class ProjectServlet extends MyServlet{
 		
 		HttpSession session = req.getSession();
 		SessionInfo info = (SessionInfo)session.getAttribute("member");
+
 		
 		String cp = req.getContextPath();
-		if(req.getMethod().equalsIgnoreCase("GET")) {
+		/*if(req.getMethod().equalsIgnoreCase("GET")) {
 			resp.sendRedirect(cp + "/project/list.do");
 			return ;
-		}
+		} */
+		
 		
 		try {
 			
@@ -101,6 +103,8 @@ public class ProjectServlet extends MyServlet{
 			
 			//사원 테이블 정보는 session 에 있죠
 			dto.setId_p(info.getId());
+			
+			System.out.println("dd");
 			
 			dto.setPro_name(req.getParameter("pro_name"));
 			dto.setPro_type(req.getParameter("pro_type"));
@@ -110,11 +114,14 @@ public class ProjectServlet extends MyServlet{
 			dto.setPro_sdate(req.getParameter("pro_sdate"));
 			dto.setPro_edate(req.getParameter("pro_edate"));
 			
-			dto.setPj_id(req.getParameter("pj_id"));
-			
-			//파라미터들 넘겨서 dao 실행하기
+			String str[] = req.getParameterValues("pj_id");
+				
 			dao.insertProject(dto);
 			
+			for(int i=0; i<str.length; i++) {
+				dto.setPj_id(str[i]);
+				dao.insertEmployee(dto);
+			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();
