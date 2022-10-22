@@ -56,8 +56,8 @@ public class ProjectServlet extends MyServlet{
 	}
 
 	private void projectWriteForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
 		//프로젝트 작성폼
+		
 		ProjectDAO dao = new ProjectDAO();
 		
 		try {
@@ -81,6 +81,7 @@ public class ProjectServlet extends MyServlet{
 		
 	}
 
+	
 	private void projectSubmit(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		// 프로젝트 등록하기
 		
@@ -95,8 +96,7 @@ public class ProjectServlet extends MyServlet{
 			resp.sendRedirect(cp + "/project/list.do");
 			return ;
 		} */
-		
-		
+
 		try {
 			
 			ProjectDTO dto = new ProjectDTO();

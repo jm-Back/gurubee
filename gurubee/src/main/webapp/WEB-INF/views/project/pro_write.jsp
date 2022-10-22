@@ -101,15 +101,8 @@ $(function(){
 		console.log("하하");
 		//$(this).parent().remove();
 		//$(this).remove();
-	
 	});
-	
-	
-	
 });
-
-
-
 
 
 function itemMove(pos) {
