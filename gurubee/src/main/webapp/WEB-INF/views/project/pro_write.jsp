@@ -80,11 +80,13 @@ $(function(){
 	$("#employee").click(function(){
 
 		var employeeList = $("#selectEmployee option").get();
+		var data_e = $("#selectEmployee option:selected").val();
 
 		$(".e_e").empty();
 		for(var i=0; i<employeeList.length; i++){
  			
-			$(".e_e").append("<div class='delete_emp' name='pj_id' value = '" + employeeList[i].value + "' >" + employeeList[i].innerHTML + " <i class='fa-solid fa-xmark fa-padding' id='deleteEmp'></i></div>");
+			$(".e_e").append("<div class='delete_emp' name='employee_name' value = '" + employeeList[i].value + "' >" + employeeList[i].innerHTML + " <i class='fa-solid fa-xmark fa-padding' id='deleteEmp'></i></div>");
+			$(".e_e").append("<input type='hidden' name='pj_id' value = '" + employeeList[i].value + "' >");
 			
 		}
 		
@@ -231,7 +233,7 @@ function sendOk(){
 				<td>프로젝트 총괄자</td>
 				<td>
 					<input type="text" name="pro_master_name">
-					<input type="text" name="pro_master">
+					<input type="hidden" name="pro_master">
 					<button type="button" class="att_master_btn">선택하기</button>
 				</td>
 			</tr>

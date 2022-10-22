@@ -133,7 +133,7 @@ public class ProjectDAO {
 		}
 		
 		// 프로젝트 등록하기
-		public void insertProject(ProjectDTO dto)  {
+		public void insertProject(ProjectDTO dto) throws SQLException  {
 			PreparedStatement pstmt = null;
 			String sql;
 			
@@ -175,14 +175,17 @@ public class ProjectDAO {
 				
 				pstmt.executeUpdate();
 				
-				pstmt.close();
-				pstmt = null;
-				
 				conn.commit();
 				
 				
 			} catch (SQLException e) {
+				try {
+					conn.rollback();
+				} catch (Exception e2) {
+				}
+				
 				e.printStackTrace();
+				throw e;
 			
 			} finally {
 				if(pstmt !=null) {
@@ -209,20 +212,14 @@ public class ProjectDAO {
 			try {
 				//참여자 테이블 등록 (참여자 목록만큼 돌려줌)
 
-					sql = "INSERT INTO Project_join(pj_code, id, pj_role ) "
-							+ " 	VALUES(pd_seq.CURRVAL, ?, '참여자') ";
+					sql = "INSERT INTO Project_join(pj_code, pd_code, id, pj_role ) "
+							+ " 	VALUES(pj_seq.NEXTVAL , pd_seq.CURRVAL, ?, '참여자') ";
 					
 					pstmt =conn.prepareStatement(sql);
 					pstmt.setString(1, dto.getPj_id());
 					
 					pstmt.executeUpdate();
 					
-					pstmt.close();
-					pstmt = null;
-
-
-				conn.commit();
-				
 				
 			} catch (SQLException e) {
 				e.printStackTrace();
