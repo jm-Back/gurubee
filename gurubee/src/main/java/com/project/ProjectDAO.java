@@ -4,6 +4,7 @@ import java.sql.Connection;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import com.util.DBConn;
 
 public class ProjectDAO {
 	private Connection conn = DBConn.getConnection();
-	
+
 	//---------------
 	//프로젝트 참여자 모두 가져오기
 	public List<ProjectDTO> listemployee() {
@@ -131,8 +132,50 @@ public class ProjectDAO {
 			return list;
 		}
 		
+		public String listProject_master(ProjectDTO dto) {
+			String result = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql;
+			
+			try {
+				
+				sql = " SELECT name FROM Employee "
+						+ " WHERE id = (SELECT pro_master FROM Project WHERE pro_code = ?)"; 
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, dto.getPro_code());
+				
+				rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					result = rs.getString(1); 
+				}
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if(rs !=null) {
+					try {
+						rs.close();
+					} catch (Exception e2) {
+					}
+				}
+				
+				if(pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (Exception e2) {
+					}
+				}
+			}
+			
+			return result;
+		}
 		
-		public void insertProject(ProjectDTO dto)  {
+		// 프로젝트 등록하기
+		public void insertProject(ProjectDTO dto) throws SQLException  {
 			PreparedStatement pstmt = null;
 			String sql;
 			
@@ -141,7 +184,7 @@ public class ProjectDAO {
 				conn.setAutoCommit(false);
 				
 				//프로젝트 등록
-				sql = "INSERT INTO Project(pro_code, id, pro_name, pro_clear, pro_type, pro_master, pro_outline "
+				sql = "INSERT INTO Project(pro_code, id, pro_name, pro_clear, pro_type, pro_master, pro_outline, "
 						+ " pro_content, pro_sdate, pro_edate ) "
 						+ " VALUES(pro_seq.NEXTVAL, ?, ?, '진행중', ?, ?, ?, ?, ?, ? ) ";
 			
@@ -177,24 +220,53 @@ public class ProjectDAO {
 				pstmt.close();
 				pstmt = null;
 				
+				conn.commit();
+				
+				
+			} catch (SQLException e) {
+				try {
+					conn.rollback();
+				} catch (Exception e2) {
+				}
+				
+				e.printStackTrace();
+				throw e;
+			
+			} finally {
+				if(pstmt !=null) {
+					try {
+						pstmt.close();
+					} catch (Exception e) {
+					}
+				}
+				
+				try {
+					conn.setAutoCommit(true);
+				} catch (Exception e2) {
+				}
+			}
+			
+			
+		}
+		
+		//참여자 테이블 등록 
+		public void insertEmployee(ProjectDTO dto)  {
+			PreparedStatement pstmt = null;
+			String sql;
+			
+			try {
 				//참여자 테이블 등록 (참여자 목록만큼 돌려줌)
 
-				for(int i=0; i<dto.getPj_id().length(); i++) {
-					sql = "INSERT INTO Project_join(pj_code, id, pj_role ) "
-							+ " 	VALUES(pd_seq.CURRVAL, ?, '참여자') ";
+					sql = "INSERT INTO Project_join(pj_code, pd_code, id, pj_role ) "
+							+ " 	VALUES(pj_seq.NEXTVAL , pd_seq.CURRVAL, ?, '참여자') ";
 					
 					pstmt =conn.prepareStatement(sql);
 					pstmt.setString(1, dto.getPj_id());
 					
-					pstmt.close();
-					pstmt = null;
-
-				}
+					pstmt.executeUpdate();
+					
 				
-				conn.commit();
-				
-				
-			} catch (Exception e) {
+			} catch (SQLException e) {
 				e.printStackTrace();
 			
 			} finally {
@@ -213,10 +285,122 @@ public class ProjectDAO {
 			
 			
 		}
+		
+		
+		//1. 내 프로젝트 갯수 모두 가져오기
+		public int dataCount(ProjectDTO dto) {
+			int result = 0;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql;
+			
+			try {
+				
+				//내 사번으로 참여자 중인 프로젝트 갯수
+				sql = "SELECT COUNT(*) FROM Project_join "
+						+ " WHERE id = ? ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, dto.getPj_id());
+				
+				rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					result = rs.getInt(1);
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if(rs !=null) {
+					try {
+						rs.close();
+					} catch (Exception e2) {
+					}
+				}
+				
+				if(pstmt !=null) {
+					try {
+						pstmt.close();
+					} catch (Exception e2) {
+					}
+				}
+			}
+			
+			return result;
+		}
 	
 	
-	
-	
+		// ** 내가 참여자인 프로젝트 리스트
+		public List<ProjectDTO> listProject(ProjectDTO dto){
+			List<ProjectDTO> list = new ArrayList<>();
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql;
+			
+			try {
+				
+				//내 사번으로 연관된 프로젝트 리스트
+				sql = " SELECT E.name, A.pro_code, A.id id_p, A.pro_name, A.pro_clear, A.pro_type, A.pro_master, A.pro_outline, A.pro_content, A.pro_sdate, A.pro_edate "
+						+ "	, B.pd_part, B.pd_ing, C.id pj_id, C.pj_role "
+						+ "	FROM Employee E "
+						+ " JOIN project A ON A.pro_master = E.id "
+						+ "	JOIN project_detail B ON A.pro_code = B.pro_code "
+						+ "	JOIN project_join C ON B.pd_code = C.pd_code "
+						+ "	WHERE C.id = ? "
+						+ "	ORDER BY A.pro_sdate DESC ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, dto.getPj_id());
+				
+				rs = pstmt.executeQuery();
+				
+				while(rs.next()) {
+					ProjectDTO dto2 = new ProjectDTO();
+					
+					dto2.setName_p(rs.getString("name"));
+					dto2.setPro_code(rs.getString("pro_code"));
+					dto2.setId_p(rs.getString("id_p")); //작성한사람의 사번
+					dto2.setPro_name(rs.getString("pro_name"));
+					dto2.setPro_clear(rs.getString("pro_clear"));
+					dto2.setPro_type(rs.getString("pro_type"));
+					dto2.setPro_master(rs.getString("pro_master"));
+					dto2.setPro_outline(rs.getString("pro_outline"));
+					dto2.setPro_content(rs.getString("pro_content"));
+					dto2.setPro_sdate(rs.getDate("pro_sdate").toString());
+					dto2.setPro_edate(rs.getDate("pro_edate").toString());
+					dto2.setPd_part(rs.getInt("pd_part"));
+					dto2.setPd_ing(rs.getInt("pd_ing"));
+					dto2.setPj_id(rs.getString("pj_id"));
+					dto2.setPj_role(rs.getString("pj_role"));
+					
+					list.add(dto2);
+				}
+				
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if(rs != null) {
+					try {
+						rs.close();
+					} catch (Exception e2) {
+					}
+				}
+				
+				if(pstmt !=null) {
+					try {
+						pstmt.close();
+					} catch (Exception e2) {
+					}
+				}
+			}
+
+			return list;
+		}
+		
 	
 	
 	

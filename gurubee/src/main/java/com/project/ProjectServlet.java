@@ -2,6 +2,7 @@ package com.project;
 
 import java.io.IOException;
 
+
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import com.login.SessionInfo;
 import com.util.MyServlet;
 
+
 @WebServlet("/project/*")
 public class ProjectServlet extends MyServlet{
 	private static final long serialVersionUID = 1L;
@@ -22,8 +24,16 @@ public class ProjectServlet extends MyServlet{
 	protected void execute(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		req.setCharacterEncoding("utf-8");
 		
-		String uri = req.getRequestURI();
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
 		
+		if(info == null) {
+			String cp = req.getContextPath();
+			resp.sendRedirect(cp+"/member/login.do");;
+			return;
+		}
+		
+		String uri = req.getRequestURI();
 		if(uri.indexOf("list.do") != - 1) {
 			projectForm(req, resp);
 		} else if(uri.indexOf("write.do") != -1) {
@@ -49,15 +59,41 @@ public class ProjectServlet extends MyServlet{
 	
 
 	private void projectForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
 		//프로젝트 메인 리스트
+		ProjectDAO dao = new ProjectDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+
+		try {
+			
+			ProjectDTO dto = new ProjectDTO();
+			
+			//내 사번
+			dto.setPj_id(info.getId());
+			//데이터 개수
+			int dataCount = dao.dataCount(dto);
+			
+			//프로젝트 가져오기
+			List<ProjectDTO> list = null;
+			list = dao.listProject(dto);
+			
+			//포워딩할 JSP 에 넘길 속성
+			req.setAttribute("list", list);
+			req.setAttribute("dataCount", dataCount);
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		forward(req, resp, "/WEB-INF/views/project/pro_main.jsp");
 		
 	}
 
 	private void projectWriteForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
 		//프로젝트 작성폼
+		
 		ProjectDAO dao = new ProjectDAO();
 		
 		try {
@@ -81,6 +117,7 @@ public class ProjectServlet extends MyServlet{
 		
 	}
 
+	
 	private void projectSubmit(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		// 프로젝트 등록하기
 		
@@ -88,20 +125,21 @@ public class ProjectServlet extends MyServlet{
 		
 		HttpSession session = req.getSession();
 		SessionInfo info = (SessionInfo)session.getAttribute("member");
+
 		
 		String cp = req.getContextPath();
 		if(req.getMethod().equalsIgnoreCase("GET")) {
 			resp.sendRedirect(cp + "/project/list.do");
-			return ;
-		}
-		
+			return;
+		} 
+
 		try {
 			
 			ProjectDTO dto = new ProjectDTO();
 			
 			//사원 테이블 정보는 session 에 있죠
 			dto.setId_p(info.getId());
-			
+	
 			dto.setPro_name(req.getParameter("pro_name"));
 			dto.setPro_type(req.getParameter("pro_type"));
 			dto.setPro_master(req.getParameter("pro_master"));
@@ -110,11 +148,14 @@ public class ProjectServlet extends MyServlet{
 			dto.setPro_sdate(req.getParameter("pro_sdate"));
 			dto.setPro_edate(req.getParameter("pro_edate"));
 			
-			dto.setPj_id(req.getParameter("pj_id"));
+			String str[] = req.getParameterValues("pj_id");
 			
-			//파라미터들 넘겨서 dao 실행하기
 			dao.insertProject(dto);
 			
+			for(int i=0; i<str.length; i++) {
+				dto.setPj_id(str[i]);
+				dao.insertEmployee(dto);
+			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();
