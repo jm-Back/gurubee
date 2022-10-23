@@ -105,123 +105,37 @@
 	</form>
 </div>
 	
+<form action="${pageContext.request.contextPath}/project/list.do" name="projectList" method="post">
 	<div class="container mt-5 mb-3 pt-3 pb-3" style="background-color: #eee;">
 		<div class="row">
+		<c:forEach var="dto" items="${list}" varStatus="status">
 			<div class="col-md-4">
 				<div class="card p-3 mb-4">
 					<div class="d-flex justify-content-between">
 						<div class="d-flex flex-row align-items-center">
 							<div class="p_photo"><i class="fa-solid fa-heart"></i></div>
 							<div class="ms-2 p-details">
-								<h6 class="mb-0">담당자명</h6> <span>프로젝트 시작~종료일</span>
+								<h6 class="mb-0">${dto.pro_master}</h6> <span>${dto.pro_sdate} ~ ${dto.pro_edate}</span>
 							</div>
 						</div>
-						<div class="p_state"><span>진행중</span></div>
+						<div class="p_state"><span>${dto.pro_clear}</span></div>
 					</div>
 					<div class="mt-5">
-						<h3 class="heading">마케팅 프로젝트 이름</h3>
+						<h3 class="heading">${dto.pro_name}</h3>
 						<div class="mt-5">
 							<div class="progress">
-								<div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+								<div class="progress-bar" role="progressbar" style="width: ${dto.pd_ing}%" aria-valuenow="${dto.pd_ing}" aria-valuemin="0" aria-valuemax="100"></div>
 							</div>
-							<div class="mt-3"><span class="text1">프로젝트 분류</span>  <span class="text2">[참여자목록]</span></div>
+							<div class="mt-3"><span class="text1">${dto.pro_type}</span>  <span class="text2">[참여자목록]</span></div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="col-md-4">
-				<div class="card p-3 mb-2">
-					<div class="d-flex justify-content-between">
-						<div class="d-flex flex-row align-items-center">
-							<div class="p_photo"><i class="fa-solid fa-heart"></i></div>
-							<div class="ms-2 p-details">
-								<h6 class="mb-0">담당자명</h6> <span>프로젝트 시작~종료일</span>
-							</div>
-						</div>
-						<div class="p_state"><span>진행중</span></div>
-					</div>
-					<div class="mt-5">
-						<h3 class="heading">마케팅 프로젝트 이름</h3>
-						<div class="mt-5">
-							<div class="progress">
-								<div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-							</div>
-							<div class="mt-3"><span class="text1">프로젝트 분류</span>  <span class="text2">참여자목록</span></div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-4">
-				<div class="card p-3 mb-2">
-					<div class="d-flex justify-content-between">
-						<div class="d-flex flex-row align-items-center">
-							<div class="p_photo"><i class="fa-solid fa-heart"></i></div>
-							<div class="ms-2 p-details">
-								<h6 class="mb-0">담당자명</h6> <span>프로젝트 시작~종료일</span>
-							</div>
-						</div>
-						<div class="p_state"><span>진행중</span></div>
-					</div>
-					<div class="mt-5">
-						<h3 class="heading">마케팅 프로젝트 이름</h3>
-						<div class="mt-5">
-							<div class="progress">
-								<div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-							</div>
-							<div class="mt-3"><span class="text1">프로젝트 분류</span>  <span class="text2">참여자목록</span></div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-4">
-				<div class="card p-3 mb-2">
-					<div class="d-flex justify-content-between">
-						<div class="d-flex flex-row align-items-center">
-							<div class="p_photo"><i class="fa-solid fa-heart"></i></div>
-							<div class="ms-2 p-details">
-								<h6 class="mb-0">담당자명</h6> <span>프로젝트 시작~종료일</span>
-							</div>
-						</div>
-						<div class="p_state"><span>진행중</span></div>
-					</div>
-					<div class="mt-5">
-						<h3 class="heading">마케팅 프로젝트 이름</h3>
-						<div class="mt-5">
-							<div class="progress">
-								<div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-							</div>
-							<div class="mt-3"><span class="text1">프로젝트 분류</span>  <span class="text2">참여자목록</span></div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-4">
-				<div class="card p-3 mb-2">
-					<div class="d-flex justify-content-between">
-						<div class="d-flex flex-row align-items-center">
-							<div class="p_photo"><i class="fa-solid fa-heart"></i></div>
-							<div class="ms-2 p-details">
-								<h6 class="mb-0">담당자명</h6> <span>프로젝트 시작~종료일</span>
-							</div>
-						</div>
-						<div class="p_state"><span>진행중</span></div>
-					</div>
-					<div class="mt-5">
-						<h3 class="heading">마케팅 프로젝트 이름</h3>
-						<div class="mt-5">
-							<div class="progress">
-								<div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-							</div>
-							<div class="mt-3"><span class="text1">프로젝트 분류</span>  <span class="text2">참여자목록</span></div>
-						</div>
-					</div>
-				</div>
-			</div>
+		</c:forEach>
+		
 		</div>
-
-	
-</div>	
-
+	</div>	
+</form>
 
 	</main>
 	<footer>

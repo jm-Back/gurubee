@@ -191,7 +191,7 @@ function sendOk(){
 	
 	<!-- 프로젝트 등록화면 -->
 <div class="container">
-	<form name="projectForm">
+	<form name="projectForm" method="post">
 		<div>프로젝트 등록</div>
 		<table> 
 			<tr>
@@ -258,16 +258,13 @@ function sendOk(){
 					<div class="e_e" id="emlist"></div>
 				</td>
 			</tr>
-		</table>
-	</form>
-</div>	
-	
-	
+		</table>	
 	<div class="container" style="text-align: center;">
 		<button type="button" onclick="sendOk();">등록하기</button>
 		<button type="button">취소하기</button>
 	</div>
-	
+	</form>
+</div>	
 	
 
 	
