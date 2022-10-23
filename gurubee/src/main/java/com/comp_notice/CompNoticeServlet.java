@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,11 +16,11 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 import com.login.SessionInfo;
-import com.util.MyServlet;
 import com.util.MyUploadServlet;
 import com.util.MyUtil;
 import com.util.MyUtilBootstrap;
 
+@MultipartConfig
 @WebServlet("/comp_notice/*")
 public class CompNoticeServlet extends MyUploadServlet {
 	// 전체 공지사항 게시판 서블릿
@@ -39,6 +40,7 @@ public class CompNoticeServlet extends MyUploadServlet {
 		
 		if(info == null) {//  로그인이 안 되어 있을 경우, 로그인 화면으로
 			forward(req, resp, "/WEB-INF/views/member/login.jsp");
+			return;
 		}
 		
 		// 파일을 저장할 경로
@@ -51,6 +53,8 @@ public class CompNoticeServlet extends MyUploadServlet {
 			writeForm(req,resp);
 		} else if(uri.indexOf("write_ok.do") != -1) {
 			writeSubmit(req, resp);
+		} else if(uri.indexOf("article.do") != -1) {
+			article(req, resp);
 		}
 		
 	}
@@ -174,15 +178,16 @@ public class CompNoticeServlet extends MyUploadServlet {
 		}
 		
 		try {
-			
+		
 			CompNoticeDTO dto = new CompNoticeDTO();
 			
 			dto.setWriter_id(info.getId());
-			dto.setWriter_name(info.getName());
 			
 			dto.setNotice_title(req.getParameter("notice_title"));
 			dto.setNotice_content(req.getParameter("notice_content"));
 			
+			
+
 			// 파일정보
 			Part p = req.getPart("selectFile");
 			Map<String, String> map = doFileUpload(p, pathname);
@@ -193,8 +198,8 @@ public class CompNoticeServlet extends MyUploadServlet {
 				dto.setSave_filename(saveFilename);
 				dto.setOri_filename(originalFilename);
 				
-				
 			}
+			
 			
 			dao.insertcompNotice(dto);
 			
@@ -202,7 +207,16 @@ public class CompNoticeServlet extends MyUploadServlet {
 			e.printStackTrace();
 		}
 		
-		resp.sendRedirect(cp + "/comp_notice/list.jsp");
+		resp.sendRedirect(cp + "/comp_notice/list.do");
+	}
+	
+	protected void article(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// 공지사항 보기
+		CompNoticeDAO dao = new CompNoticeDAO();
+		
+		String cp = req.getContextPath();
+		
+		
 	}
 
 }

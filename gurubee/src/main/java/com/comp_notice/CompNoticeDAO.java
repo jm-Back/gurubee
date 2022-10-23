@@ -28,6 +28,8 @@ public class CompNoticeDAO {
 			pstmt.setString(1, dto.getNotice_title());
 			pstmt.setString(2, dto.getNotice_content());
 			pstmt.setString(3, dto.getWriter_id());
+			System.out.println(dto.getNotice_title());
+			System.out.println(dto.getNotice_content());
 			
 			pstmt.executeUpdate();
 			
@@ -58,7 +60,11 @@ public class CompNoticeDAO {
 					
 				}
 			}
-			conn.setAutoCommit(true);
+			try {
+				conn.setAutoCommit(true);
+			} catch (Exception e2) {
+				
+			}
 		}
 	}
 	

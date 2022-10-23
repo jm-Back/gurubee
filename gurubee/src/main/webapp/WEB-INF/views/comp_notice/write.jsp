@@ -33,20 +33,34 @@ function check() {
 	
 	if(!str) {
 		alert("제목을 입력하세요.");
-		f.notice_title.focus()
+		f.notice_title.focus();
 		return false;
 	}
 	
 	str = f.notice_content.value.trim();
 	
-	if(!str) {
+	if(!str || str === "<p><br></p>") {
+		alert("내용을 입력하세요.");
 		f.notice_content.focus();
 		return false;
 	}
-	
+	 
 	f.action = "${pageContext.request.contextPath}/comp_notice/${mode}_ok.do";
-	f.submit();
+	
+	return true;
+	
 }
+
+<c:if test="${mode=='update'}">
+	function deleteFile(num) {
+		if( !confirm("파일을 삭제하시겠습니까 ?") ) {
+			return;
+		}
+		let url = "${pageContext.request.contextPath}/comp_notice/deleteFile.do?num=" + num + "&page=${page}";
+		location.href = url;
+	}
+</c:if>	
+
 </script>
 </head>
 <body>
@@ -69,7 +83,7 @@ function check() {
 						<tr>
 							<td class="table-light col-sm-2" scope="row">제 목</td>
 							<td>
-								<input type="text" name="notice_title" class="form-control" value="${dto.subject}">
+								<input type="text" name="notice_title" class="form-control" value="${dto.notice_title}">
 							</td>
 						</tr>
 	        
@@ -83,7 +97,7 @@ function check() {
 						<tr>
 							<td class="table-light col-sm-2" scope="row">내 용</td>
 							<td>
-								<textarea name="notice_content" id="ir1" class="form-control" style="width: 95%; height: 270px;">${dto.content}</textarea>
+								<textarea name="notice_content" id="ir1" class="form-control" style="width: 95%; height: 270px;">${dto.notice_content}</textarea>
 							</td>
 						</tr>
 						
@@ -100,7 +114,7 @@ function check() {
 									<p class="form-control-plaintext">
 										<c:if test="${not empty dto.save_Filename}">
 											<a href="javascript:deleteFile('${dto.num}');"><i class="bi bi-trash"></i></a>
-											${dto.originalFilename}
+											${dto.ori_filename}
 										</c:if>
 										&nbsp;
 									</p>
@@ -144,7 +158,9 @@ nhn.husky.EZCreator.createInIFrame({
 function submitContents(elClickedObj) {
 	 oEditors.getById["ir1"].exec("UPDATE_CONTENTS_FIELD", []);
 	 try {
-		// elClickedObj.form.submit();
+		 
+		 // elClickedObj.form.submit();
+		 
 		return check();
 	} catch(e) {
 	}
