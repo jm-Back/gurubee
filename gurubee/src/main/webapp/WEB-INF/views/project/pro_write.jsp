@@ -84,10 +84,9 @@ $(function(){
 
 		$(".e_e").empty();
 		for(var i=0; i<employeeList.length; i++){
- 			
-			$(".e_e").append("<div class='delete_emp' name='employee_name' value = '" + employeeList[i].value + "' >" + employeeList[i].innerHTML + " <i class='fa-solid fa-xmark fa-padding' id='deleteEmp'></i></div>");
-			$(".e_e").append("<input type='hidden' name='pj_id' value = '" + employeeList[i].value + "' >");
 			
+				$(".e_e").append("<div class='delete_emp' name='employee_name' value = '" + employeeList[i].value + "' >" + employeeList[i].innerHTML + 
+						" <i class='fa-solid fa-xmark fa-padding'></i><input type='hidden' name='pj_id' value = '" + employeeList[i].value + "'></div>");
 		}
 		
 		$("#attend_Modal1").modal("hide");
@@ -96,13 +95,20 @@ $(function(){
 	
 	//참여자 삭제 버튼
 	$(".delete_emp").click(function(){
-		//var index = $(this).attr("id");
-		//tag[id] = "";
 		console.log("하하");
-		//$(this).parent().remove();
-		//$(this).remove();
+		$(this).remove();
 	});
 });
+
+//참여자 삭제 버튼 인덱스
+$(document).on("click", ".delete_emp", (e) => {
+  const index = $(e.target).index();
+  
+  $(".delete_emp").eq(index).remove();
+  console.log(index);
+  
+});
+
 
 
 function itemMove(pos) {
@@ -205,9 +211,9 @@ function sendOk(){
 			<tr>
 				<td>프로젝트 종류</td>
 				<td>
-					<input type="checkbox" onclick="clickCheck(this)" name="pro_type" value="DEPT"> DEPT
-					<input type="checkbox" onclick="clickCheck(this)" name="pro_type" value="TEAM"> TEAM
-					<input type="checkbox" onclick="clickCheck(this)" name="pro_type" value="TFT"> TFT
+					<input type="checkbox" onclick="clickCheck(this)" name="pro_type" value="DEPT"> 부서 프로젝트
+					<input type="checkbox" onclick="clickCheck(this)" name="pro_type" value="TEAM"> 개인 프로젝트
+					<input type="checkbox" onclick="clickCheck(this)" name="pro_type" value="TFT"> 협업 프로젝트
 				</td>
 			</tr>
 			<tr>

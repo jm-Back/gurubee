@@ -71,15 +71,12 @@ public class ProjectServlet extends MyServlet{
 			
 			//내 사번
 			dto.setPj_id(info.getId());
-
 			//데이터 개수
 			int dataCount = dao.dataCount(dto);
 			
 			//프로젝트 가져오기
 			List<ProjectDTO> list = null;
 			list = dao.listProject(dto);
-			
-			
 			
 			//포워딩할 JSP 에 넘길 속성
 			req.setAttribute("list", list);
@@ -143,7 +140,6 @@ public class ProjectServlet extends MyServlet{
 			//사원 테이블 정보는 session 에 있죠
 			dto.setId_p(info.getId());
 	
-			
 			dto.setPro_name(req.getParameter("pro_name"));
 			dto.setPro_type(req.getParameter("pro_type"));
 			dto.setPro_master(req.getParameter("pro_master"));

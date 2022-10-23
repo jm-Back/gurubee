@@ -13,7 +13,7 @@ import com.util.DBConn;
 
 public class ProjectDAO {
 	private Connection conn = DBConn.getConnection();
-	
+
 	//---------------
 	//프로젝트 참여자 모두 가져오기
 	public List<ProjectDTO> listemployee() {
@@ -132,6 +132,48 @@ public class ProjectDAO {
 			return list;
 		}
 		
+		public String listProject_master(ProjectDTO dto) {
+			String result = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql;
+			
+			try {
+				
+				sql = " SELECT name FROM Employee "
+						+ " WHERE id = (SELECT pro_master FROM Project WHERE pro_code = ?)"; 
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, dto.getPro_code());
+				
+				rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					result = rs.getString(1); 
+				}
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if(rs !=null) {
+					try {
+						rs.close();
+					} catch (Exception e2) {
+					}
+				}
+				
+				if(pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (Exception e2) {
+					}
+				}
+			}
+			
+			return result;
+		}
+		
 		// 프로젝트 등록하기
 		public void insertProject(ProjectDTO dto) throws SQLException  {
 			PreparedStatement pstmt = null;
@@ -174,6 +216,9 @@ public class ProjectDAO {
 				pstmt.setString(2, dto.getPro_edate()); //마지막도 마찬가지
 				
 				pstmt.executeUpdate();
+				
+				pstmt.close();
+				pstmt = null;
 				
 				conn.commit();
 				
@@ -287,23 +332,24 @@ public class ProjectDAO {
 		}
 	
 	
-		//내가 참여자인 프로젝트 리스트
+		// ** 내가 참여자인 프로젝트 리스트
 		public List<ProjectDTO> listProject(ProjectDTO dto){
 			List<ProjectDTO> list = new ArrayList<>();
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			String sql;
 			
-			
 			try {
+				
 				//내 사번으로 연관된 프로젝트 리스트
-				sql = " SELECT A.pro_code, A.id id_p, A.pro_name, A.pro_clear, A.pro_type, A.pro_master, A.pro_outline, A.pro_content, A.pro_sdate, A.pro_edate "
-						+ " , B.pd_part, B.pd_ing, C.id pj_id, C.pj_role "
-						+ " FROM project A "
-						+ " JOIN project_detail B ON A.pro_code = B.pro_code "
-						+ " JOIN project_join C ON B.pd_code = C.pd_code "
-						+ " WHERE C.id = ? "
-						+ " ORDER BY A.pro_sdate DESC ";
+				sql = " SELECT E.name, A.pro_code, A.id id_p, A.pro_name, A.pro_clear, A.pro_type, A.pro_master, A.pro_outline, A.pro_content, A.pro_sdate, A.pro_edate "
+						+ "	, B.pd_part, B.pd_ing, C.id pj_id, C.pj_role "
+						+ "	FROM Employee E "
+						+ " JOIN project A ON A.pro_master = E.id "
+						+ "	JOIN project_detail B ON A.pro_code = B.pro_code "
+						+ "	JOIN project_join C ON B.pd_code = C.pd_code "
+						+ "	WHERE C.id = ? "
+						+ "	ORDER BY A.pro_sdate DESC ";
 				
 				pstmt = conn.prepareStatement(sql);
 				
@@ -314,6 +360,7 @@ public class ProjectDAO {
 				while(rs.next()) {
 					ProjectDTO dto2 = new ProjectDTO();
 					
+					dto2.setName_p(rs.getString("name"));
 					dto2.setPro_code(rs.getString("pro_code"));
 					dto2.setId_p(rs.getString("id_p")); //작성한사람의 사번
 					dto2.setPro_name(rs.getString("pro_name"));
@@ -331,6 +378,7 @@ public class ProjectDAO {
 					
 					list.add(dto2);
 				}
+				
 				
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -352,7 +400,6 @@ public class ProjectDAO {
 
 			return list;
 		}
-		
 		
 	
 	

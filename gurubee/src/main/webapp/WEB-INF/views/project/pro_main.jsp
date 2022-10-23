@@ -115,7 +115,8 @@
 						<div class="d-flex flex-row align-items-center">
 							<div class="p_photo"><i class="fa-solid fa-heart"></i></div>
 							<div class="ms-2 p-details">
-								<h6 class="mb-0">${dto.pro_master}</h6> <span>${dto.pro_sdate} ~ ${dto.pro_edate}</span>
+								<input type="hidden" value="${dto.pro_code}"> 
+								<h6 class="mb-0">${dto.name_p}</h6> <span>${dto.pro_sdate} ~ ${dto.pro_edate}</span>
 							</div>
 						</div>
 						<div class="p_state"><span>${dto.pro_clear}</span></div>
