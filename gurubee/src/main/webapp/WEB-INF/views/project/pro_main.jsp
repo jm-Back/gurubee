@@ -43,7 +43,7 @@
     font-size: 39px
 };
 
-.p_state span {
+.p_state {
     background-color: #fffbec;
     width: 60px;
     height: 25px;
@@ -119,11 +119,12 @@
 								<h6 class="mb-0">${dto.name_p}</h6> <span>${dto.pro_sdate} ~ ${dto.pro_edate}</span>
 							</div>
 						</div>
-						<div class="p_state"><span>${dto.pro_clear}</span></div>
+						<div class="p_state"><div>${dto.pro_clear}</div></div>
 					</div>
 					<div class="mt-5">
 						<h3 class="heading">${dto.pro_name}</h3>
-						<div class="mt-5">
+						<div class="mt-3">
+							<p style="color: #404040;">${dto.pro_outline}</p>
 							<div class="progress">
 								<div class="progress-bar" role="progressbar" style="width: ${dto.pd_ing}%" aria-valuenow="${dto.pd_ing}" aria-valuemin="0" aria-valuemax="100"></div>
 							</div>
