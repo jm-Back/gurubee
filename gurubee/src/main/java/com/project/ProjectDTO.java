@@ -50,9 +50,27 @@ public class ProjectDTO {
 	private String pd_sdate;
 	private String pd_edate;
 	
+	//프로젝트 작성자
+	private String pro_writer;
+	
+	public String getPro_writer() {
+		return pro_writer;
+	}
+	public void setPro_writer(String pro_writer) {
+		this.pro_writer = pro_writer;
+	}
+	public String getPj_name() {
+		return pj_name;
+	}
+	public void setPj_name(String pj_name) {
+		this.pj_name = pj_name;
+	}
+
 	//프로젝트 참여자
 	private String pj_code;
 	private String pj_id;
+	private String pj_name;
+	
 	public String getPj_id() {
 		return pj_id;
 	}

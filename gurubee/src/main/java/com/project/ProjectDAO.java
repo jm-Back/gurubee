@@ -402,24 +402,44 @@ public class ProjectDAO {
 			return list;
 		}
 		
-		public ProjectDTO readProject(String pro_code) {
+		public ProjectDTO readProject(String pro_code, String me_id) {
 			ProjectDTO dto = null;
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			String sql;
 			
 			try {
-				sql = " SELECT E.name, A.pro_code, A.id id_p, A.pro_name, A.pro_clear, A.pro_type, A.pro_master, A.pro_outline, A.pro_content, A.pro_sdate, A.pro_edate "
-						+ "	, B.pd_part, B.pd_code, B.pd_ing, C.id pj_id, C.pj_role "
-						+ "	FROM Employee E "
+				
+				//1.일단 프로젝트 읽기 (내 사번, 프로젝트 코드 필요)
+				sql = " SELECT E.name, "
+						+ " A.pro_code, A.id pro_writer, A.pro_name, A.pro_clear, A.pro_type, A.pro_master, A.pro_outline, A.pro_content, A.pro_sdate, A.pro_edate "
+						+ " FROM Employee E "
 						+ " JOIN project A ON A.pro_master = E.id "
-						+ "	JOIN project_detail B ON A.pro_code = B.pro_code "
-						+ "	JOIN project_join C ON B.pd_code = C.pd_code "
-						+ "	WHERE C.id = ? "
-						+ "	ORDER BY A.pro_sdate DESC ";
+						+ " JOIN project_detail B ON A.pro_code = B.pro_code "
+						+ " JOIN project_join C ON B.pd_code = C.pd_code "
+						+ " WHERE C.id = ? AND A.pro_code = ? "
+						+ " ORDER BY A.pro_sdate DESC ";
 				
+				pstmt = conn.prepareStatement(sql);
 				
-						
+				pstmt.setString(1, me_id);
+				pstmt.setString(2, pro_code);
+				
+				rs = pstmt.executeQuery();
+				while(rs.next()) {
+					dto = new ProjectDTO();
+					
+					dto.setPro_writer(rs.getString("pro_writer"));
+					dto.setPro_name(rs.getString("pro_name"));
+					dto.setPro_clear(rs.getString("pro_clear"));
+					dto.setPro_type(rs.getString("pro_type"));
+					dto.setPro_master(rs.getString("name"));
+					dto.setPro_outline(rs.getString("pro_outline"));
+					dto.setPro_content(rs.getString("pro_content"));
+					dto.setPro_sdate(rs.getDate("pro_sdate").toString());
+
+				}
+		
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
