@@ -68,6 +68,7 @@ a:link, a:visited {
 	
    
    		<!-- 마이페이지  /mypage/mypage.do -->
+   	<li><a href="${pageContext.request.contextPath}/mypage/mypage.do">마이페이지</a></li>
    <li><a href="${pageContext.request.contextPath}/mypage/mypage_write.do">개인정보 등록폼</a></li>
    		<!-- 개인정보 등록(DB저장) /mypage/mypage_ok -->
    <li><a href="${pageContext.request.contextPath}/mypage/mypage_write.do">개인정보 수정폼</a></li>
