@@ -74,11 +74,23 @@
     color: #a5aec0
 }
 
+.pointer {
+ 	cursor: pointer;
+}
 
 </style>
 
 <script type="text/javascript">
 
+//프로젝트별 article 로 넘어가기
+/*
+function insideProject() {
+	const f = document.projectList;
+	
+	f.action = "${pageContext.request.contextPath}/project/article.do?pro_code=${dto.pro_code}";
+	f.submit();
+	
+}; */
 
 </script>
 
@@ -98,7 +110,7 @@
 			
 		<!-- 프로젝트 메인 등록, 내용 -->
 <div class="container" > 프로젝트 메인 	
-	<form name="projectAdd">
+	<form name="projectAdd" method="post">
 		<div>
 			<button type="button" class="btn_projectAdd" onclick="location.href='${pageContext.request.contextPath}/project/write.do'"><i class="fa-solid fa-plus"></i> 새 프로젝트</button>
 		</div>
@@ -109,13 +121,14 @@
 	<div class="container mt-5 mb-3 pt-3 pb-3" style="background-color: #eee;">
 		<div class="row">
 		<c:forEach var="dto" items="${list}" varStatus="status">
-			<div class="col-md-4">
-				<div class="card p-3 mb-4">
+			<div class="col-md-4 ">
+				<div onclick="location.href='${pageContext.request.contextPath}/project/article.do?pro_code=${dto.pro_code}'" class="card p-3 mb-4 pointer">
 					<div class="d-flex justify-content-between">
 						<div class="d-flex flex-row align-items-center">
-							<div class="p_photo"><i class="fa-solid fa-heart"></i></div>
+							<div class="p_photo"></div>
 							<div class="ms-2 p-details">
 								<input type="hidden" value="${dto.pro_code}"> 
+								<input type="hidden" value="${dto.pd_code}">
 								<h6 class="mb-0">${dto.name_p}</h6> <span>${dto.pro_sdate} ~ ${dto.pro_edate}</span>
 							</div>
 						</div>

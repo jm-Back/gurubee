@@ -31,7 +31,7 @@
 .right { text-align: right; padding-right: 7px; }
 
 .e_e {padding-right: 10px;	}
-.delete_emp { cursor:pointer;  display:inline; border: 1px solid gray; border-radius: 30px; padding: 5px 10px; margin: 3px 3px;}
+.delete_emp { cursor:pointer;  display:inline-block; border: 1px solid gray; border-radius: 30px; padding: 5px 10px; margin: 3px 3px;}
 .fa-padding {padding-left: 10px; padding-top: 4px;}
 
 </style>
@@ -85,8 +85,8 @@ $(function(){
 		$(".e_e").empty();
 		for(var i=0; i<employeeList.length; i++){
 			
-				$(".e_e").append("<div class='delete_emp' name='employee_name' value = '" + employeeList[i].value + "' >" + employeeList[i].innerHTML + 
-						" <i class='fa-solid fa-xmark fa-padding'></i><input type='hidden' name='pj_id' value = '" + employeeList[i].value + "'></div>");
+				$(".e_e").append("<span class='delete_emp' name='employee_name' value = '" + employeeList[i].value + "' >" + employeeList[i].innerHTML + 
+						" <i class='fa-solid fa-xmark fa-padding'></i><input type='hidden' name='pj_id' value = '" + employeeList[i].value + "'></span>");
 		}
 		
 		$("#attend_Modal1").modal("hide");
@@ -184,11 +184,13 @@ function sendOk(){
 
 .form-holder {
       display: flex;
+      min-height: 700px;
+      max-width: 700px;
       flex-direction: column;
       justify-content: flex-start;
       align-items: center;
       text-align: center;
-      min-height: 700px;
+      margin: 0 auto;
 
 }
 
@@ -229,8 +231,26 @@ function sendOk(){
     margin-bottom: 30px;
 }
 
-.form-content input[type=text], .form-content input[type=date], .form-content input[type=email], .form-content select .form-content textarea  {
+.form-content input[type=text],  .form-content input[type=email], .form-content select .form-content textarea  {
     width: 100%;
+    padding: 9px 20px;
+    text-align: left;
+    border: 0;
+    outline: 0;
+    border-radius: 6px;
+    background-color: #fff;
+    font-size: 15px;
+    font-weight: 300;
+    color: #8D8D8D;
+    -webkit-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+    margin-top: 16px;
+}
+
+
+.form-content input[type=date] {
+	display: inline-block;
+	width: 80%;
     padding: 9px 20px;
     text-align: left;
     border: 0;
@@ -294,6 +314,11 @@ function sendOk(){
     color: #8D8D8D;
 }
 
+.design_date {
+ 	padding-left: 5px;
+ 	font-weight: 600;
+}
+
 </style>
 
 </head>
@@ -327,10 +352,14 @@ function sendOk(){
                             <label class="btn btn-sm btn-outline-secondary" for="together"> 협업 프로젝트 </label>
 							</div>
 							<div class="col-md-12">
+								<div class="design_date"> 프로젝트 시작일&nbsp;    
 								<input class="form-control" type="date" name="pro_sdate" placeholder="프로젝트 시작일">
+								</div>
 							</div>
 							<div class="col-md-12">
+								<div class="design_date"> 프로젝트 종료일&nbsp;   
 								<input class="form-control" type="date" name="pro_edate" placeholder="프로젝트 종료일">
+								</div>
 							</div>
 							<div class="col-md-12">
 								<input class="form-control" type="text" name="pro_name" placeholder="프로젝트명">
@@ -356,7 +385,8 @@ function sendOk(){
 							</div>
 							<div class="col-md-12">
 								<div class="form-control em_design" > 프로젝트 참여자
-									<div class="col-md-12 mt-3 e_e" id="emlist"></div>
+									<div class="mt-3 e_e" id="emlist">
+									</div>
 								</div>
 							</div>
 						</div>

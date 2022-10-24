@@ -126,7 +126,6 @@ public class ProjectServlet extends MyServlet{
 		HttpSession session = req.getSession();
 		SessionInfo info = (SessionInfo)session.getAttribute("member");
 
-		
 		String cp = req.getContextPath();
 		if(req.getMethod().equalsIgnoreCase("GET")) {
 			resp.sendRedirect(cp + "/project/list.do");
@@ -166,8 +165,47 @@ public class ProjectServlet extends MyServlet{
 		
 	}
 
-	private void article(HttpServletRequest req, HttpServletResponse resp) {
-		// TODO Auto-generated method stub
+	private void article(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		// 프로젝트 상세 보기
+		ProjectDAO dao = new ProjectDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		String cp = req.getContextPath();
+		
+		/*
+		if(req.getMethod().equalsIgnoreCase("GET")) {
+			System.out.println("하하");
+			resp.sendRedirect(cp + "/project/list.do");
+			return;
+		} */
+
+		//페이지 처리 x
+		try {
+			
+			String me_id = info.getId();
+			String pro_code = req.getParameter("pro_code");
+			//String pd_code = req.getParameter("pd_code");
+			
+			//프로젝트 메인 정보 가져오기!
+			ProjectDTO dto = dao.readProject(pro_code, me_id);
+			if (dto == null) { // 프로젝트가 없으면 다시 리스트로
+				resp.sendRedirect(cp + "/project/list.do");
+				return;
+			}
+			
+			//JSP 로 전달할 속성
+			req.setAttribute("dto", dto);
+
+			forward(req, resp, "/WEB-INF/views/project/pro_article.jsp");
+			return;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		resp.sendRedirect(cp + "/project/list.do");
 		
 	}
 
