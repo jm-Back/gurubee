@@ -313,7 +313,7 @@ public class CompNoticeDAO {
 	}
 	
 	// 공지사항 클릭시 내용 출력
-	public CompNoticeDTO readBoard(Long notice_num) {
+	public CompNoticeDTO readBoard(long notice_num) {
 		CompNoticeDTO dto = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -365,6 +365,67 @@ public class CompNoticeDAO {
 				}
 			}
 		}
+		
+		return dto;
+	}
+	
+	// 조회수 증가하기
+	public void updateHitCount(long num) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			
+			sql = " UPDATE noticeAll SET views=views+1 WHERE num = ? ";
+
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+			
+			pstmt.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+					
+				}
+			}
+		}
+	}
+	
+	// 이전글
+	public CompNoticeDTO preReadBoard(long num, String condition, String keyword) {
+		CompNoticeDTO dto = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		StringBuilder sb = new StringBuilder();
+		
+		try {
+			// 검색했을 경우
+			if(keyword != null && keyword.length() != 0) {
+				
+				sb.append(" SELECT notice_title, notice_content ");
+				sb.append(" FROM noticeAll n ");
+				sb.append(" JOIN employee e ON n.id = e.id ");
+				sb.append(" WHERE ( num > ? ) ");
+				
+				if(condition.equals("all")) {
+					sb.append(" AND ( INSTR(notice_title, ?) >= 1 OR INSTR(notice_content, ?) >= 1 ) ");
+				} else if(condition.equals("reg_date")) {
+					sb.append(" AND ( TO_CHAR(regdate, 'YYYYMMDD') = ? ) ");
+				} else {
+					sb.append(" AND ( INSTR(" + condition + ", ?) >= 1 ) ");
+				}
+			}
+		} catch (Exception e) {
+			
+		}
+		
 		
 		return dto;
 	}

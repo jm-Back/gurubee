@@ -97,7 +97,7 @@ function searchList() {
 								<select name="condition" class="form-select">
 									<option value="all" ${condition=="all"?"selected='selected'":""}>제목+내용</option>
 									<option value="name" ${condition=="name"?"selected='selected'":""}>작성자</option>
-									<option value="reg_date" ${condition=="reg_date"?"selected='selected'":""}>등록일</option>
+									<option value="regdate" ${condition=="regdate"?"selected='selected'":""}>등록일</option>
 									<option value="notice_title" ${condition=="notice_title"?"selected='selected'":""}>제목</option>
 									<option value="notice_content" ${condition=="notice_content"?"selected='selected'":""}>내용</option>
 								</select>

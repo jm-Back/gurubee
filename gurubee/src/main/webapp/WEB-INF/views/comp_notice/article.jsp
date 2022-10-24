@@ -83,7 +83,7 @@ $(function() {
 function listPage(page) {
 	let url = "${pageContext.request.contextPath}/comp_notice/listReply.do";
 	let query = "num=${dto.num}&pageNo="+page;
-	ley selector = "#listReply";
+	let selector = "#listReply";
 	
 	const fn = function(data) {
 		$(selector).html(data);
@@ -91,7 +91,7 @@ function listPage(page) {
 	ajaxFun(url, "get", query, "html", fn);
 }
 
-// 리플 등록
+// 댓글 등록
 $(function(){
 	$(".btnSendReply").click(function(){
 		let num = "${dto.num}";
@@ -121,6 +121,121 @@ $(function(){
 		ajaxFun(url, "post", query, "json", fn);
 		
 	});
+});
+
+// 댓글 삭제
+$(function(){
+	$("body").on("click", ".deleteReply", function(){
+		if(! confirm('댓글을 삭제하시겠습니까 ? ')) {
+			return false;
+		}
+		
+		let replyNum = $(this).attr("data-replyNum");
+		let page = $(this).attr("data-pageNo");
+		
+		let url = "${pageContext.request.contextPath}/comp_notice/deleteReply.do";
+		let query = "replyNum=" + replyNum;
+		
+		const fn = function(data) {
+			listPage(page);
+		};
+		
+		ajaxFun(url, "post", query, "json", fn);
+		
+	});
+});
+
+// 댓글별 답글 리스트
+function listReplyAnswer(answer) {
+	let url = "${pageContext.request.contextPath}/comp_notice/listReplyAnswer.do";
+	let query = "answer="+answer;
+	let selector = "#listReplyAnswer" + answer;
+	
+	const fn = function(data) {
+		$(selector).html(data);
+	};
+	ajaxFun(url, "get", query, "html", fn);
+}
+
+// 댓글별 답글 개수
+function countReplyAnswer(answer) {
+	let url = "${pageContext.request.contextPath}/comp_notice/countReplyAnswer.do";
+	let query = "answer="+answer;
+	
+	const fn = function(data) {
+		let count = data.count;
+		let selector = "#answerCount"+answer;
+		$(selector).html(count);
+	};
+	
+	ajaxFun(url, "post", query, "json", fn);
+}
+
+// 댓글별 답글 등록
+$(function(){
+	$("body").on("click", ".btnSendReplyAnswer", function(){
+		
+		// 게시물 번호, 댓글 번호, td 위치 찾기
+		let num = "${dto.num}";
+		let replyNum = $(this).attr("data-replyNum");
+		const $td = $(this).closest("td");
+		
+		// 답글 비어있는지 체크
+		let content = $td.find("textarea").val().trim();
+		if(! content) {
+			$td.find("textarea").focus();
+			return false;
+		}
+		
+		// URI로 데이터를 전달하기위해 문자열을 인코딩
+		content = encodeURIComponent(content);
+		
+		let url = "${pageContext.request.contextPath}/comp_notice/insertReply.do";
+		let query = "num="+ num + "&content="+content+"&answer="+replyNum;
+		
+		const fn = function(data) {
+			$td.find("textarea").val("");
+			
+			let state = data.state;
+			
+			let(state === "true") {
+				listReplyAnswer(replyNum);
+				countReplyAnswer(replyNum);
+			}
+		};
+		
+		ajaxFun(url, "post", query, "json", fn);
+		
+	});
+});
+
+// 답글 버튼(댓글별 답글 등록 폼 및 답글 리스트)
+$(function(){
+	$("body").on("click", ".btnReplyAnswerLayout", function(){
+		const $tr = $(this).closest("tr").next();
+		
+		// 두번째 tr 보이게끔 설정 (tr class='reply-answer')
+		let isVisible = $tr.is(":visible");
+		let replyNum = $(this).attr("data-replyNum");
+		
+		if(isVisible) {
+			$tr.hide();
+		} else {
+			$tr.show();
+			
+			// 답글 리스트
+			listReplyAnswer(replyNum);
+			
+			// 답글 개수
+			countReplyAnswer(replyNum);
+		}
+		
+	});
+});
+
+// 댓글별 답글 삭제
+$(function(){
+	
 });
 
 </script>
@@ -156,7 +271,7 @@ $(function(){
 								이름 : ${dto.writer_name}
 							</td>
 							<td align="right">
-								${dto.reg_date} | 조회 ${dto.views}
+								${dto.regdate} | 조회 ${dto.views}
 							</td>
 						</tr>
 						
