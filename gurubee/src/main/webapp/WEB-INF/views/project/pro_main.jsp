@@ -16,6 +16,21 @@
 	type="text/css">	
 
 <style>
+::-webkit-scrollbar { 
+	width: 15px;
+} 
+
+::-webkit-scrollbar-thumb { 
+background: linear-gradient(#01d6b7, #ffe498);
+background-clip: padding-box;
+border: 3px solid transparent;
+border-radius: 10px; /*스크롤바 라운드*/}
+
+::-webkit-scrollbar-track { 
+background-color: #fff; /*스크롤바 트랙 색상*/ 
+border-radius: 10px; /*스크롤바 트랙 라운드*/ 
+ /*스크롤바 트랙 안쪽 그림자*/}
+
 
 .btn_projectAdd {
 	border:  1px solid gray;
@@ -121,7 +136,7 @@
 </div>
 	
 <form action="${pageContext.request.contextPath}/project/list.do" name="projectList" method="post">
-	<div class="container mt-5 mb-3 pt-3 pb-3" style="background-color: #eee;">
+	<div class="container mt-5 mb-3 pt-3 pb-3" style="background-color: #f7f7f7;">
 		<div class="row">
 		<c:forEach var="dto" items="${list}" varStatus="status">
 			<div class="col-md-4 ">

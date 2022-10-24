@@ -31,8 +31,36 @@
 .right { text-align: right; padding-right: 7px; }
 
 .e_e {padding-right: 10px;	}
-.delete_emp { cursor:pointer;  display:inline-block; border: 1px solid gray; border-radius: 30px; padding: 5px 10px; margin: 3px 3px;}
+.delete_emp { cursor:pointer;  display:inline-block; border: 1px solid #fff; border-radius: 30px; color:#fff; font-weight:600; padding: 5px 10px; margin: 3px 3px; background: #01d6b7;}
 .fa-padding {padding-left: 10px; padding-top: 4px;}
+
+.end__btn__design {
+	background: #01d6b7;
+	font-weight: 600;
+	color: #fff;
+	border: none;
+	padding: 10px 20px;
+	
+	
+}
+
+
+::-webkit-scrollbar { 
+min-width: 15px; /*스크롤바의 너비*/
+max-width: 15px;
+} 
+
+::-webkit-scrollbar-thumb { 
+background: linear-gradient(#01d6b7, #ffe498);
+background-clip: padding-box;
+border: 3px solid transparent;
+border-radius: 10px; /*스크롤바 라운드*/}
+
+::-webkit-scrollbar-track { 
+background-color: #fff; /*스크롤바 트랙 색상*/ 
+border-radius: 10px; /*스크롤바 트랙 라운드*/ 
+ /*스크롤바 트랙 안쪽 그림자*/}
+
 
 </style>
 
@@ -186,8 +214,7 @@ function sendOk(){
 
 
 .form-content .form-items {
-	background-color: whitesmoke;
-    border: 3px solid #eee;
+	background-color: #f7f7f7;
     padding: 40px;
     display: inline-block;
     width: 100%;
@@ -230,7 +257,8 @@ function sendOk(){
     background-color: #fff;
     font-size: 15px;
     font-weight: 300;
-    color: #8D8D8D;
+    color: #01d6b7;
+    font-weight: 600;
     -webkit-transition: all 0.3s ease;
     transition: all 0.3s ease;
     margin-top: 16px;
@@ -247,8 +275,8 @@ function sendOk(){
     border-radius: 6px;
     background-color: #fff;
     font-size: 15px;
-    font-weight: 300;
-    color: #8D8D8D;
+    font-weight: 600;
+    color: #01d6b7;
     -webkit-transition: all 0.3s ease;
     transition: all 0.3s ease;
     margin-top: 16px;
@@ -264,7 +292,7 @@ function sendOk(){
     border-radius: 6px;
     background-color: #fff;
     font-size: 15px;
-    font-weight: 300;
+    font-weight: 600;
     color: #8D8D8D;
     -webkit-transition: all 0.3s ease;
     transition: all 0.3s ease;
@@ -286,8 +314,8 @@ function sendOk(){
     background-color: #fff;
     border: 0;
     font-size: 15px;
-    font-weight: 300;
-    color: #8D8D8D;
+    font-weight: 600;
+    color: #01d6b7;
     outline: none;
     resize: vertical;
     height: 120px;
@@ -300,12 +328,18 @@ function sendOk(){
 .form-content textarea:hover, .form-content textarea:focus {
     border: 0;
     background-color: #ebeff8;
-    color: #8D8D8D;
+    color: #01d6b7;
 }
 
 .design_date {
  	padding-left: 5px;
  	font-weight: 600;
+}
+
+.btn-outline-secondary__2:hover {
+	background: aqua;
+	font-weight: 600;
+	
 }
 
 </style>
@@ -328,60 +362,60 @@ function sendOk(){
 		<div class="row">
 			<div class="form-holder mb-5">
 				<div class="form-content">
-					<div class="form-items">
+					<div class="form-items shadow rounded">
 						<h3>새 프로젝트 등록</h3>
 						<p>혁신적인 GURUBEE 프로젝트를 등록하세요.</p>
 						<form class="requires-validation" name="projectForm" method="post">
 							<div class="col-md-12">
-								<input type="radio"  class="btn-check" name="pro_type" id="dept" value="부서 프로젝트" required>
-                            <label class="btn btn-sm btn-outline-secondary" for="dept"> 부서 프로젝트 </label>
+								<input type="radio"  class="btn-check btn-outline-secondary__2" name="pro_type" id="dept" value="부서 프로젝트" required>
+                            <label class="btn  shadow-sm " for="dept"> 부서 프로젝트 </label>
 								<input type="radio"  class="btn-check" name="pro_type" id="personal" value="개인 프로젝트" required>
-                            <label class="btn btn-sm btn-outline-secondary" for="personal"> 개인 프로젝트 </label>
+                            <label class="btn  shadow-sm" for="personal"> 개인 프로젝트 </label>
 								<input type="radio"  class="btn-check" name="pro_type" id="together" value="협업 프로젝트" required>
-                            <label class="btn btn-sm btn-outline-secondary" for="together"> 협업 프로젝트 </label>
+                            <label class="btn  shadow-sm" for="together"> 협업 프로젝트 </label>
 							</div>
 							<div class="col-md-12">
 								<div class="design_date"> 프로젝트 시작일&nbsp;    
-								<input class="form-control" type="date" name="pro_sdate" placeholder="프로젝트 시작일">
+								<input class="form-control shadow-sm" type="date" name="pro_sdate" placeholder="프로젝트 시작일">
 								</div>
 							</div>
 							<div class="col-md-12">
 								<div class="design_date"> 프로젝트 종료일&nbsp;   
-								<input class="form-control" type="date" name="pro_edate" placeholder="프로젝트 종료일">
+								<input class="form-control shadow-sm" type="date" name="pro_edate" placeholder="프로젝트 종료일">
 								</div>
 							</div>
 							<div class="col-md-12">
-								<input class="form-control" type="text" name="pro_name" placeholder="프로젝트명">
+								<input class="form-control shadow-sm" type="text" name="pro_name" placeholder="프로젝트명">
 								<input type="hidden" name="id" value="">
 								<input type="hidden" name="pro_clear" >
 							</div>
 
 							<div class="col-md-12">
-								<input class="form-control" type="text" name="pro_outline" placeholder="프로젝트 개요">
+								<input class="form-control shadow-sm" type="text" name="pro_outline" placeholder="프로젝트 개요">
 							</div>
 							<div class="col-md-12">
-								<textarea class="form-control" name="pro_content" placeholder="프로젝트 내용" style="height: 120px;"></textarea>
+								<textarea class="form-control shadow-sm" name="pro_content" placeholder="프로젝트 내용" style="height: 120px;"></textarea>
 							</div>
 							<h3></h3>
 						<div class="row">
 							<div class="col-md-12" style="margin-bottom: -15px;">
-								<button type="button" class="att_master_btn btn btn-primary mb-3">담당자 선택하기</button>
-								<input type="hidden" name="pro_master">
-								<button type="button" class="att_employee_btn btn btn-primary mb-3">참여자 선택하기</button>
+								<button type="button" class="att_master_btn btn btn-primary mb-3 shadow-sm">담당자 선택하기</button>
+								<input class="shadow-sm" type="hidden" name="pro_master">
+								<button type="button" class="att_employee_btn btn btn-primary mb-3 shadow-sm">참여자 선택하기</button>
 							</div>
 							<div class="col-md-12">
-								<input class="form-control" type="text" name="pro_master_name" readonly="readonly" placeholder="프로젝트 담당자">
+								<input class="form-control shadow-sm" type="text" name="pro_master_name" readonly="readonly" placeholder="프로젝트 담당자">
 							</div>
 							<div class="col-md-12">
-								<div class="form-control em_design" > 프로젝트 참여자
+								<div class="form-control em_design shadow-sm" > 프로젝트 참여자
 									<div class="mt-3 e_e" id="emlist">
 									</div>
 								</div>
 							</div>
 						</div>
 						<div class="form-button mt-5" style="text-align: center;">
-							<button class="btn btn-primary" type="button" onclick="sendOk();">등록하기</button>
-							<button class="btn btn-primary" type="reset" onclick="location.href='${pageContext.request.contextPath}/project/list.do'">취소하기</button>
+							<button class="btn btn-primary end__btn__design shadow-sm" type="button" onclick="sendOk();">등록하기</button>
+							<button class="btn btn-primary end__btn__design shadow-sm" type="reset" onclick="location.href='${pageContext.request.contextPath}/project/list.do'">취소하기</button>
 						</div>
 						</form>
 					</div>

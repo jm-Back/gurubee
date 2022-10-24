@@ -16,6 +16,24 @@
 	type="text/css">	
 	
 <style type="text/css">
+::-webkit-scrollbar { 
+	width: 15px;
+} 
+
+::-webkit-scrollbar-thumb { 
+background: linear-gradient(#01d6b7, #ffe498);
+background-clip: padding-box;
+border: 3px solid transparent;
+border-radius: 10px; /*스크롤바 라운드*/}
+
+::-webkit-scrollbar-track { 
+background-color: #fff; /*스크롤바 트랙 색상*/ 
+border-radius: 10px; /*스크롤바 트랙 라운드*/ 
+ /*스크롤바 트랙 안쪽 그림자*/}
+
+
+
+
 .plus__project {
 	font-size: 20px;
 	font-weight:600;
