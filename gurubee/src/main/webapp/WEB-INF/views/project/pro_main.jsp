@@ -78,19 +78,22 @@
  	cursor: pointer;
 }
 
+.clear__state {
+	margin-right: 7px;
+	padding: 2px 14px;
+	display: block;
+	border: 3px solid  #ffd980 ;
+	outline: none;
+	border-radius: 10px;
+	font-size: 19px;
+	font-weight: 600;
+	background: #ffd980;
+}
+
 </style>
 
 <script type="text/javascript">
 
-//프로젝트별 article 로 넘어가기
-/*
-function insideProject() {
-	const f = document.projectList;
-	
-	f.action = "${pageContext.request.contextPath}/project/article.do?pro_code=${dto.pro_code}";
-	f.submit();
-	
-}; */
 
 </script>
 
@@ -122,7 +125,7 @@ function insideProject() {
 		<div class="row">
 		<c:forEach var="dto" items="${list}" varStatus="status">
 			<div class="col-md-4 ">
-				<div onclick="location.href='${pageContext.request.contextPath}/project/article.do?pro_code=${dto.pro_code}'" class="card p-3 mb-4 pointer">
+				<div onclick="location.href='${pageContext.request.contextPath}/project/article.do?pro_code=${dto.pro_code}'" class="card p-3 mb-4 pointer shadow p-1 rounded">
 					<div class="d-flex justify-content-between">
 						<div class="d-flex flex-row align-items-center">
 							<div class="p_photo"></div>
@@ -132,7 +135,7 @@ function insideProject() {
 								<h6 class="mb-0">${dto.name_p}</h6> <span>${dto.pro_sdate} ~ ${dto.pro_edate}</span>
 							</div>
 						</div>
-						<div class="p_state"><div>${dto.pro_clear}</div></div>
+						<div class="clear__state"><div>${dto.pro_clear}</div></div>
 					</div>
 					<div class="mt-5">
 						<h3 class="heading">${dto.pro_name}</h3>

@@ -174,13 +174,6 @@ public class ProjectServlet extends MyServlet{
 		
 		String cp = req.getContextPath();
 		
-		/*
-		if(req.getMethod().equalsIgnoreCase("GET")) {
-			System.out.println("하하");
-			resp.sendRedirect(cp + "/project/list.do");
-			return;
-		} */
-
 		//페이지 처리 x
 		try {
 			

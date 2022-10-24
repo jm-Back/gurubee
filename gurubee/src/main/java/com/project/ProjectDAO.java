@@ -74,7 +74,7 @@ public class ProjectDAO {
 	}
 	
 	
-	//프로젝트 총괄자 (대리급 이상)
+	//프로젝트 총괄자 (리스트-대리급 이상)
 		public List<ProjectDTO> listMaster() {
 			List<ProjectDTO> list = new ArrayList<ProjectDTO>();
 			PreparedStatement pstmt = null;
@@ -402,6 +402,7 @@ public class ProjectDAO {
 			return list;
 		}
 		
+		//프로젝트별 주요 리스트
 		public ProjectDTO readProject(String pro_code, String me_id) {
 			ProjectDTO dto = null;
 			PreparedStatement pstmt = null;
@@ -411,7 +412,7 @@ public class ProjectDAO {
 			try {
 				
 				//1.일단 프로젝트 읽기 (내 사번, 프로젝트 코드 필요)
-				sql = " SELECT E.name, "
+				sql = " SELECT E.name, E.mail, E.phone, E.tel, E.id, "
 						+ " A.pro_code, A.id pro_writer, A.pro_name, A.pro_clear, A.pro_type, A.pro_master, A.pro_outline, A.pro_content, A.pro_sdate, A.pro_edate "
 						+ " FROM Employee E "
 						+ " JOIN project A ON A.pro_master = E.id "
@@ -426,6 +427,7 @@ public class ProjectDAO {
 				pstmt.setString(2, pro_code);
 				
 				rs = pstmt.executeQuery();
+				
 				while(rs.next()) {
 					dto = new ProjectDTO();
 					
@@ -437,8 +439,44 @@ public class ProjectDAO {
 					dto.setPro_outline(rs.getString("pro_outline"));
 					dto.setPro_content(rs.getString("pro_content"));
 					dto.setPro_sdate(rs.getDate("pro_sdate").toString());
-
+					dto.setPro_edate(rs.getDate("pro_edate").toString());
+					dto.setPro_mail(rs.getString("mail"));
+					dto.setPro_phone(rs.getString("phone"));
+					dto.setPro_tel(rs.getString("tel"));
+					//마스터 아이디
+					dto.setId_p(rs.getString("id"));
+					
 				}
+				
+				rs.close();
+				rs = null;
+				pstmt.close();
+				pstmt = null;
+				
+				//프로젝트 담당자 부서,급
+				sql = "SELECT name, dep_name, MIN(pos_name) pos_name "
+						+ "FROM ( "
+						+ "SELECT A.name, A.id, date_iss date_iss ,C.dep_name, D.pos_name "
+						+ "FROM Employee A "
+						+ "JOIN Employee_History B ON A.id = B.id "
+						+ "JOIN Department C ON B.dep_code = C.dep_code "
+						+ "JOIN Position D ON B.pos_code = D.pos_code "
+						+ "WHERE A.id = ? ) "
+						+ "GROUP BY name, id, dep_name "
+						+ "ORDER BY dep_name, pos_name ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, dto.getId_p());
+				
+				rs = pstmt.executeQuery();
+				
+				while(rs.next()) {
+					dto.setDep_name(rs.getString("dep_name"));
+					dto.setPos_name(rs.getString("pos_name"));
+					
+				}
+				
 		
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -460,6 +498,49 @@ public class ProjectDAO {
 
 			return dto;
 		}
+		
+		
+		/*
+		//프로젝트 마스터 상세 정보 출력
+		public ProjectDTO readMaster(String pro_code, String me_id) {
+			ProjectDTO dto = new ProjectDTO();
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql;
+			
+			try {
+				
+				sql = "SELECT E.id "
+						+ " FROM Employee E \r\n"
+						+ " JOIN project A ON A.pro_master = E.id  "
+						+ " JOIN project_detail B ON A.pro_code = B.pro_code  "
+						+ " JOIN project_join C ON B.pd_code = C.pd_code  "
+						+ " WHERE C.id = 'GB21110807' AND A.pro_code = '10013' "
+						+ " ORDER BY A.pro_sdate DESC ;";
+				
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if(rs != null) {
+					try {
+						rs.close();
+					} catch (Exception e2) {
+					}
+				}
+				
+				if(pstmt !=null) {
+					try {
+						pstmt.close();
+					} catch (Exception e2) {
+					}
+				}
+			}
+			
+			return dto;
+		}
+		
+		*/
 	
 	
 	

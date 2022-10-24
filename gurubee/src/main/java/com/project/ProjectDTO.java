@@ -39,7 +39,31 @@ public class ProjectDTO {
 	private String pro_sdate;
 	private String pro_edate;
 	
+	//프로젝트 명단 메일, 폰, 부서번호
+	private String pro_mail;
+	private String pro_phone;
+	private String pro_tel;
 	
+	
+	public String getPro_mail() {
+		return pro_mail;
+	}
+	public void setPro_mail(String pro_mail) {
+		this.pro_mail = pro_mail;
+	}
+	public String getPro_phone() {
+		return pro_phone;
+	}
+	public void setPro_phone(String pro_phone) {
+		this.pro_phone = pro_phone;
+	}
+	public String getPro_tel() {
+		return pro_tel;
+	}
+	public void setPro_tel(String pro_tel) {
+		this.pro_tel = pro_tel;
+	}
+
 	//프로젝트 상세
 	private String pd_code;
 	private int pd_rank;

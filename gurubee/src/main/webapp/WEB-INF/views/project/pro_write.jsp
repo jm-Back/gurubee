@@ -157,16 +157,6 @@ function itemAllMove(pos) {
 }
 
 
-/* //체크박스 하나만
-function clickCheck(target){
-	document.querySelectorAll("input[type=radio]").forEach((el) => {
-		el.checked = false;
-	});
-	
-	target.checked = true;
-} */
-
-
 //프로젝트 등록
 function sendOk(){
 	const f = document.projectForm;
@@ -194,12 +184,10 @@ function sendOk(){
 
 }
 
-.form-content {
-	background-color: whitesmoke;
-}
 
 .form-content .form-items {
-    border: 3px solid #fff;
+	background-color: whitesmoke;
+    border: 3px solid #eee;
     padding: 40px;
     display: inline-block;
     width: 100%;
@@ -225,10 +213,11 @@ function sendOk(){
 
 .form-content p {
     text-align: left;
-    font-size: 17px;
+    font-size: 15px;
     font-weight: 300;
     line-height: 20px;
     margin-bottom: 30px;
+    padding-top: 6px;
 }
 
 .form-content input[type=text],  .form-content input[type=email], .form-content select .form-content textarea  {
@@ -337,11 +326,11 @@ function sendOk(){
 <div class="container">
 	<div class="form-body">
 		<div class="row">
-			<div class="form-holder">
+			<div class="form-holder mb-5">
 				<div class="form-content">
 					<div class="form-items">
 						<h3>새 프로젝트 등록</h3>
-						<p>프로젝트를 등록하세요.</p>
+						<p>혁신적인 GURUBEE 프로젝트를 등록하세요.</p>
 						<form class="requires-validation" name="projectForm" method="post">
 							<div class="col-md-12">
 								<input type="radio"  class="btn-check" name="pro_type" id="dept" value="부서 프로젝트" required>
@@ -392,7 +381,7 @@ function sendOk(){
 						</div>
 						<div class="form-button mt-5" style="text-align: center;">
 							<button class="btn btn-primary" type="button" onclick="sendOk();">등록하기</button>
-							<button class="btn btn-primary" type="button">취소하기</button>
+							<button class="btn btn-primary" type="reset" onclick="location.href='${pageContext.request.contextPath}/project/list.do'">취소하기</button>
 						</div>
 						</form>
 					</div>
