@@ -343,7 +343,7 @@ public class ProjectDAO {
 				
 				//내 사번으로 연관된 프로젝트 리스트
 				sql = " SELECT E.name, A.pro_code, A.id id_p, A.pro_name, A.pro_clear, A.pro_type, A.pro_master, A.pro_outline, A.pro_content, A.pro_sdate, A.pro_edate "
-						+ "	, B.pd_part, B.pd_ing, C.id pj_id, C.pj_role "
+						+ "	, B.pd_part, B.pd_code, B.pd_ing, C.id pj_id, C.pj_role "
 						+ "	FROM Employee E "
 						+ " JOIN project A ON A.pro_master = E.id "
 						+ "	JOIN project_detail B ON A.pro_code = B.pro_code "
@@ -372,6 +372,7 @@ public class ProjectDAO {
 					dto2.setPro_sdate(rs.getDate("pro_sdate").toString());
 					dto2.setPro_edate(rs.getDate("pro_edate").toString());
 					dto2.setPd_part(rs.getInt("pd_part"));
+					dto2.setPd_code(rs.getString("pd_code"));
 					dto2.setPd_ing(rs.getInt("pd_ing"));
 					dto2.setPj_id(rs.getString("pj_id"));
 					dto2.setPj_role(rs.getString("pj_role"));
@@ -401,6 +402,44 @@ public class ProjectDAO {
 			return list;
 		}
 		
+		public ProjectDTO readProject(String pro_code) {
+			ProjectDTO dto = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql;
+			
+			try {
+				sql = " SELECT E.name, A.pro_code, A.id id_p, A.pro_name, A.pro_clear, A.pro_type, A.pro_master, A.pro_outline, A.pro_content, A.pro_sdate, A.pro_edate "
+						+ "	, B.pd_part, B.pd_code, B.pd_ing, C.id pj_id, C.pj_role "
+						+ "	FROM Employee E "
+						+ " JOIN project A ON A.pro_master = E.id "
+						+ "	JOIN project_detail B ON A.pro_code = B.pro_code "
+						+ "	JOIN project_join C ON B.pd_code = C.pd_code "
+						+ "	WHERE C.id = ? "
+						+ "	ORDER BY A.pro_sdate DESC ";
+				
+				
+						
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if(rs!=null) {
+					try {
+						rs.close();
+					} catch (Exception e2) {
+					}
+				}
+				
+				if(pstmt!=null) {
+					try {
+						pstmt.close();
+					} catch (Exception e2) {
+					}
+				}
+			}
+
+			return dto;
+		}
 	
 	
 	

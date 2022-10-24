@@ -166,8 +166,30 @@ public class ProjectServlet extends MyServlet{
 		
 	}
 
-	private void article(HttpServletRequest req, HttpServletResponse resp) {
-		// TODO Auto-generated method stub
+	private void article(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		// 프로젝트 상세 보기
+		ProjectDAO dao = new ProjectDAO();
+		
+		String cp = req.getContextPath();
+		
+		//페이지 처리 x
+		try {
+			
+			String pro_code = req.getParameter("pro_code");
+			
+			//게시물 가져오기!
+			
+			//JSP 로 전달할 속성
+			
+			
+			
+			forward(req, resp, "/WEB-INF/views/project/article.jsp");
+			return;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		resp.sendRedirect(cp + "/project/list.do");
 		
 	}
 

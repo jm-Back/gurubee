@@ -33,7 +33,7 @@
 
 
 /* l NAV */
-.l-navbar {
+.side_l-navbar {
     position: fixed;
     top: 0;
     left: 0;
@@ -47,7 +47,7 @@
 
 
 /* NAV */
-.nav {
+.side_nav {
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -55,7 +55,7 @@
     overflow: hidden;
 }
 
-.nav__brand {
+.side_nav__brand {
     display: grid;
     grid-template-columns: max-content max-content;
     justify-content: space-between;
@@ -63,19 +63,19 @@
     margin-bottom: 2rem;
 }
 
-.nav__toggle {
+.side_nav__toggle {
     font-size: 1.5rem;
     padding: .6rem;
     cursor: pointer;
 }
 
-.nav__logo {
+.side_nav__logo {
     color: var(--white-color);
     font-weight: 600;
     padding: .3rem;
 }
 
-.nav__link {
+.side_nav__link {
     display: grid;
     grid-template-columns: max-content max-content;
     align-items: center;
@@ -88,7 +88,7 @@
     cursor: pointer;
 }
 
-.nav__icon {
+.side_nav__icon {
     font-size: 20px;
 }
 
@@ -112,41 +112,41 @@
 
 
 <body id="body-pd">
-    <div class="l-navbar" id="navbar">
-        <nav class="nav">
+    <div class="side_l-navbar" id="navbar">
+        <nav class="side_nav">
             <div>
-                <div class="nav__brand">
-                    <i class="fa-solid fa-bars nav__toggle"></i>
+                <div class="side_nav__brand">
+                    <i class="fa-solid fa-bars side_nav__toggle"></i>
                 </div>
                 <div class="">
-                    <a href="#" class="nav__link active">
-                        <i class="fa-solid fa-house-chimney  nav__icon"></i>
+                    <a href="#" class="side_nav__link active">
+                        <i class="fa-solid fa-house-chimney  side_nav__icon"></i>
                     </a>
-                    <a href="#" class="nav__link">
-                        <i class="fa-regular fa-envelope nav__icon" ></i>
+                    <a href="#" class="side_nav__link">
+                        <i class="fa-regular fa-envelope side_nav__icon" ></i>
                     </a>
-                    <a href="#" class="nav__link">
-                        <i class="fa-regular fa-user nav__icon"></i>
+                    <a href="#" class="side_nav__link">
+                        <i class="fa-regular fa-user side_nav__icon"></i>
                     </a>
-                    <a href="#" class="nav__link">
-                        <i class="fa-regular fa-folder-open nav__icon"></i>
+                    <a href="#" class="side_nav__link">
+                        <i class="fa-regular fa-folder-open side_nav__icon"></i>
                     </a>
-                    <a href="#" class="nav__link">
-                        <i class="fa-solid fa-chart-area nav__icon"></i>
+                    <a href="#" class="side_nav__link">
+                        <i class="fa-solid fa-chart-area side_nav__icon"></i>
                     </a>
-                    <a href="#" class="nav__link">
-                        <i class="fa-regular fa-rectangle-list nav__icon"></i>
+                    <a href="#" class="side_nav__link">
+                        <i class="fa-regular fa-rectangle-list side_nav__icon"></i>
                     </a>
-                    <a href="#" class="nav__link ">
+                    <a href="#" class="side_nav__link ">
                         <i class="fa-regular fa-calendar-check size__big"></i>
                     </a>
-                    <a href="#" class="nav__link ">
-                        <i class="fa-solid fa-umbrella-beach nav__icon"></i>
+                    <a href="#" class="side_nav__link ">
+                        <i class="fa-solid fa-umbrella-beach side_nav__icon"></i>
                     </a>
 	            </div>
 	            	<div class="bott">
-		                <a href="#" class="nav__link">
-		                    <i class="fa-solid fa-right-from-bracket nav__icon"></i>
+		                <a href="#" class="side_nav__link">
+		                    <i class="fa-solid fa-right-from-bracket side_nav__icon"></i>
 		                </a>
 	                </div>
 	            </div>
