@@ -64,8 +64,8 @@ public class EdocDAO {
 	}
 	*/
 	
-	// 부서 상사 리스트 가져오기
-	public List<EdocEmpDTO> deptEmpList(String dep_name, String pos_name) {
+	// 특정 직급의 모든 부서 사원 리스트 가져오기
+	public List<EdocEmpDTO> posEmpList(int pos_code) {
 		List<EdocEmpDTO> list = new ArrayList<>();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -80,14 +80,12 @@ public class EdocDAO {
 					+ "    WHERE now_working='재직')his LEFT OUTER JOIN employee e ON his.id = e.id "
 					+ " LEFT OUTER JOIN department d ON his.dep_code = d.dep_code "
 					+ " LEFT OUTER JOIN position p ON p.pos_code = his.pos_code "
-					+ " where d.dep_name=? and now=1 and "
-					+ " 	p.pos_code>(SELECT pos_code FROM position WHERE pos_name=?) " // 부서이름, 직급코드
-					+ " order by his.pos_code DESC ";
+					+ " where now=1 and now_working='재직' and p.pos_code = ? " // 직급코드
+					+ " order by enddate DESC ";
 			
 			pstmt = conn.prepareStatement(sql);
 			
-			pstmt.setString(1, dep_name);
-			pstmt.setString(2, pos_name);
+			pstmt.setInt(1, pos_code);
 			
 			rs = pstmt.executeQuery();
 			
@@ -99,8 +97,6 @@ public class EdocDAO {
 				empdto.setDep_name(rs.getString("dep_name"));
 				empdto.setPos_code(rs.getInt("pos_code"));
 				empdto.setPos_name(rs.getString("pos_name"));
-				
-				System.out.println(empdto.getName_apper());
 				
 				list.add(empdto);
 			}
@@ -134,7 +130,7 @@ public class EdocDAO {
 		EdocFormDTO formdto = null;
 		
 		try {
-			sql = "SELECT app_doc, doc_Form "
+			sql = "SELECT app_doc, doc_form, form_num "
 				+ " FROM E_DOCFORM"
 				+ "	WHERE app_doc = ? ";
 			
@@ -150,7 +146,6 @@ public class EdocDAO {
 				formdto.setApp_doc(rs.getString("app_doc"));
 				formdto.setDoc_form(rs.getString("doc_form"));
 				formdto.setForm_num(rs.getInt("form_num"));
-				
 			}
 			
 		} catch (Exception e) {
@@ -171,6 +166,26 @@ public class EdocDAO {
 		}
 		
 		return formdto;
+	}
+	
+	public void insertEAppro(String app_doc) {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+				}
+			}
+		}
+		
+		
 	}
 	
 }
