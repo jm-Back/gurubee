@@ -28,8 +28,7 @@ public class CompNoticeDAO {
 			pstmt.setString(1, dto.getNotice_title());
 			pstmt.setString(2, dto.getNotice_content());
 			pstmt.setString(3, dto.getWriter_id());
-			System.out.println(dto.getNotice_title());
-			System.out.println(dto.getNotice_content());
+			
 			
 			pstmt.executeUpdate();
 			
@@ -52,6 +51,7 @@ public class CompNoticeDAO {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			throw e;
 		} finally {
 			if(pstmt != null) {
 				try {
@@ -398,7 +398,7 @@ public class CompNoticeDAO {
 		}
 	}
 	
-	// 이전글
+	// 이전 글
 	public CompNoticeDTO preReadBoard(long num, String condition, String keyword) {
 		CompNoticeDTO dto = null;
 		PreparedStatement pstmt = null;
@@ -408,26 +408,350 @@ public class CompNoticeDAO {
 		try {
 			// 검색했을 경우
 			if(keyword != null && keyword.length() != 0) {
-				
-				sb.append(" SELECT notice_title, notice_content ");
+				// 이름 검색하기 위해 조인 사용
+				sb.append(" SELECT notice_num, notice_title ");
 				sb.append(" FROM noticeAll n ");
 				sb.append(" JOIN employee e ON n.id = e.id ");
-				sb.append(" WHERE ( num > ? ) ");
+				sb.append(" WHERE ( notice_num > ? ) ");
 				
 				if(condition.equals("all")) {
 					sb.append(" AND ( INSTR(notice_title, ?) >= 1 OR INSTR(notice_content, ?) >= 1 ) ");
 				} else if(condition.equals("reg_date")) {
+					keyword = keyword.replaceAll("(\\.|\\/|\\-)", "");
 					sb.append(" AND ( TO_CHAR(regdate, 'YYYYMMDD') = ? ) ");
 				} else {
 					sb.append(" AND ( INSTR(" + condition + ", ?) >= 1 ) ");
 				}
+				
+				sb.append(" ORDER BY notice_num ASC ");
+				sb.append(" FETCH FIRST 1 ROWS ONLY ");
+				
+				pstmt = conn.prepareStatement(sb.toString());
+				
+				pstmt.setLong(1, num);
+				pstmt.setString(2, keyword);
+				
+				if(condition.equals("all")) {
+					pstmt.setString(3, keyword);
+				}
+			// 검색 안했을 경우	
+			} else {
+				
+				sb.append(" SELECT notice_num, notice_title ");
+				sb.append(" FROM noticeAll ");
+				sb.append(" WHERE notice_num > ? ");
+				sb.append(" ORDER BY notice_num ASC ");
+				sb.append(" FETCH FIRST 1 ROWS ONLY ");
+				
+				pstmt = conn.prepareStatement(sb.toString());
+				
+				pstmt.setLong(1, num);
+				
 			}
-		} catch (Exception e) {
 			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				
+				dto = new CompNoticeDTO();
+				
+				dto.setNum(rs.getLong("notice_num"));
+				dto.setNotice_title(rs.getString("notice_title"));
+				
+			}
+		 	
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e2) {
+					
+				}
+			}
+			
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+					
+				}
+			}
 		}
 		
 		
 		return dto;
 	}
+	
+	// 다음 글
+	public CompNoticeDTO nextReadBoard(long num, String condition, String keyword) {
+		CompNoticeDTO dto = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			// 검색했을 경우
+			if(keyword != null && keyword.length() != 0) {
+				
+				sql = " SELECT notice_num, notice_title "
+						+ " FROM noticeAll n "
+						+ " JOIN employee e ON n.id = e.id "
+						+ " WHERE ( notice_num < ? ) ";
+				
+				if(keyword.equals("all")) {
+					sql += " AND ( INSTR(notice_title, ?) >= 1 OR INSTR(notice_content, ?) >= 1 ) ";
+				} else if(keyword.equals("reg_date")) {
+					keyword = keyword.replaceAll("(\\.|\\-|\\/)", "");
+					sql += " AND ( TO_CHAR(regdate, 'YYYYMMDD') = ? ) ";
+				} else {
+					sql += " AND ( INSTR(" + condition + ", ? ) >= 1 ) ";
+				}
+				
+				sql += " ORDER BY notice_num DESC ";
+				sql += " FETCH FIRST 1 ROWS ONLY ";
+			
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setLong(1, num);
+				pstmt.setString(2, keyword);
+				
+				if(keyword.equals("all")) {
+					pstmt.setString(3, keyword);
+				}
+			// 검색 안했을 경우
+			} else {
+				
+				sql = " SELECT notice_num, notice_title "
+						+ " FROM noticeAll "
+						+ " WHERE notice_num < ? "
+						+ " ORDER BY notice_num DESC "
+						+ " FETCH FIRST 1 ROWS ONLY ";
+				
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setLong(1, num);
+				
+			}
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				dto = new CompNoticeDTO();
+				
+				dto.setNum(rs.getLong("notice_num"));
+				dto.setNotice_title(rs.getString("notice_title"));
+			}
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e2) {
+					
+				}
+			}
+			
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+					
+				}
+			}
+		}
+		
+		return dto;
+	}
+	
+	public void updateBoard(CompNoticeDTO dto) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			
+			conn.setAutoCommit(false);
+			
+			sql = " UPDATE noticeAll SET notice_title = ?, notice_content = ? "
+					+ " WHERE notice_num = ? AND id = ? ";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, dto.getNotice_title());
+			pstmt.setString(2, dto.getNotice_content());
+			
+			pstmt.executeUpdate();
+			
+			pstmt.close();
+			pstmt = null;
+			
+			sql = " UPDATE noticeAllFile SET save_filename = ?, ori_filename = ? "
+					+ " WHERE notice_num = ? ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, dto.getSave_filename());
+			pstmt.setString(2, dto.getOri_filename());
+			pstmt.setLong(3, dto.getNum());
+			
+			pstmt.executeUpdate();
+			
+			conn.commit();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+					
+				}
+			}
+			
+			try {
+				conn.setAutoCommit(true);
+			} catch (Exception e2) {
+				
+			}
+		}
+	}
+	
+	public void deleteBoard(long num, String writer_id) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			
+			conn.setAutoCommit(false);
+			
+			sql = " DELETE FROM noticeAll "
+					+ " WHERE notice_num = ? AND id = ? ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+			pstmt.setString(2, writer_id);
+			
+			pstmt.executeUpdate();
+			
+			pstmt.close();
+			pstmt = null;
+			
+			sql = " DELETE FROM noticeAllFile "
+					+ " WHERE notice_num = ? ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+			
+			pstmt.executeUpdate();
+			
+			conn.commit();
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+					
+				}
+			}
+			
+			try {
+				conn.setAutoCommit(true);
+			} catch (Exception e2) {
+				
+			}
+		}
+	}
+	
+	public void insertReply(ReplyDTO dto) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			
+			sql = " INSERT INTO noticeAllReply VALUES(noticeAllReply_SEQ.NEXTVAL, ?,?,?,SYSDATE,?) ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, dto.getNotice_num());
+			pstmt.setString(2, dto.getReply_id());
+			pstmt.setString(3, dto.getRep_contents());
+			pstmt.setLong(4, dto.getAnswer());
+			
+			pstmt.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+					
+				}
+			}
+		}
+	}
+	
+	// 댓글 갯수 찾기(대댓글은 제외)
+	public int dataCountReply(long num) {
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int result = 0;
+		String sql;
+		
+		
+		try {
+			
+			sql = " SELECT COUNT(*) FROM noticeAllReply "
+					+ " WHERE num = ? AND answer = 0 ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				result = rs.getInt(1);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+					
+				}
+			}
+			
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e2) {
+					
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	
+	
+	
 	
 }

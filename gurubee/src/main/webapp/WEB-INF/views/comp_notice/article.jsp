@@ -339,7 +339,7 @@ $(function(){
 				<div class="reply">
 					<form name="replyForm" method="post">
 						<div class='form-header'>
-							<span class="bold">Q & A</span><span> 클린한 댓글을 사용하는 gurubee人이 됩시다! </span>
+							<span class="bold">Q n A</span><span> 클린한 댓글을 사용하는 gurubee人이 됩시다! </span>
 						</div>
 						
 						<table class="table table-borderless reply-form">
