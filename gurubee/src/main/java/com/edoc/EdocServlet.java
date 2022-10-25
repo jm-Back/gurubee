@@ -41,7 +41,7 @@ public class EdocServlet extends MyServlet {
 			forward(req, resp, "/WEB-INF/views/edoc/main.jsp");
 		} else if(uri.indexOf("write.do") != -1) {
 			writeForm(req, resp);
-		} else if(uri.indexOf("write.do") != -1) {
+		} else if(uri.indexOf("write_ok.do") != -1) {
 			writeSubmit(req, resp);
 		}  else if(uri.indexOf("write_searchEmp.do") != -1) {
 			listEmp(req, resp);
@@ -63,15 +63,34 @@ public class EdocServlet extends MyServlet {
 	
 	protected void writeSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 글 작성 폼
+		EdocDAO dao = new EdocDAO();
 		HttpSession session = req.getSession();
 		SessionInfo info = (SessionInfo) session.getAttribute("member");
 		
-		EdocDAO dao = new EdocDAO();
-
+		String cp = req.getContextPath();
+		if(req.getMethod().equalsIgnoreCase("GET")) {
+			resp.sendRedirect(cp + "/board/list.do");
+			return;
+		}
+		
+		try {
+			EdocDTO edocdto = new EdocDTO();
+			
+			edocdto.setId_write(info.getId());
+			edocdto.setApp_doc(req.getParameter("edoc"));
+			edocdto.setApp_doc(req.getParameter("content"));
+			edocdto.setTemp(Integer.parseInt(req.getParameter("temp")));
+			
+			
+			EdocEmpDTO empdto = new EdocEmpDTO();
+			
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		
-		String path = "/WEB-INF/views/edoc/write.jsp";
-		forward(req, resp, path);
 	}
 	
 	protected void listEmp(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -79,13 +98,12 @@ public class EdocServlet extends MyServlet {
 		EdocDAO dao = new EdocDAO();
 		
 		try {
-			System.out.println(req.getParameter("pos_code"));
 			int pos_code = Integer.parseInt(req.getParameter("pos_code"));
 			// 특정 직급 사원 리스트 가져오기
 			List<EdocEmpDTO> list = dao.posEmpList(pos_code);
 			
 			req.setAttribute("list", list);
-			
+			req.setAttribute("pos_code", pos_code);
 			forward(req, resp, "/WEB-INF/views/edoc/write_searchEmp.jsp");
 			
 			return;

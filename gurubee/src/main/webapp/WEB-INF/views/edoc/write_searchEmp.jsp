@@ -4,13 +4,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<table class="table table-border table-hover table-form" id="empListTable">
+<select class="form-select searchEmpSelect" aria-label="Default select example" name="empSelectOption" data-posCode="${pos_code}">
 	<c:forEach var="vo" items="${list}" varStatus="loop">
-		<tr> 
-			<td style="width: 10%;"> ${vo.name_apper} </td>
-			<td style="width: 10%;"> ${vo.pos_name} </td>
-			<td style="width: 50%;"> ${vo.dep_name} </td>
-			<td style="display: none;"> ${vo.id_apper}</td>
-		</tr>
+		<option value="${vo.id_apper}" data-name="${vo.name_apper}"> ${vo.dep_name}&nbsp;${vo.name_apper}&nbsp;${vo.pos_name}</option>
 	</c:forEach>
-</table>
+</select>

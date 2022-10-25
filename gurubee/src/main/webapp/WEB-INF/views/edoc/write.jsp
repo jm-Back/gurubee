@@ -27,10 +27,6 @@
 </style>
 
 <script type="text/javascript">
-let id_apper1 = "";
-let id_apper2 = "";
-let id_apper3 = "";
-let id_apper4 = "";
 
 function ajaxFun(url, method, query, dataType, fn) {
 	$.ajax({
@@ -58,19 +54,26 @@ function ajaxFun(url, method, query, dataType, fn) {
 	});
 }
 
+// 문서 제출
 function sendOk() {
-
   	const f = document.writeForm;
-  	let date = $();
+  	
+	let edoc = $(".edocSelect option:selected").val();
+	let content = f.content.value.trim();
+	let temp = 1; // 임시구분
+	
+	alert(content);
+	alert(edoc);
+	
   
-  	if(! f.app_doc.value.trim()) {
+  	if(! edoc) {
       	alert("문서구분을 선택하세요. ");
   	    return false;
  	}
   
-  	str = f.content.value.trim();
- 	if(!str || str==="<p><br></p>") {
+ 	if(!content || content==="<p><br></p>") {
     	alert("상세내용을 입력하세요. ");
+    	$("#content").focus();
     	return false;
   	}
  	
@@ -78,11 +81,16 @@ function sendOk() {
  		alert("수신자는 1명 이상 선택해야합니다.");
  		return false;
  	}
+ 	
   
  	f.action = "${pageContext.request.contextPath}/edoc/write_ok.do";
   
   	f.submit();
-  
+}
+
+// 문서 임시저장
+function saveOk() {
+	
 }
 
 $(function(){
@@ -90,13 +98,12 @@ $(function(){
 	$('input[name=date]').attr('value', year+"-"+month+"-"+day);
 	
 	
-	// 사원검색 모달 출력 - 대리
-    $("body").on("click", "#empSearch1", function() {
-    	let pos_code = 3;    	
-    	pos_code = encodeURIComponent(pos_code);
+	// 사원검색 모달 
+    $(".empSearch").on("click", function() {
+    	let pos_code = $(this).attr("data-pos");
     	
     	let url = "${pageContext.request.contextPath}/edoc/write_searchEmp.do"
-    	let query = "pos_code="+pos_code;
+    	let query = "pos_code="+encodeURIComponent(pos_code);
     	
     	const fn = function(empList) {
     		$("#empList").html(empList);
@@ -105,82 +112,29 @@ $(function(){
     	
         ajaxFun(url, "post", query, "text", fn);
         
-        $("body").on("click", "#empListTable tr", function() {
-        	let tr = $(this);
+        // 클릭한 사원의 데이터 가져오기
+        $("body").on("select[name=empSelectOption]").change(function() {
+            id_apper = $(this).val();
+        	let name_apper = $(this).attr("data-name"); 
 			// 전역변수에 값 저장
-        	id_apper1 = tr.find("td:eq(3)").html();
-			// d        	
-        	$('input[name=empSearch1]').attr('value',name_apper1); 
-    	})
+        	
+			alert(id_apper);
+			alert(name_apper);
+			
+			// $(this).()attr('value',id_apper); // 클릭한 input의 value 값에 저장.
+			("input[name=empId]").attr('value', id_apper); 
+			("input[name=empSearch]").attr('value', name_apper); 
+        	// $('input[name=empSearch1]').attr('value',name_apper); 
+    	});
+    	
 	});
 	
-	// 사원검색 모달 출력 - 과장 
-    $("body").on("click", "#empSearch2", function() {
-    	let pos_code = 4;    	
-    	pos_code = encodeURIComponent(pos_code);
-    	
-    	let url = "${pageContext.request.contextPath}/edoc/write_searchEmp.do"
-    	let query = "pos_code="+pos_code;
-    	
-    	const fn = function(empList) {
-    		$("#empList").html(empList);
-			$("#empListModal").modal("show");
-    	}
-    	
-        ajaxFun(url, "post", query, "text", fn);
-        
-        $("body").on("click", "#empListTable tr", function() {
-        	let tr = $(this);
-      		
-        	id_apper2 = tr.find("td:eq(3)").html();
-    	})
+	// 사원 검색 클릭
+	$("form input[name=empSearch]").on("click", function() {
+		clickEmpSearch($(this));
 	});
 	
- 	// 사원검색 모달 출력 - 차장 
-    $("body").on("click", "#empSearch3", function() {
-    	let pos_code = 5;    	
-    	pos_code = encodeURIComponent(pos_code);
-    	
-    	let url = "${pageContext.request.contextPath}/edoc/write_searchEmp.do"
-    	let query = "pos_code="+pos_code;
-    	
-    	const fn = function(empList) {
-    		$("#empList").html(empList);
-			$("#empListModal").modal("show");
-    	}
-    	
-        ajaxFun(url, "post", query, "text", fn);
-        
-        $("body").on("click", "#empListTable tr", function() {
-        	let tr = $(this);
-      		
-        	id_apper3 = tr.find("td:eq(3)").html();
-    	})
-	});
-    
- 	// 사원검색 모달 출력 - 부장
-    $("body").on("click", "#empSearch4", function() {
-    	let pos_code = 6;    	
-    	pos_code = encodeURIComponent(pos_code);
-    	
-    	let url = "${pageContext.request.contextPath}/edoc/write_searchEmp.do"
-    	let query = "pos_code="+pos_code;
-    	
-    	const fn = function(empList) {
-    		$("#empList").html(empList);
-			$("#empListModal").modal("show");
-    	}
-    	
-        ajaxFun(url, "post", query, "text", fn);
-        
-        $("body").on("click", "#empListTable tr", function() {
-        	let tr = $(this);
-      		
-        	id_apper4 = tr.find("td:eq(3)").html();
-    	})
-	});
-
-    
+	
     // 문서구분 select - 값에 따른 문서폼 가져오기
     $("select[name=edocSelect]").change(function() {
     	let edoc = $(this).val();
@@ -198,10 +152,36 @@ $(function(){
         ajaxFun(url, "post", query, "text", fn);
 	});
     
-    
+   // 모달에서 select 된 사원
+    $("body").on("change", ".searchEmpSelect", function() {
+        let id_apper = $(this).val();
+    	let name_apper = $(this).find("option:selected").attr("data-name"); 
+
+		alert('선택한 사원 id: '+id_apper);
+		alert('선택한 사원 name: '+name_apper);
+		
+		// $(this).()attr('value',id_apper); // 클릭한 input의 value 값에 저장.
+		("input[name=empId]").attr('value', id_apper); 
+		("input[name=empSearch]").attr('value', name_apper); 
+    	// $('input[name=empSearch1]').attr('value',name_apper); 
+	});
     
 });
 
+function clickEmpSearch(object) {
+	let pos_code = object.attr("data-pos");
+	alert(pos_code);
+	
+	let url = "${pageContext.request.contextPath}/edoc/write_searchEmp.do"
+	let query = "pos_code="+encodeURIComponent(pos_code);
+	
+	const fn = function(empList) {
+		$("#empList").html(empList);
+		$("#empListModal").modal("show");
+	}
+	
+    ajaxFun(url, "post", query, "text", fn);
+}
 
 </script>
 
@@ -266,14 +246,24 @@ $(function(){
 						<td>
 							<div>
 								<div>
-									<p><input type="text" id="empSearch1" name="empSearch1" class="form-control"
-                                	style="width: 27%;" placeholder="대리 - 사원 검색" readonly="readonly"></p>
-                                	<p><input type="text" id="empSearch2" name="empSearch2" class="form-control"
-                                	style="width: 27%;" placeholder="과장 - 사원 검색" readonly="readonly"></p>
-                                	<p><input type="text" id="empSearch3" name="empSearch3" class="form-control"
-                                	style="width: 27%;" placeholder="차장 - 사원 검색" readonly="readonly"></p>  	
-                                	<p><input type="text" id="empSearch4" name="empSearch4" class="form-control"
+									<p><input type="text" id="empSearch1" name="empSearch" class="form-control" data-pos="3"
+                                	style="width: 27%;" placeholder="대리 - 사원 검색" readonly="readonly">
+                                	<input type="hidden" id="empId1" name="empId">
+                                	</p>
+                                	
+                                	<p><input type="text" id="empSearch2" name="empSearch" class="form-control" data-pos="4"
+                                	style="width: 27%;" placeholder="과장 - 사원 검색" readonly="readonly">
+                                	<input type="hidden" id="empId2" name="empId">
+                                	</p>
+                                	 
+                                	<p><input type="text" id="empSearch3" name=empSearch class="form-control" data-pos="5"
+                                	style="width: 27%;" placeholder="차장 - 사원 검색" readonly="readonly"> 	
+                                	<input type="hidden" id="empId2" name="empId">
+                                	</p> 
+                                	
+                                	<p><input type="text" id="empSearch4" name="empSearch" class="form-control" data-pos="6"
                                 	style="width: 27%;" placeholder="부장 - 사원 검색" readonly="readonly">
+                                	<input type="hidden" id="empId2" name="empId">
                         		</div>
 							</div>
 						</td>
@@ -298,11 +288,11 @@ $(function(){
 				</table>
 				
 				<div style="text-align: right;">
-					<button type="button" name="tempOk();" class="btn btn-secondary" style="font-size: 17px;">임시작성</button>
+					<button type="button" onclick="saveOk();" class="btn btn-secondary" style="font-size: 17px;">임시작성</button>
 				</div>
 				
 				<div style="text-align: center;">
-					<button type="button" name="sendOk();" class="btn btn-success" style="font-size: 20px;">결제요청</button>
+					<button type="button" onclick="sendOk();" class="btn btn-success" style="font-size: 20px;">결제요청</button>
 				</div>
 				<input type="hidden" name="id" value="${sessionScope.member.id}" class="form-control">
 			</form>
@@ -319,11 +309,11 @@ $(function(){
         						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       						</div>
      						 <div class="modal-body">
-        							<p>수신자 리스트</p>
+        							<p>수신자 사원 리스트</p>
         							<div id="empList">  </div>
       						</div>
       						<div class="modal-footer">
-        						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소하기</button>
+        						<button type="button" class="btn btn-secondary" name="btnEmpCancle" data-bs-dismiss="modal">취소하기</button>
        							<button type="button" class="btn btn-primary" name="btnEmpSelect">선택하기</button>
       						</div>
     					</div>
