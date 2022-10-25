@@ -118,6 +118,7 @@ public class ProjectServlet extends MyServlet{
 	}
 
 	
+	
 	private void projectSubmit(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		// 프로젝트 등록하기
 		
@@ -136,7 +137,7 @@ public class ProjectServlet extends MyServlet{
 			
 			ProjectDTO dto = new ProjectDTO();
 			
-			//사원 테이블 정보는 session 에 있죠
+			//작성자 (write.jsp 에서는 sessionScope)
 			dto.setId_p(info.getId());
 	
 			dto.setPro_name(req.getParameter("pro_name"));
@@ -179,7 +180,6 @@ public class ProjectServlet extends MyServlet{
 			
 			String me_id = info.getId();
 			String pro_code = req.getParameter("pro_code");
-			//String pd_code = req.getParameter("pd_code");
 			
 			//프로젝트 메인 정보 가져오기!
 			ProjectDTO dto = dao.readProject(pro_code, me_id);
@@ -187,9 +187,15 @@ public class ProjectServlet extends MyServlet{
 				resp.sendRedirect(cp + "/project/list.do");
 				return;
 			}
+
+			List<ProjectDTO> project_e = null;
+			project_e = dao.listProjectEmployee(pro_code);
+			
+			System.out.println(project_e);
 			
 			//JSP 로 전달할 속성
 			req.setAttribute("dto", dto);
+			req.setAttribute("pro_code", pro_code);
 
 			forward(req, resp, "/WEB-INF/views/project/pro_article.jsp");
 			return;
@@ -202,13 +208,68 @@ public class ProjectServlet extends MyServlet{
 		
 	}
 
-	private void updateForm(HttpServletRequest req, HttpServletResponse resp) {
-		// TODO Auto-generated method stub
+	private void updateForm(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		// 수정 폼!
+		ProjectDAO dao = new ProjectDAO();
+		
+		String cp = req.getContextPath();
+		String pro_code = req.getParameter("pro_code");
+		
+		try {
+			
+			ProjectDTO dto= dao.readUpdateProject(pro_code);
+
+			if(dto ==null) {
+				resp.sendRedirect(cp+ "/project/list.do");
+				return;
+			}
+			
+			req.setAttribute("dto", dto);
+			req.setAttribute("mode", "update");
+			
+			forward(req, resp, "/WEB-INF/views/project/pro_write.jsp");
+			return;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		resp.sendRedirect(cp + "project/article.do?pro_code=" + pro_code);
 		
 	}
 
-	private void updateSubmit(HttpServletRequest req, HttpServletResponse resp) {
-		// TODO Auto-generated method stub
+	private void updateSubmit(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		// 수정 완료
+		ProjectDAO dao = new ProjectDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		
+		String cp = req.getContextPath();
+		if (req.getMethod().equalsIgnoreCase("GET")) {
+			resp.sendRedirect(cp + "/project/list.do");
+			return;
+		}
+		
+		try {
+			ProjectDTO dto = new ProjectDTO();
+			
+			dto.setPro_code(req.getParameter("pro_code"));
+			dto.setId_p(info.getId());
+			dto.setPro_type(req.getParameter("pro_type"));
+			dto.setPro_name(req.getParameter("pro_name"));
+			dto.setPro_outline(req.getParameter("pro_outline"));
+			dto.setPro_content(req.getParameter("pro_content"));
+			dto.setPro_sdate(req.getParameter("pro_sdate"));
+			dto.setPro_edate(req.getParameter("pro_edate"));
+			
+			dao.updateProject(dto);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		resp.sendRedirect(cp + "/project/list.do");
 		
 	}
 

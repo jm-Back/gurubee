@@ -201,7 +201,7 @@ function sendOk(){
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700;900&display=swap');
 
 .form-holder {
-      display: flex;
+      
       min-height: 700px;
       max-width: 700px;
       flex-direction: column;
@@ -300,11 +300,12 @@ function sendOk(){
 }
 
 .btn-primary:hover, .btn-primary:focus, .btn-primary:active{
-    background-color: #eee;
+    background-color: #01d6b7;
     outline: none !important;
     border: none !important;
     box-shadow: none;
 }
+
 
 .form-content textarea {
     width: 100%;
@@ -367,55 +368,61 @@ function sendOk(){
 						<p>혁신적인 GURUBEE 프로젝트를 등록하세요.</p>
 						<form class="requires-validation" name="projectForm" method="post">
 							<div class="col-md-12">
-								<input type="radio"  class="btn-check btn-outline-secondary__2" name="pro_type" id="dept" value="부서 프로젝트" required>
-                            <label class="btn  shadow-sm " for="dept"> 부서 프로젝트 </label>
-								<input type="radio"  class="btn-check" name="pro_type" id="personal" value="개인 프로젝트" required>
-                            <label class="btn  shadow-sm" for="personal"> 개인 프로젝트 </label>
-								<input type="radio"  class="btn-check" name="pro_type" id="together" value="협업 프로젝트" required>
-                            <label class="btn  shadow-sm" for="together"> 협업 프로젝트 </label>
+								<input type="radio"  class="btn-check" name="pro_type" id="dept" value="부서 프로젝트" ${mode=='update' && dto.pro_type=='부서 프로젝트'?'checked="checked"':""} required>
+                            <label class="btn btn-primary  shadow-sm " for="dept"> 부서 프로젝트 </label>
+								<input type="radio"  class="btn-check" name="pro_type" id="personal" value="개인 프로젝트" ${mode=='update' && dto.pro_type=='개인 프로젝트'?'checked="checked"':""} required>
+                            <label class="btn btn-primary  shadow-sm" for="personal"> 개인 프로젝트 </label>
+								<input type="radio"  class="btn-check" name="pro_type" id="together" value="협업 프로젝트" ${mode=='update' && dto.pro_type=='협업 프로젝트'?'checked="checked"':""} required>
+                            <label class="btn btn-primary  shadow-sm" for="together"> 협업 프로젝트 </label>
 							</div>
 							<div class="col-md-12">
 								<div class="design_date"> 프로젝트 시작일&nbsp;    
-								<input class="form-control shadow-sm" type="date" name="pro_sdate" placeholder="프로젝트 시작일">
+								<input class="form-control shadow-sm" type="date" name="pro_sdate" placeholder="프로젝트 시작일" value="${dto.pro_sdate}">
 								</div>
 							</div>
 							<div class="col-md-12">
 								<div class="design_date"> 프로젝트 종료일&nbsp;   
-								<input class="form-control shadow-sm" type="date" name="pro_edate" placeholder="프로젝트 종료일">
+								<input class="form-control shadow-sm" type="date" name="pro_edate" placeholder="프로젝트 종료일" value="${dto.pro_edate }">
 								</div>
 							</div>
 							<div class="col-md-12">
-								<input class="form-control shadow-sm" type="text" name="pro_name" placeholder="프로젝트명">
-								<input type="hidden" name="id" value="">
+								<input class="form-control shadow-sm" type="text" name="pro_name" placeholder="프로젝트명" value="${dto.pro_name }">
+				<!-- 작성자 or 수정자 사번!! -->
+								<input type="hidden" name="id" value="${dto.id_p}">
 								<input type="hidden" name="pro_clear" >
+								<input type="hidden" name="pro_code" value="${dto.pro_code}" >
 							</div>
 
 							<div class="col-md-12">
-								<input class="form-control shadow-sm" type="text" name="pro_outline" placeholder="프로젝트 개요">
+								<input class="form-control shadow-sm" type="text" name="pro_outline" placeholder="프로젝트 개요" value="${dto.pro_outline }">
 							</div>
 							<div class="col-md-12">
-								<textarea class="form-control shadow-sm" name="pro_content" placeholder="프로젝트 내용" style="height: 120px;"></textarea>
+								<textarea class="form-control shadow-sm" name="pro_content" placeholder="프로젝트 내용" style="height: 120px;" >${dto.pro_content}</textarea>
 							</div>
 							<h3></h3>
 						<div class="row">
 							<div class="col-md-12" style="margin-bottom: -15px;">
-								<button type="button" class="att_master_btn btn btn-primary mb-3 shadow-sm">담당자 선택하기</button>
-								<input class="shadow-sm" type="hidden" name="pro_master">
-								<button type="button" class="att_employee_btn btn btn-primary mb-3 shadow-sm">참여자 선택하기</button>
+								<button type="button" class="att_master_btn btn btn-primary mb-3 shadow-sm" ${mode=='update'?'disabled="disabled"':""}>담당자 선택하기</button>
+								<input class="shadow-sm" type="hidden" name="pro_master" value="${dto.pro_master}">
+								<c:if test="${mode=='write'}">
+									<button type="button" class="att_employee_btn btn btn-primary mb-3 shadow-sm" >참여자 선택하기</button>
+								</c:if>
 							</div>
 							<div class="col-md-12">
-								<input class="form-control shadow-sm" type="text" name="pro_master_name" readonly="readonly" placeholder="프로젝트 담당자">
+								<input class="form-control shadow-sm" type="text" name="pro_master_name" readonly="readonly" placeholder="프로젝트 담당자" value="${dto.name_p}">
 							</div>
-							<div class="col-md-12">
+						<c:if test="${mode=='write'}">
+							<div class="col-md-12 ">
 								<div class="form-control em_design shadow-sm" > 프로젝트 참여자
 									<div class="mt-3 e_e" id="emlist">
 									</div>
 								</div>
 							</div>
+						</c:if>
 						</div>
 						<div class="form-button mt-5" style="text-align: center;">
-							<button class="btn btn-primary end__btn__design shadow-sm" type="button" onclick="sendOk();">등록하기</button>
-							<button class="btn btn-primary end__btn__design shadow-sm" type="reset" onclick="location.href='${pageContext.request.contextPath}/project/list.do'">취소하기</button>
+							<button class="btn btn-primary end__btn__design shadow-sm" type="button" onclick="sendOk();">${mode=='update'?'수정완료':'등록하기'}</button>
+							<button class="btn btn-primary end__btn__design shadow-sm" type="reset" onclick="location.href='${pageContext.request.contextPath}/project/list.do'">${mode=='update'?'수정취소':'등록취소'}</button>
 						</div>
 						</form>
 					</div>
@@ -424,6 +431,8 @@ function sendOk(){
 		</div>
 	</div>
 </div>	
+	
+	
 	
 	<!-- 참여자 선택 모달창 -->
 <div class="modal fade" id="attend_Modal1" tabindex="-1" 

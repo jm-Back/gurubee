@@ -131,19 +131,24 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 }
 
 .emp__list {
-    width: 100%;
-    height: 200px;
-    padding: 9px 20px;
+	display:inline-block;
+    width: 31%;
+    height: 70px;
+    padding: 3px 7px;
     text-align: left;
-    border: 0;
+    vertical-align:baseline;
+    border: 1px solid #eee;
     outline: 0;
+    font-weight: 600;
     border-radius: 6px;
     background-color: #fff;
     font-size: 15px;
     font-weight: 300;
     -webkit-transition: all 0.3s ease;
     transition: all 0.3s ease;
-    margin-top: 16px;
+    margin-top: 13px;
+    margin-left: 8px;
+    margin-right: 3px;
 }
 
 .profile__font {
@@ -164,6 +169,25 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 	margin-top: 20px;
 }
 
+.profile__small {
+	height: 60px;
+	width: 60px;
+	object-fit: cover;
+    border-radius: 100%;
+    border: 2px solid #eee ;
+    padding: 3px;
+}
+
+.fa__location {
+	display:inline-block;
+	text-align: right;
+	padding-left: 5px;
+	color: #01d6b7;
+	font-size: 19px;
+	vertical-align: middle;
+	padding-bottom: 3px;
+	cursor: pointer;
+}
 
 </style>
 
@@ -188,8 +212,9 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 					<div  class="project__update__icon">Project name : ${dto.pro_name}&nbsp;&nbsp;&nbsp;</div>
 					<div class="dropdown">
 						<i class="fa-solid fa-ellipsis-vertical " data-bs-toggle="dropdown" aria-expanded="false"></i>
+						<input type="hidden" value="${pro_code}" name="pro_code">
 						<ul class="dropdown-menu">
-							<li><a class="dropdown-item" href="#">프로젝트 수정</a></li>
+							<li><a class="dropdown-item" href="${pageContext.request.contextPath}/project/update.do?pro_code=${pro_code}">프로젝트 수정</a></li>
 							<li><a class="dropdown-item delete__red" href="#">프로젝트 삭제</a></li>
 						</ul>
 					</div>
@@ -204,7 +229,7 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 					<div >${dto.pro_outline}</div>
 				</div>
 				<div class="progress">
-					<div class="progress-bar" role="progressbar" style="width: ${dto.pd_ing}%" aria-valuenow="${dto.pd_ing}" aria-valuemin="0" aria-valuemax="100"></div>
+					<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: ${dto.pd_ing}%" aria-valuenow="${dto.pd_ing}" aria-valuemin="0" aria-valuemax="100"></div>
 				</div>
 				<div class="d-flex pt-4">
 					<div >${dto.pro_sdate}</div> &nbsp; ~ &nbsp; <div >${dto.pro_edate}</div>
@@ -226,8 +251,15 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 				<div class="d-flex justify-content-between">
 					<div class="project_title">프로젝트 참여자 리스트</div>
 				</div>
-				<div class="d-flex justify-content-between">
-					<div class="emp__list" >프로젝트 참여자 리스트 출력하기 ~</div>
+				<div class=" ">
+					<div class="emp__list shadow-sm" ><img class="profile__small" src="${pageContext.request.contextPath}/resources/images/profile.jpg" >&nbsp;이정재(과장)/개발팀
+						<div class="fa__location"><i class="fa-solid fa-rectangle-xmark "></i></div></div>
+					<div class="emp__list shadow-sm" ><img class="profile__small" src="${pageContext.request.contextPath}/resources/images/profile.jpg" >&nbsp;이정재(과장)/개발팀
+						<div class="fa__location"><i class="fa-solid fa-rectangle-xmark "></i></div></div>
+					<div class="emp__list shadow-sm" ><img class="profile__small" src="${pageContext.request.contextPath}/resources/images/profile.jpg" >&nbsp;이정재(과장)/개발팀
+						<div class="fa__location"><i class="fa-solid fa-rectangle-xmark "></i></div></div>
+					<div class="emp__list shadow-sm" ><img class="profile__small" src="${pageContext.request.contextPath}/resources/images/profile.jpg" >&nbsp;이정재(과장)/개발팀
+						<div class="fa__location"><i class="fa-solid fa-rectangle-xmark "></i></div></div>
 				</div>
 			</div>
 			
