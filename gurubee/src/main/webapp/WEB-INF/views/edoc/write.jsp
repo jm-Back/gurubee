@@ -100,7 +100,7 @@ $(function(){
 	
 	// 사원검색 모달 
     $(".empSearch").on("click", function() {
-    	let pos_code = $(this).attr("data-pos");
+    	let pos_code = $(this).attr("data-posCode");
     	
     	let url = "${pageContext.request.contextPath}/edoc/write_searchEmp.do"
     	let query = "pos_code="+encodeURIComponent(pos_code);
@@ -111,21 +111,6 @@ $(function(){
     	}
     	
         ajaxFun(url, "post", query, "text", fn);
-        
-        // 클릭한 사원의 데이터 가져오기
-        $("body").on("select[name=empSelectOption]").change(function() {
-            id_apper = $(this).val();
-        	let name_apper = $(this).attr("data-name"); 
-			// 전역변수에 값 저장
-        	
-			alert(id_apper);
-			alert(name_apper);
-			
-			// $(this).()attr('value',id_apper); // 클릭한 input의 value 값에 저장.
-			("input[name=empId]").attr('value', id_apper); 
-			("input[name=empSearch]").attr('value', name_apper); 
-        	// $('input[name=empSearch1]').attr('value',name_apper); 
-    	});
     	
 	});
 	
@@ -133,7 +118,6 @@ $(function(){
 	$("form input[name=empSearch]").on("click", function() {
 		clickEmpSearch($(this));
 	});
-	
 	
     // 문서구분 select - 값에 따른 문서폼 가져오기
     $("select[name=edocSelect]").change(function() {
@@ -153,23 +137,79 @@ $(function(){
 	});
     
    // 모달에서 select 된 사원
-    $("body").on("change", ".searchEmpSelect", function() {
-        let id_apper = $(this).val();
-    	let name_apper = $(this).find("option:selected").attr("data-name"); 
-
-		alert('선택한 사원 id: '+id_apper);
-		alert('선택한 사원 name: '+name_apper);
-		
-		// $(this).()attr('value',id_apper); // 클릭한 input의 value 값에 저장.
-		("input[name=empId]").attr('value', id_apper); 
-		("input[name=empSearch]").attr('value', name_apper); 
-    	// $('input[name=empSearch1]').attr('value',name_apper); 
+    $("body").on("click", "#btnEmpSelect", function() {
+    	let $ele = $(this).closest(".modal-content").find("select");
+		let id_apper = $ele.val();
+    	let name_apper = $ele.find("option:selected").attr("data-name"); 
+    	let pos_code = $ele.attr("data-posCode");
+    	
+    	alert(id_apper+": "+name_apper+": "+pos_code);
+    	if(pos_code === "3") {
+    		$("#empId1").val(id_apper);
+			$("#empSearch1").val(name_apper);
+    	} else if (pos_code === "4") {
+    		$("#empId2").val(id_apper);
+			$("#empSearch2").val(name_apper);
+    	} else if (pos_code === "5") {
+    		$("#empId3").val(id_apper);
+			$("#empSearch3").val(name_apper);
+    	} else if (pos_code === "6") {
+    		$("#empId4").val(id_apper);
+			$("#empSearch4").val(name_apper);
+    	}
 	});
+   
+   /*
+   // 수신자 사원 선택 btnEmpSelect
+	$("#btnEmpSelect").click(function() {
+		alert("선택햇삼");
+		let id_apper = $(this).val();
+    	let name_apper = $(this).find("option:selected").attr("data-name"); 
+    	let pos_code = $(this).find("option:selected").attr("data-posCode");
+    	$("body").on("click", ".btnEmpSelect", function() {
+		});
+    	if(pos_code === "3") {
+    		$("#empId1").attr("value", id_apper);
+			$("#empSearch1").attr("value", name_apper);
+    	} else if (pos_code === "4") {
+    		$("#empId2").attr("value", id_apper);
+			$("#empSearch2").attr("value", name_apper);
+    	} else if (pos_code === "5") {
+    		$("#empId3").attr("value", id_apper);
+			$("#empSearch3").attr("value", name_apper);
+    	} else if (pos_code === "6") {
+    		$("#empId4").attr("value", id_apper);
+			$("#empSearch4").attr("value", name_apper);
+    	}
+	});
+   */
+   
+   // 수신자 사원 삭제 btnEmpCancle
+   	$("#btnEmpCancle").click(function() {
+   		alert("취소햇삼");
+   		let pos_code = $(this).find("option:selected").attr("data-posCode");
+   		alert(pos_code);
+   		if(pos_code === "3") {
+    		$("#empId1").attr("value", '');
+			$("#empSearch1").attr("value", '');
+    	} else if (pos_code === "4") {
+    		$("#empId2").attr("value", '');
+			$("#empSearch2").attr("value", '');
+    	} else if (pos_code === "5") {
+    		$("#empId3").attr("value", '');
+			$("#empSearch3").attr("value", '');
+    	} else if (pos_code === "6") {
+    		$("#empId4").attr("value", '');
+			$("#empSearch4").attr("value", '');
+    	}
+	});
+   
+   
     
 });
 
 function clickEmpSearch(object) {
-	let pos_code = object.attr("data-pos");
+	let pos_code = object.attr("data-posCode");
 	alert(pos_code);
 	
 	let url = "${pageContext.request.contextPath}/edoc/write_searchEmp.do"
@@ -182,6 +222,7 @@ function clickEmpSearch(object) {
 	
     ajaxFun(url, "post", query, "text", fn);
 }
+
 
 </script>
 
@@ -246,22 +287,22 @@ function clickEmpSearch(object) {
 						<td>
 							<div>
 								<div>
-									<p><input type="text" id="empSearch1" name="empSearch" class="form-control" data-pos="3"
+									<p><input type="text" id="empSearch1" name="empSearch" class="form-control" data-posCode="3"
                                 	style="width: 27%;" placeholder="대리 - 사원 검색" readonly="readonly">
                                 	<input type="hidden" id="empId1" name="empId">
                                 	</p>
                                 	
-                                	<p><input type="text" id="empSearch2" name="empSearch" class="form-control" data-pos="4"
+                                	<p><input type="text" id="empSearch2" name="empSearch" class="form-control" data-posCode="4"
                                 	style="width: 27%;" placeholder="과장 - 사원 검색" readonly="readonly">
                                 	<input type="hidden" id="empId2" name="empId">
                                 	</p>
                                 	 
-                                	<p><input type="text" id="empSearch3" name=empSearch class="form-control" data-pos="5"
+                                	<p><input type="text" id="empSearch3" name=empSearch class="form-control" data-posCode="5"
                                 	style="width: 27%;" placeholder="차장 - 사원 검색" readonly="readonly"> 	
                                 	<input type="hidden" id="empId2" name="empId">
                                 	</p> 
                                 	
-                                	<p><input type="text" id="empSearch4" name="empSearch" class="form-control" data-pos="6"
+                                	<p><input type="text" id="empSearch4" name="empSearch" class="form-control" data-posCode="6"
                                 	style="width: 27%;" placeholder="부장 - 사원 검색" readonly="readonly">
                                 	<input type="hidden" id="empId2" name="empId">
                         		</div>
@@ -313,8 +354,8 @@ function clickEmpSearch(object) {
         							<div id="empList">  </div>
       						</div>
       						<div class="modal-footer">
-        						<button type="button" class="btn btn-secondary" name="btnEmpCancle" data-bs-dismiss="modal">취소하기</button>
-       							<button type="button" class="btn btn-primary" name="btnEmpSelect">선택하기</button>
+        						<button type="button" class="btn btn-secondary" id="btnEmpSelect" data-bs-dismiss="modal" aria-label="Close">선택하기</button>
+       							<button type="button" class="btn btn-primary" id="btnEmpCancle" data-bs-dismiss="modal">취소하기</button>
       						</div>
     					</div>
   					</div>

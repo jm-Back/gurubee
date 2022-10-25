@@ -6,6 +6,8 @@
 
 <select class="form-select searchEmpSelect" aria-label="Default select example" name="empSelectOption" data-posCode="${pos_code}">
 	<c:forEach var="vo" items="${list}" varStatus="loop">
-		<option value="${vo.id_apper}" data-name="${vo.name_apper}"> ${vo.dep_name}&nbsp;${vo.name_apper}&nbsp;${vo.pos_name}</option>
+		<option value="${vo.id_apper}" data-name="${vo.name_apper}"  > 
+			${vo.dep_name}&nbsp;${vo.name_apper}&nbsp;${vo.pos_name}
+		</option>
 	</c:forEach>
 </select>

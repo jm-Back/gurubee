@@ -83,8 +83,8 @@ public class EdocServlet extends MyServlet {
 			
 			
 			EdocEmpDTO empdto = new EdocEmpDTO();
-			
-			
+			// 넘어온 수신자 id 배열에 담고 dto 넣기
+			// empdto.setId_apper(req.getParameter("id_apper"));
 			
 		} catch (Exception e) {
 			e.printStackTrace();
