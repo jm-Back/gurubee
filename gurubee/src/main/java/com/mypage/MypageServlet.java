@@ -6,7 +6,9 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import com.login.SessionInfo;
 import com.util.MyServlet;
 
 @WebServlet("/mypage/*")
@@ -17,23 +19,25 @@ public class MypageServlet extends MyServlet{
 	protected void execute(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		req.setCharacterEncoding("utf-8");
 		
-		String uri = req.getRequestURI();
+		String cp = req.getContextPath();
 		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		if(info == null) {
+			resp.sendRedirect(cp+"/member/login.do");
+			return;
+		}
+		
+		String uri = req.getRequestURI();
 		if(uri.indexOf("mypage.do") != - 1) {
-			mypageForm(req, resp); // mypage main [mypage.jsp (tab기능 사용예정)]
+			selectemployee(req, resp); // mypage main(사용자정보 불러오기) [mypage.jsp (tab기능 사용예정)]
 			
 		} else if(uri.indexOf("mypage_write.do") != -1) {
-			mypageWriteForm(req, resp); // mypage 개인정보등록(사진) [mypage_write.jsp (tab1)]
+			mypageWriteForm(req, resp); // mypage 개인정보수정 폼 [mypage_write.jsp (tab1에서 출력)]
 			
 		} else if(uri.indexOf("mypage_ok.do") != -1) {
-			mypageWriteOkSubmit(req, resp); // mypage 개인정보등록완료 [mypage_ok.jsp (tab1에서 출력)]
-			
-		} else if (uri.indexOf("update.do") != -1) {
-			mypageupdateForm(req, resp); // mypage 개인정보수정 [mypage_write.jsp (tab1에서 출력)]
-			
-		}else if (uri.indexOf("update_ok.do") != -1) {
-			mypageupdateOkSubmit(req, resp);	// mypage 개인정보수정완료
-			
+			mypageWriteOkSubmit(req, resp); // // mypage 개인정보수정처리
+						
 		} else if(uri.indexOf("myatt.do") != -1) {
 			myattForm(req, resp); // mypage 근태관리 [myatt.jsp (tab2)]
 			
@@ -79,7 +83,16 @@ public class MypageServlet extends MyServlet{
 		
 	}
 	
-	private void mypageForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	private void selectemployee(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// 개인정보 보기
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		
+		MypageDAO dao = new MypageDAO();
+		
+		SessionInfo dto = dao.selectemployee(info.getId());
+		
+		req.setAttribute("dto", dto);
 		
 		
 		forward(req, resp, "/WEB-INF/views/mypage/mypage.jsp");
@@ -87,26 +100,61 @@ public class MypageServlet extends MyServlet{
 	}
 	
 	private void mypageWriteForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-		//프로젝트 처음에 작성
+		//mypage에서 개인정보 수정 폼
 		req.setAttribute("mode", "write");
-		forward(req, resp, "/WEB-INF/views/project/mypage_write.jsp");
+		forward(req, resp, "/WEB-INF/views/mypage/mypage_write.jsp");
 		
 	}
 
 	private void mypageWriteOkSubmit(HttpServletRequest req, HttpServletResponse resp) {
+		// mypage 개인정보수정 완료
+		MypageDAO dao = new MypageDAO();
+		HttpSession session = req.getSession();
+		
+		String cp = req.getContextPath();
+		if (req.getMethod().equalsIgnoreCase("GET")) {
+			return;
+		}
+		
+		try {
+			SessionInfo info = (SessionInfo) session.getAttribute("member");
+			if (info == null) {
+				resp.sendRedirect(cp + "/member/mypage_ok.do");
+				return;
+			}
+			SessionInfo dto = new SessionInfo();
+			
+			dto.setSave_filename(req.getParameter("save_filename"));
+			
+			dto.setId(req.getParameter("id"));
+			dto.setPwd(req.getParameter("pwd"));
+			dto.setName(req.getParameter("name"));
+			
+			String reg1 = req.getParameter("reg1");
+			String reg2 = req.getParameter("reg2");
+			dto.setReg(reg1 +"-"+ reg2);
+			
+			String email1 = req.getParameter("email1");
+			String email2 = req.getParameter("email2");
+			dto.setEmail(email1 + "@" + email2);
 
+			String phone1 = req.getParameter("phone1");
+			String phone2 = req.getParameter("phone2");
+			String phone3 = req.getParameter("phone3");
+			dto.setPhone(phone1 + "-" + phone2 + "-" + phone3);
+			
+			dto.setTel(req.getParameter("tel"));
+			
+			dao.mypageWriteForm(dto);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 
-	private void mypageupdateForm(HttpServletRequest req, HttpServletResponse resp) {
-
-	}
-
-	private void mypageupdateOkSubmit(HttpServletRequest req, HttpServletResponse resp) {
-
-	}
 
 	private void myattForm(HttpServletRequest req, HttpServletResponse resp) {
+		// 근태관리 홈
 
 	}
 
@@ -127,7 +175,7 @@ public class MypageServlet extends MyServlet{
 	}
 	
 	private void myoffForm(HttpServletRequest req, HttpServletResponse resp) {
-
+		// 연차관리
 	}
 	
 	private void myoffuseForm(HttpServletRequest req, HttpServletResponse resp) {
@@ -143,7 +191,7 @@ public class MypageServlet extends MyServlet{
 	}
 	
 	private void mypayForm(HttpServletRequest req, HttpServletResponse resp) {
-
+		// 급여명세서
 	}
 	
 	private void mypayarticleForm(HttpServletRequest req, HttpServletResponse resp) {
