@@ -20,6 +20,7 @@ import com.util.MyUploadServlet;
 import com.util.MyUtil;
 import com.util.MyUtilBootstrap;
 
+
 @MultipartConfig
 @WebServlet("/comp_notice/*")
 public class CompNoticeServlet extends MyUploadServlet {
@@ -216,7 +217,63 @@ public class CompNoticeServlet extends MyUploadServlet {
 		
 		String cp = req.getContextPath();
 		
+		String page = req.getParameter("page");
+		String query = "page=" + page;
 		
+		try {
+			
+			long num = Long.parseLong(req.getParameter("num"));
+			String condition = req.getParameter("condition");
+			String keyword = req.getParameter("keyword");
+			
+			// 초기 검색창 셋팅
+			if(condition == null) {
+				condition = "all";
+				keyword = "";
+			}
+			
+			// 뷰에서 인코딩되어 전송된 것을 디코딩
+			keyword = URLDecoder.decode(keyword, "utf-8");
+			
+			// 검색시
+			if(keyword.length() != 0) {
+				query += "&condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "utf-8");
+			}
+			
+			// 조회수 증가
+			dao.updateHitCount(num);
+			
+			// 게시물 가져오기
+			CompNoticeDTO dto = dao.readBoard(num);
+			
+			if(dto == null) {
+				resp.sendRedirect(cp + "/comp_notice/list.do?" + query);
+				return;
+			}
+			
+			// 이전글, 다음글
+			CompNoticeDTO preReadDto = dao.preReadBoard(dto.getNum(), condition, keyword);
+			CompNoticeDTO nextReadDto = dao.nextReadBoard(dto.getNum(), condition, keyword);
+			
+			// 뷰로 전달할 속성
+			
+			// 클릭한 공지사항에 대한 정보
+			req.setAttribute("dto", dto);
+			// 다시 리스트로 돌아갈 때 기존 페이지로 이동
+			req.setAttribute("page", page);
+			// [현재 페이지, (조건, 키워드)] 검색시 리스트로 다시 돌아갈 때 필요
+			req.setAttribute("query", query);
+			req.setAttribute("preReadDto", preReadDto);
+			req.setAttribute("nextReadDto", nextReadDto);
+			
+			forward(req, resp, "/WEB-INF/views/comp_notice/article.jsp");
+			return;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		 resp.sendRedirect(cp + "/comp_notice/list.do?" + query);
 	}
 
 }

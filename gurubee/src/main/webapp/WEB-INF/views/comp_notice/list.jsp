@@ -59,7 +59,8 @@ function searchList() {
 							<th class="subject">제목</th>
 							<th class="name">작성자</th>
 							<th class="date">작성일</th>
-							<th class="hit">번호</th>
+							<th class="hit">조회수</th>
+							<th class="file">파일</th>
 						</tr>
 					</thead>
 					
@@ -75,7 +76,7 @@ function searchList() {
 								<td>${dto.views}</td>
 								<td>
 									<c:if test="${not empty dto.save_filename}">
-										<a href="${pageContext.request.contextPath}/"></a>
+										<a href="${pageContext.request.contextPath}/comp_notice/download.do?num=${dto.num}" class="text-reset"><i class="bi bi-file-arrow-down"></i></a>
 									</c:if>
 								</td>
 							</tr>

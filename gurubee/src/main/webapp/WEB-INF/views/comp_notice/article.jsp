@@ -294,7 +294,7 @@ $(function(){
 							<td colspan="2">
 								이전글 :
 								<c:if test="${not empty preReadDto}">
-									<a href="${pageContext.request.contextPath}/comp_notice/article.do?${query}&num=${preReadDto.num}">${preReadDto.subject}</a>
+									<a href="${pageContext.request.contextPath}/comp_notice/article.do?${query}&num=${preReadDto.num}">${preReadDto.notice_title}</a>
 								</c:if>
 							</td>
 						</tr>
@@ -302,7 +302,7 @@ $(function(){
 							<td colspan="2">
 								다음글 :
 								<c:if test="${not empty nextReadDto}">
-									<a href="${pageContext.request.contextPath}/comp_notice/article.do?${query}&num=${nextReadDto.num}">${nextReadDto.subject}</a>
+									<a href="${pageContext.request.contextPath}/comp_notice/article.do?${query}&num=${nextReadDto.num}">${nextReadDto.notice_title}</a>
 								</c:if>
 							</td>
 						</tr>

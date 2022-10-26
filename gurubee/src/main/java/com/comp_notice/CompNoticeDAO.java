@@ -321,11 +321,11 @@ public class CompNoticeDAO {
 		
 		try {
 			
-			sql = " SELECT notice_num, notice_title, notice_content, "
-					+ " save_filename, ori_filename, views,regdate "
+			sql = " SELECT n.notice_num, notice_title, notice_content, "
+					+ " save_filename, ori_filename, views, regdate "
 					+ " FROM noticeAll n "
 					+ " JOIN noticeAllFile nf ON n.notice_num = nf.notice_num "
-					+ " WHERE notice_num = ? ";
+					+ " WHERE n.notice_num = ? ";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -376,7 +376,7 @@ public class CompNoticeDAO {
 		
 		try {
 			
-			sql = " UPDATE noticeAll SET views=views+1 WHERE num = ? ";
+			sql = " UPDATE noticeAll SET views=views+1 WHERE notice_num = ? ";
 
 			pstmt = conn.prepareStatement(sql);
 			
@@ -714,7 +714,7 @@ public class CompNoticeDAO {
 		
 		try {
 			
-			sql = " SELECT COUNT(*) FROM noticeAllReply "
+			sql = " SELECT NVL(COUNT(*), 0) FROM noticeAllReply "
 					+ " WHERE num = ? AND answer = 0 ";
 			
 			pstmt = conn.prepareStatement(sql);
@@ -730,6 +730,14 @@ public class CompNoticeDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e2) {
+					
+				}
+			}
+			
 			if(pstmt != null) {
 				try {
 					pstmt.close();
@@ -738,6 +746,70 @@ public class CompNoticeDAO {
 				}
 			}
 			
+			
+		}
+		
+		return result;
+	}
+	
+	// 댓글 목록 
+	public List<ReplyDTO> listReply(long num, int offset, int size) {
+		List<ReplyDTO> list = new ArrayList<>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			
+			/*
+			  	가져올 것들 : 댓글 번호, 아이디, 이름, 공지사항 번호, 댓글 내용, 댓글 등록일자, 대댓글 갯수
+				이름 가져오기 위해 employee(e) 테이블과 조인, 댓글과 대댓글 구분하기 위해 서브쿼리(a) 조인
+				(댓글에 대댓글은 있을 수도 있고 없을 수도 있다, 그러므로 nr 테이블 기준으로 LEFT OUTER JOIN을 한다.)
+			*/
+			sql = " SELECT nr.replyNum, nr.id, name, notice_num, content, nr.reg_date, "
+					+ " NVL(answerCount, 0) answerCount "
+					+ " FROM noticeAllReply nr "
+					+ " JOIN employee e ON nr.id = e.id "
+					+ " LEFT OUTER JOIN ( "
+					+ " 	SELECT answer, COUNT(*) answerCount "
+					+ " 	FROM noticeAllReply "
+					+ " 	WHERE answer != 0 "
+					+ " 	GROUP BY answer "
+					+ " ) a ON nr.replyNum = a.answer "
+					+ " WHERE num = ? AND nr.answer = 0 "
+					+ " ORDER BY nr.replyNum DESC "
+					+ " OFFSET ? FETCH FIRST ? ROWS ONLY ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+			pstmt.setInt(2, offset);
+			pstmt.setInt(3, size);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				
+				ReplyDTO dto = new ReplyDTO();
+				
+				dto.setReply_num(rs.getLong("replyNum"));
+				dto.setReply_id(rs.getString("id"));
+				dto.setReply_name(rs.getString("name"));
+				dto.setNotice_num(rs.getLong("notice_num"));
+				dto.setRep_contents(rs.getString("content"));
+				dto.setRep_regdate(rs.getString("reg_date"));
+				dto.setAnswerCount(rs.getInt("answerCount"));
+				
+				list.add(dto);
+				
+			}
+			
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			
 			if(rs != null) {
 				try {
 					rs.close();
@@ -745,13 +817,204 @@ public class CompNoticeDAO {
 					
 				}
 			}
+			
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+					
+				}
+			}
+		}
+		
+		return list;
+	}
+	
+	public void deleteReply(long replyNum, String id) throws SQLException {
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		
+		try {
+			
+			// 관리자일 경우
+			if(id.equals("admin")) {
+				
+				// 관리자가 쓴 댓글인지 확인
+				sql = " SELECT replyNum FROM noticeAllReply WHERE replyNum = ? AND id = ? ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setLong(1, replyNum);
+				pstmt.setString(2, id);
+				
+				rs = pstmt.executeQuery();
+				
+				boolean b = false;
+				
+				// 관리자가 쓴 댓글 맞을 경우
+				if(rs.next()) {
+					b = true;
+				}
+				
+				rs.close();
+				pstmt.close();
+				
+				// 관리자가 쓴 댓글이 아닐 경우
+				if(! b) {
+					return;
+				}
+				
+			}
+			
+			/*
+			 		계층형 쿼리 : 부모, 자식 간의 수직관계를 트리 구조 형태로 보여주는 쿼리
+					START WITH : 트리 구조의 최상위 행을 지정
+					CONNECT BY : 부모, 자식의 관계를 지정
+					PRIOR : CONNECT BY 절에 사용되며 PRIOR에 지정된 컬럼이 맞은편 컬럼을 찾아간다.
+					CONNECT BY PRIOR 자식 컬럼 = 부모 컬럼 : 부모 → 자식 순방향 전개
+					CONNECT BY PRIOR 부모 컬럼 = 자식 컬럼 : 자식 → 부모 역방향 전개
+			 */
+			sql = " DELETE FROM noticeAllReply "
+					+ " WHERE replyNum IN "
+					+ " ( SELECT replyNum FROM noticeAllReply START WITH replyNum = ? "
+					+ " 	CONNECT BY PRIOR replyNum = answer ) ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, replyNum);
+			
+			pstmt.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+					
+				}
+			}
+			
+		}
+		
+		
+	}
+	
+	// 댓글의 답글 리스트
+	public List<ReplyDTO> listReplyAnswer(long answer) {
+		List<ReplyDTO> list = new ArrayList<>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			// answer가 0일 경우 : 댓글
+			//	    0이 아닐 경우 : 대댓글
+			sql = " SELECT replyNum, notice_num, id, name, content, reg_date, answer "
+					+ " FROM noticeAllReply nr "
+					+ " JOIN employee e ON nr.id = e.id "
+					+ " WHERE answer = ? "
+					+ " ORDER BY replyNum DESC ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, answer);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				
+				ReplyDTO dto = new ReplyDTO();
+				
+				dto.setReply_num(rs.getLong("replyNum"));
+				dto.setNotice_num(rs.getLong("notice_num"));
+				dto.setReply_id(rs.getString("id"));
+				dto.setReply_name(rs.getString("name"));
+				dto.setRep_contents(rs.getString("content"));
+				dto.setRep_regdate(rs.getString("reg_date"));
+				dto.setAnswer(rs.getLong("answer"));
+				
+				list.add(dto);
+				
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e2) {
+					
+				}
+			}
+			
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+					
+				}
+			}
+		}
+		
+		
+		return list;
+	}
+	
+	// 댓글의 답글 갯수
+	public int dataCountReplyAnswer(long answer) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			
+			sql = " SELECT NVL(COUNT(*), 0) FROM noticeAllReply "
+					+ " WHERE answer = ? ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, answer);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				
+				result = rs.getInt(1);
+				
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e2) {
+					
+				}
+			}
+			
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+					
+				}
+			}
+			
 		}
 		
 		return result;
 	}
-	
-	
-	
 	
 	
 }
