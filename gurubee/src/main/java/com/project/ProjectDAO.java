@@ -851,9 +851,111 @@ public class ProjectDAO {
 			return dto;
 		}
 		
+		//프로젝트 참여자 삭제하기 (ajax 로 만들기!!)
+		public void deleteEmployeeList(String pj_id, String pd_code) throws SQLException {
+			PreparedStatement pstmt = null;
+			String sql;
+			
+			try {
+				sql = " DELETE FROM project_join "
+						+ " WHERE id = ? AND pd_code = ? ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, pj_id);
+				pstmt.setString(2, pd_code);
+				
+				pstmt.executeUpdate();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw e;
+			} finally {
+				if(pstmt !=null) {
+					try {
+						pstmt.close();
+					} catch (Exception e) {
+					}
+				}
+			}
+			
+
+		}
 		
+		//프로젝트 참여자 추가 
+		public void addEmployee(String pd_code, String pj_id) throws SQLException {
+			PreparedStatement pstmt = null;
+			String sql;
+			
+			try {
+				
+				sql = " INSERT INTO project_join(pj_code, pd_code, id, pj_role) "
+						+ " VALUES(pj_seq.NEXTVAL, ?, ?, '참여자') ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, pd_code);
+				pstmt.setString(2, pj_id);
+				pstmt.executeUpdate();
+				
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw e;
+			} finally {
+				if(pstmt !=null) {
+					try {
+						pstmt.close();
+					} catch (Exception e2) {
+					}
+				}
+			}
+		}
 		
+		//프로젝트 참여자 중복 검사
+		public int checkEmployee(String pd_code, String pj_id) throws SQLException {
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			int result = 0;
+			String sql;
+			
+			try {
+				
+				sql = " SELECT COUNT(*) FROM project_join WHERE pd_code = ? AND id = ? ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, pd_code);
+				pstmt.setString(2, pj_id);
+				
+				rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					result = rs.getInt(1);
+				}
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw e;
+			} finally {
+				if(rs!=null) {
+					try {
+						rs.close();
+					} catch (Exception e2) {
+					}
+				}
+				if(pstmt !=null) {
+					try {
+						pstmt.close();
+					} catch (Exception e2) {
+					}
+				}
+			}
+
+			return result;
+			
+		}
 		
-		
+
 	
 }

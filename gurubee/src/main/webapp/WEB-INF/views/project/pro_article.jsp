@@ -14,7 +14,7 @@
 	type="text/css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/calendar.css"
 	type="text/css">	
-	
+
 <style type="text/css">
 ::-webkit-scrollbar { 
 	width: 15px;
@@ -38,6 +38,10 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 	color: white;
 	background-color: #01d6b7;
 	opacity: 80%;
+}
+
+.plus__project2:hover {
+	opacity: 100%;
 }
 
 .project__detail__design {
@@ -189,45 +193,146 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 
 .last__edit {
 	color: #81F54F;
+	font-size: 12px;
 }
 
 .last__edit2 {
 	color: black;
+	font-size: 15px;
 }
+
+.add__emp {
+	margin-right: 20px;
+	background: #01d6b7;
+	text-align: center;
+	padding: 10px 10px;
+	border-radius: 8px;
+	color: #fff;
+	font-weight: 600;
+	font-size: 16px;
+	opacity: 80%;
+}
+
+.add__emp:hover {
+	opacity: 100%;
+	cursor: pointer;
+}
+
 
 </style>
 
 <script type="text/javascript">
 
-$(function(){
-	$(".fa__location").click(function(e){
-		const index = $(e.target).parent().parent().index();
+function ajaxFun(url, method, query, dataType, fn) {
+	$.ajax({
+		type:method,
+		url:url,
+		data:query,
+		dataType:dataType,
+		success:function(data){
+			fn(data);
+		},
+		beforeSend:function(jqXHR){
+			//ajax 라고 서버한테 한 번 던져주는거다.
+			//내가 만든 서버 ajax 란 이름으로 보냄
+			//바디보다 헤더가 더 먼저 서버로 가기 때문에, 헤더에 ajax 보내고
+			//서블릿에서 보낸것에서 if return 해본다.
+			jqXHR.setRequestHeader("AJAX", true);
+			
+		},
+		error:function(jqXHR){
+			if(jqXHR.status === 403) {
+				login();
+				return false;
+			}else if(jqXHR.status === 400){
+				alert("요청 처리가 실패했습니다.");
+				return false;
+			}
+			console.log(jqXHR.responseText);
+		}
+	});
+}
 
-		if(confirm("프로젝트 참여자에서 삭제하시겠습니까?")){
-			$(".emp__list").eq(index).remove();
-			return;
+//참여자 삭제하기 (db 에서도 삭제함)
+$(function(){
+	$(".fa__location").click(function(){
+		if(! confirm("참여자를 삭제하시겠습니까?")){
+			return false;
 		}
 		
+		let pj_id = $(this).attr("data-pjId");
+		let pd_code = $("input[name=pd_code]").val();
+		
+		let url = "${pageContext.request.contextPath}/project/delete_emp_ok.do";
+		let query = "pj_id="+pj_id+"&pd_code="+pd_code;
+		
+		const fn = function(data){
+			if(data.state === "true"){
+				window.location.reload();
+			} else {
+				alert("삭제가 실패했습니다.")
+			}
+		};
+		
+		ajaxFun(url, "post", query, "json", fn);
+		
 	});
+	
+});
 
-}); 
+//참여자 등록
+$(function(){
+	$(".add__emp").click(function(){
+		$("#Emp__list__add").modal("show");
+		
+	});
+	
+	$(".btnClose").click(function(){
+		$("#Emp__list__add").modal("hide");
+	});
+	
+	
+	//새로운 참여자 - 등록하기 눌렀을 때
+	$("#add__emp__submit").click(function(){
+		//사번, pd_code 필요함
+		let pj_id = $("#selectAddEmp option:selected").attr("data-empId"); //사번
+		let pd_code = "${pd_code}";
+
+		if($("#selectAddEmp option:selected").length < 1 || $("#selectAddEmp option:selected").length > 1){
+			alert("추가 참여자 등록은 1명씩 가능합니다.");
+			return false;
+		}
+		
+		let url = "${pageContext.request.contextPath}/project/add_employee.do";
+		let query = "pj_id="+pj_id+"&pd_code="+pd_code;
+		
+		//등록
+		const fn = function(data){
+			if(data.state === "true"){
+				window.location.reload();
+				
+			} else {
+				alert("추가 등록이 실패했습니다.")
+			}
+		};
+		
+		ajaxFun(url, "post", query, "json", fn);
+
+		
+	});
+});
 
 
-<c:if test="${sessionScope.member.id=='admin'}">
-function deleteBoard() {
-    if(confirm("게시글을 삭제 하시 겠습니까 ? ")) {
-	    let query = "num=${dto.num}&${query}";
-	    let url = "${pageContext.request.contextPath}/notice/delete.do?" + query;
-    	location.href = url;
-    }
-}
-</c:if>
+
+
 
 $(function(){
 	$(".delete__red").click(function(){
 		if(confirm("프로젝트를 삭제하시겠습니까?")){
-			alert("삭제 되었습니다.")
+			alert("더 좋은 프로젝트로 만나요 :) ")
 			return;
+		} else {
+			return false;
 		}
 		
 	});
@@ -271,7 +376,7 @@ $(function(){
 			<div class="p-3 mb-4 project__detail__design shadow p-1 rounded">
 				<div class="d-flex justify-content-between">
 					<div class="project_title">${dto.pro_type}</div>
-					<div class="clear__state">${dto.pro_clear}</div>
+					<div class="clear__state shadow-sm">${dto.pro_clear}</div>
 				</div>
 				<div class="d-flex pt-3 pb-2 justify-content-between">
 					<div >${dto.pro_outline}</div>
@@ -296,17 +401,18 @@ $(function(){
 			
 			
 			<!-- 프로젝트 참여자 목록 -->
-			<div class="p-3 mb-4 project__detail__design shadow p-1 rounded">
+			<div class="p-3 mb-4 pb-4 project__detail__design shadow p-1 rounded">
 				<div class="d-flex justify-content-between">
-					<div class="project_title">프로젝트 참여자 리스트</div>
+					<div class="project_title pb-3">프로젝트 참여자 리스트</div>
+					<div class="add__emp shadow-sm">참여자 추가하기</div>
 				</div>
 				<!-- 참여자 삭제 이벤트 존재함 -->
 				<form method="post">
 					<c:forEach var="dto" items="${list_emp}" varStatus="status">
-						<div class="emp__list shadow-sm" ><img class="profile__small" src="${pageContext.request.contextPath}/resources/images/${dto.pro_profile}">&nbsp;${dto.name_p}(${dto.pos_name})/${dto.dep_name} 
-							<div class="fa__location">
+						<div class="emp__list shadow-sm mt-4 pt-1" ><img class="profile__small" src="${pageContext.request.contextPath}/resources/images/${dto.pro_profile}">&nbsp;${dto.name_p}(${dto.pos_name})/${dto.dep_name} 
+							<div class="fa__location" data-pjId='${dto.pj_id}'>
 								<i class="fa-solid fa-rectangle-xmark "></i>
-								<input type="hidden" value="${dto.pj_id}" >
+								<input type="hidden" value="${dto.pj_id}" name="pj_id">
 							</div>
 						</div>
 							
@@ -343,7 +449,7 @@ $(function(){
 	</div>
 	<div class="row">
 		<div class="col-md-12">
-			<div class="p-4 mb-4 mt-2 plus__project shadow p-3 mb-5 rounded">
+			<div class="p-4 mb-4 mt-2 plus__project plus__project2 shadow p-3 mb-5 rounded">
 				<div class="d-flex justify-content-between">
 					<div ><i class="fa-solid fa-plus"></i>&nbsp;프로젝트 챕터 추가</div>
 				</div>
@@ -351,6 +457,45 @@ $(function(){
 		</div>
 	</div>
 </div>
+
+
+	<!-- 마스터 선택 모달창 -->
+<div class="modal fade" id="Emp__list__add" tabindex="-1" 
+		data-bs-backdrop="static" data-bs-keyboard="false"
+		aria-labelledby="myDialogModalLabel2" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="Emp__list__addLabel2">새로운 프로젝트 인재</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+        		<p>새로 추가할 프로젝트 참여자를 선택하세요<p>
+					<form name="chooseForm_add_emp" method="post">
+						<table class="table form-table">
+							<tr>
+							    <td width="150"><span>사원 목록</span></td>
+							</tr>
+							<tr>
+							    <td class="left">
+							        <select id="selectAddEmp" name="itemLeft" multiple="multiple" class="form-select" style="width:100%; height:120px;">
+							    		<c:forEach var="ae" items="${list_add_e}" varStatus="status">
+							    			<option value="${ae.id_p}" data-name="${ae.name_p}" data-empId="${ae.id_p}">${ae.name_p}(${ae.pos_name})/${ae.dep_name}</option>
+							    		</c:forEach>
+							    	</select>
+							    </td>
+							</tr>
+						</table>
+					</form>	
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary btnClose">닫기</button>
+				<button id="add__emp__submit" type="button" class="btn btn-primary">등록하기</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 
 
 </main>

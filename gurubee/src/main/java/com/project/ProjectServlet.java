@@ -1,8 +1,7 @@
 package com.project;
 
 import java.io.IOException;
-
-
+import java.io.PrintWriter;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -11,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONObject;
 
 import com.login.SessionInfo;
 import com.util.MyServlet;
@@ -55,15 +55,10 @@ public class ProjectServlet extends MyServlet{
 			projectdelete(req, resp);
 		} else if(uri.indexOf("delete_emp_ok.do") != -1) { //프로젝트 참여자 삭제
 			projectempdelete(req, resp);
+		} else if(uri.indexOf("add_employee.do") != -1) { //프로젝트 참여자 추가등록
+			addProjectemp(req, resp);
 		}
 		 
-	}
-	
-
-	//프로젝트 참여자 삭제 버튼 
-	private void projectempdelete(HttpServletRequest req, HttpServletResponse resp) {
-		// 프로젝트 참여자 삭제 버튼
-		
 	}
 
 
@@ -100,6 +95,7 @@ public class ProjectServlet extends MyServlet{
 		
 	}
 
+	
 	private void projectWriteForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		//프로젝트 작성폼
 		
@@ -120,10 +116,8 @@ public class ProjectServlet extends MyServlet{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		
+
 		forward(req, resp, "/WEB-INF/views/project/pro_write.jsp");
-		
 	}
 
 	
@@ -205,6 +199,11 @@ public class ProjectServlet extends MyServlet{
 			
 			// 3. 작성자 정보 가져오기 readId
 			ProjectDTO vo = dao.readId(id_p);
+			
+			// 4. 추가 참여자 모달 정보 가져오기
+			List<ProjectDTO> list_add_e = null;
+			list_add_e = dao.listemployee();
+			
 
 			//JSP 로 전달할 속성
 			req.setAttribute("dto", dto);
@@ -212,6 +211,8 @@ public class ProjectServlet extends MyServlet{
 			req.setAttribute("list_emp", list_emp);
 			req.setAttribute("pd_code", pd_code);
 			req.setAttribute("vo", vo);
+			req.setAttribute("list_add_e", list_add_e);
+	
 
 			forward(req, resp, "/WEB-INF/views/project/pro_article.jsp");
 			return;
@@ -301,6 +302,7 @@ public class ProjectServlet extends MyServlet{
 		
 	}
 
+	
 	private void projectdelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		// 프로젝트 삭제 (담당자만 가능!)
 		ProjectDAO dao = new ProjectDAO();
@@ -320,6 +322,77 @@ public class ProjectServlet extends MyServlet{
 		resp.sendRedirect(cp + "/project/list.do");
 		
 	}
+	
+	//프로젝트 참여자 삭제 버튼  (ajax - json)
+	private void projectempdelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		// 프로젝트 참여자 삭제 버튼
+		ProjectDAO dao = new ProjectDAO();
+		
+		String state = "false";
+		
+		try {
+			String pj_id = req.getParameter("pj_id");
+			String pd_code = req.getParameter("pd_code");
+			
+			dao.deleteEmployeeList(pj_id, pd_code);
+			
+			//삭제 되면 true
+			state = "true";
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		JSONObject job = new JSONObject();
+		job.put("state", state);
+		
+		resp.setContentType("text/html;charset=utf-8");
+		PrintWriter out = resp.getWriter();
+		out.print(job.toString());
+		
+	}
+	
+
+	private void addProjectemp(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		// 프로젝트 참여자 추가등록하기! json 
+		ProjectDAO dao = new ProjectDAO();
+		
+		String state = "false";
+		
+		try {
+			
+			//등록할 사원의 id 사번, 해당 프로젝트 pd_code 필요
+			String pj_id = req.getParameter("pj_id");
+			String pd_code = req.getParameter("pd_code");
+			
+			//중복 검사
+			int result = dao.checkEmployee(pd_code, pj_id);
+			if(result > 0) {
+				state = "false";
+				return;
+				
+			} else {
+				dao.addEmployee(pd_code, pj_id);
+				state = "true";
+			}
+
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		JSONObject job = new JSONObject();
+		job.put("state", state);
+		
+		resp.setContentType("text/html;charset=utf-8");
+		PrintWriter out = resp.getWriter();
+		out.print(job.toString());
+		
+		
+	}
+
+	
+	
 	
 
 }
