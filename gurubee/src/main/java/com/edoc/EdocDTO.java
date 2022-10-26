@@ -9,7 +9,7 @@ public class EdocDTO {
 	private String app_date; // 문서작성일자
 	private String memo;
 	private String doc_form; // 문서폼. CLOB
-	private String doc_num; // 문서번호. 재무-20221014_4
+	private String title; // 제목
 	private int temp; // 임시 구분. 0:임시, 1:제출
 
 	public String getId_write() {
@@ -48,11 +48,11 @@ public class EdocDTO {
 	public void setDoc_form(String doc_form) {
 		this.doc_form = doc_form;
 	}
-	public String getDoc_num() {
-		return doc_num;
+	public String getTitle() {
+		return title;
 	}
-	public void setDoc_num(String doc_num) {
-		this.doc_num = doc_num;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 	public int getTemp() {
 		return temp;

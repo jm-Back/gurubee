@@ -60,9 +60,8 @@ function sendOk() {
   	
 	let edoc = f.edocSelect.value.trim(); // 문서구분
 	let content = oEditors.getById["ir1"].getIR(); // 문서폼
-	let memo = f.memo.value;
+	let title = f.title.value.trim(); // 문서제목
 	let id_array = [f.empId1.value, f.empId2.value, f.empId3.value, f.empId4.value];
-	oEditors.getById["ir1"].exec("UPDATE_CONTENTS_FIELD", []);
 	
 	// 결재자 사번 빈 값 없애기 
 	const id_apper_array = id_array.filter(
@@ -73,6 +72,11 @@ function sendOk() {
   	
   	if(! edoc.trim()) {
       	alert("문서구분을 선택하세요. ");
+  	    return false;
+ 	}
+  	
+  	if(! title.trim()) {
+      	alert("제목을 선택하세요. ");
   	    return false;
  	}
   
@@ -94,7 +98,46 @@ function sendOk() {
 
 // 문서 임시저장
 function saveOk() {
+	alert('임시작성');
 	
+	const f = document.writeForm;
+	
+	let edoc = f.edocSelect.value.trim(); // 문서구분
+	let content = oEditors.getById["ir1"].getIR(); // 문서폼
+	let title = f.title.value.trim(); // 문서제목
+	let id_array = [f.empId1.value, f.empId2.value, f.empId3.value, f.empId4.value];
+	
+	// 결재자 사번 빈 값 없애기 
+	const id_apper_array = id_array.filter(
+		(element) => true		
+	);
+	
+	console.log(id_array);
+  	
+  	if(! edoc.trim()) {
+      	alert("문서구분을 선택하세요. ");
+  	    return false;
+ 	}
+  	
+  	if(! title.trim()) {
+      	alert("제목을 선택하세요. ");
+  	    return false;
+ 	}
+  
+ 	if(!content || content==="<p><br></p>") {
+    	alert("상세내용을 입력하세요. ");
+    	$("#content").focus();
+    	return false;
+  	}
+  
+ 	if(id_apper_array.length < 1) {
+ 		alert("수신자는 1명 이상 선택하세요. ");
+ 		return false;
+ 	}
+ 	
+ 	f.action = "${pageContext.request.contextPath}/edoc/write_save.do";
+  
+  	f.submit();
 }
 
 $(function(){
@@ -137,6 +180,7 @@ $(function(){
     		// 문서구분이 선택되면 문서폼 가져와서 에디터 content 채우기
     		oEditors.getById["ir1"].exec("SET_IR", ['']);
     		oEditors.getById["ir1"].exec("PASTE_HTML", [doc_form]);
+    		oEditors.getById["ir1"].exec("UPDATE_CONTENTS_FIELD", []);
     	}
         
         ajaxFun(url, "post", query, "text", fn);
@@ -242,6 +286,15 @@ function clickEmpSearch(object) {
 					</tr>
 					
 					<tr>
+						<th class="fs-6">제목</th>
+						<td> 
+							<div class="mb-3">
+  							<input class="form-control" type="text" id="title" name="title" multiple style="width: 50%; height: 80px;">
+							</div>
+						</td>
+					</tr>
+					
+					<tr>
 						<th class="fs-6">작성자</th>
 						<td class="fs-6">
 							<input type="text" name="name" value="${sessionScope.member.name}" class="form-control" 
@@ -306,7 +359,7 @@ function clickEmpSearch(object) {
 						<th class="fs-6">메모</th>
 						<td> 
 							<div class="mb-3">
-  							<input class="form-control" type="text" id="memo" multiple style="width: 50%; height: 80px;">
+  							<input class="form-control" type="text" id="memo" name="memo" multiple style="width: 50%; height: 80px;">
 							</div>
 						</td>
 					</tr>
@@ -318,7 +371,6 @@ function clickEmpSearch(object) {
 				<div style="text-align: center;">
 					<button type="button" onclick="sendOk();" class="btn btn-success" style="font-size: 20px;">결제요청</button>
 				</div>
-				<input type="hidden" name="temp" value=" " class="form-control">
 			</form>
 		</div>
 	

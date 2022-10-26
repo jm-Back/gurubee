@@ -12,14 +12,12 @@ public class EdocDAO {
 	private Connection conn = DBConn.getConnection();
 	
 	// 전자결재문서 
-	public int insertEApproval(EdocDTO edocdto) {
+	public void insertEApproval(EdocDTO edocdto) {
 		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		int app_num = 0; // 전자결재번호. 
 		String sql;
 		
 		try {
-			sql = "INSERT INTO E_APPROVAL (app_num, app_doc, id, app_date, doc_form, doc_num, temp) "
+			sql = "INSERT INTO E_APPROVAL (app_num, app_doc, id, app_date, doc_form, title, temp) "
 					+ " VALUES (APPVAL_SEQ.NEXTVAL, ?, ?, SYSDATE, ?, ?, ?) ";
 			
 			pstmt = conn.prepareStatement(sql);
@@ -27,10 +25,10 @@ public class EdocDAO {
 			pstmt.setString(1, edocdto.getApp_doc());
 			pstmt.setString(2, edocdto.getId_write());
 			pstmt.setString(3, edocdto.getDoc_form());
-			pstmt.setString(4, edocdto.getDoc_num());
+			pstmt.setString(4, edocdto.getTitle());
 			pstmt.setInt(5, edocdto.getTemp());
 			
-			rs = pstmt.executeQuery();
+			pstmt.executeQuery();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -43,7 +41,6 @@ public class EdocDAO {
 			}
 		}
 		
-		return app_num;
 	}
 	
 	// 전자결재자 

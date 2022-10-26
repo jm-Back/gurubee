@@ -40,13 +40,17 @@ public class EdocServlet extends MyServlet {
 		} else if(uri.indexOf("write.do") != -1) {
 			writeForm(req, resp);
 		} else if(uri.indexOf("write_ok.do") != -1) {
-			writeSubmit(req, resp);
-		}  else if(uri.indexOf("write_searchEmp.do") != -1) {
+			writeSubmit(req, resp, 1);
+		} else if(uri.indexOf("write_save.do") != -1) {
+			writeSubmit(req, resp, 0);
+		} else if(uri.indexOf("write_searchEmp.do") != -1) {
 			listEmp(req, resp);
 		} else if(uri.indexOf("write_edocForm.do") != -1) {
 			getEdocForm(req, resp);
-		} else if(uri.indexOf("list.do") != -1) {
-			listEdoc(req, resp);
+		} else if(uri.indexOf("list_send.do") != -1) {
+			listSend(req, resp);
+		} else if(uri.indexOf("list_receive.do") != -1) {
+			listReceive(req, resp);
 		} 
 	}
 	
@@ -55,8 +59,9 @@ public class EdocServlet extends MyServlet {
 		forward(req, resp, path);
 	}
 	
-	protected void writeSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// 결재문서 등록 폼
+	// 결재문서 등록 폼
+	protected void writeSubmit(HttpServletRequest req, HttpServletResponse resp, int temp) throws ServletException, IOException {
+		// temp:임시구분
 		EdocDAO dao = new EdocDAO();
 		HttpSession session = req.getSession();
 		SessionInfo info = (SessionInfo) session.getAttribute("member");
@@ -74,8 +79,8 @@ public class EdocServlet extends MyServlet {
 			edocdto.setId_write(info.getId());
 			edocdto.setApp_doc(req.getParameter("edocSelect"));
 			edocdto.setDoc_form(req.getParameter("content"));
-			edocdto.setDoc_num(edocdto.getApp_doc()+"-"+edocdto.getId_write());
-			edocdto.setTemp(1);
+			edocdto.setTitle(req.getParameter("title"));
+			edocdto.setTemp(temp);
 			
 			System.out.println(edocdto.getDoc_form());
 			System.out.println(edocdto.getId_write());
@@ -84,8 +89,7 @@ public class EdocServlet extends MyServlet {
 			
 			String app_id[] = req.getParameterValues("empId"); // 수신자 사번
 			
-			// 전자결재문서 결재자 등록
-			// 수신자 아이디 갯수만큼 반복
+			// 전자결재문서 결재자 등록 - 수신자 아이디 갯수만큼 반복
 			for (int i = 0; i < app_id.length; i++) {
 				if (! (app_id[i] == null || app_id[i].length() == 0)) {
 					System.out.println(app_id[i]);
@@ -102,7 +106,7 @@ public class EdocServlet extends MyServlet {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		// resp.sendRedirect(cp + "/edoc/main.do");
+		resp.sendRedirect(cp + "/edoc/list_send.do");
 	}
 	
 	protected void listEmp(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -137,11 +141,6 @@ public class EdocServlet extends MyServlet {
 			String form = req.getParameter("edoc");
 			
 			formdto = dao.findByForm(form);
-			/* 엔터를 <br>로
-			 *  for(ReplyDTO dto : listReply) {
-				dto.setContent(dto.getContent().replaceAll("\n", "<br>"));
-				}
-			 */
 			req.setAttribute("formdto", formdto);
 			
 			forward(req, resp, "/WEB-INF/views/edoc/write_edocForm.jsp");
@@ -151,13 +150,18 @@ public class EdocServlet extends MyServlet {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		// 에러가 발생하면 에러 코드를 전송
 		resp.sendError(400);
 	}
 
-	// 결재문서함 리스트 listEdoc
-	protected void listEdoc(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String path = "/WEB-INF/views/edoc/list.jsp";
+	// 결재문서 발신함 리스트 
+	protected void listSend(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String path = "/WEB-INF/views/edoc/list_send.jsp";
+		forward(req, resp, path);
+	}
+	
+	// 결재문서 수신함 리스트 
+	protected void listReceive(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String path = "/WEB-INF/views/edoc/list_reveice.jsp";
 		forward(req, resp, path);
 	}
 }
