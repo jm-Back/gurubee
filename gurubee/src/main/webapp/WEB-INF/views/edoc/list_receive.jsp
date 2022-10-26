@@ -16,9 +16,7 @@
 	float: left;
 	align-items: center;
 	width: 120px;
-	height: 20px;
 	padding-right: 10px;
-	padding-top: 30px;
 	padding-bottom: 20px;
 }
 
@@ -40,24 +38,24 @@
 				<jsp:include page="/WEB-INF/views/layout/header.jsp" />
 				<jsp:include page="/WEB-INF/views/layout/sidebar.jsp" />
 			</header>
-			
-			<div class="body-title">	
+		
+		<div class="body-container">		
+			<div class="conditionSet">
 				<form name="conditionForm" method="post">
-					<div class="col-7 text-center">
-						<div class="col-auto p-1">
+						<div>
 							<input type="text" class="form-control" id="startDate" name="date" placeholder="날짜">
 						</div>
-						<div class="conditionSet">
+						<div>
 							<input type="text" class="form-control" id="endDate" name="date" placeholder="날짜">
 						</div>
-						<div class="col-auto p-1">
+						<div>
 							<select id="appResultSelect" class="form-select">
 								<option value="0">대기</option>
 								<option value="1">승인</option>
 								<option value="-1">반려</option>
 							</select>
 						</div>
-						<div class="col-auto p-1" style="width: 200px;">
+						<div style="width: 200px;">
 							<select id="edocSelect" class="form-select">
 								<option value="휴가신청서">휴가신청서</option>
 								<option value="접근권한신청서">DB접근권한신청서</option>
@@ -67,26 +65,28 @@
 								<option value="출장신청서">출장신청서</option>
 							</select>	
 						</div>
-						<div class="col-auto p-1">
+						<div>
 							<select id="totalResultSelect" class="form-select">
 								<option value="휴가신청서">최종승인</option>
 								<option value="접근권한신청서">반려</option>
 							</select>
 						</div> 
-						<div class="col-auto p-1">
+						<div>
 							<input type="text" class="form-control" id="empSearchId" placeholder="이름 검색">	
 						</div>
-						<div class="col-auto p-1">
+						<div>
 							<button type="button" id="btnSearchEdoc" class="btn btn-secondary" style="height: 35px;">조회</button>	
 						</div>
-						<input type="hidden" id="page" value="${page}">	
-					</div>		
+						<input type="hidden" id="page" value="${page}">		
 				</form>
 			</div>	
-			
-			<div class="body-container">
-				<div class="body-main">	
-					<div class="row board-list-header">5개씩 보기</div>
+		
+				<div class="body-main" style="display: block;">	
+					<div style="display: block;">
+						<div class="col-auto me-auto">${dataCount}개(${page}/${total_page} 페이지)</div>
+						<div class="col-auto">&nbsp;</div>
+					</div>
+					
 					<form name="listForm" method="post">	
 						<table class="table table-bordered table-hover">
 							<thead>
