@@ -15,7 +15,7 @@ public class ProjectDAO {
 	private Connection conn = DBConn.getConnection();
 
 	//---------------
-	//프로젝트 참여자 모두 가져오기
+	//프로젝트 참여자 모두 가져오기 (사원, 대리 급 아래만)
 	public List<ProjectDTO> listemployee() {
 		List<ProjectDTO> list = new ArrayList<ProjectDTO>();
 		PreparedStatement pstmt = null;
@@ -24,16 +24,18 @@ public class ProjectDAO {
 		
 		try {
 			
-			sql = " SELECT name, id, dep_name, MAX(date_iss) date_iss, MIN(pos_name) pos_name "
-				+ " FROM ( "
-				+ " SELECT A.name, A.id, date_iss date_iss ,C.dep_name, D.pos_name "
-				+ " FROM Employee A "
-				+ " JOIN Employee_History B ON A.id = B.id "
-				+ " JOIN Department C ON B.dep_code = C.dep_code "
-				+ " JOIN Position D ON B.pos_code = D.pos_code "
-				+ " WHERE B.now_working = '재직' ) "
-				+ " GROUP BY name, id, dep_name "
-				+ " ORDER BY dep_name, pos_name ";
+			sql = " SELECT name, id, date_iss, dep_name, pos_name, pos_code FROM ( "
+					+ "    SELECT name, id, dep_name, MAX(date_iss) date_iss, MIN(pos_name) pos_name, MAX(pos_code) pos_code "
+					+ "    FROM ( "
+					+ "    SELECT A.name, A.id, date_iss date_iss ,C.dep_name, D.pos_name ,D.pos_code "
+					+ "    FROM Employee A "
+					+ "    JOIN Employee_History B ON A.id = B.id "
+					+ "    JOIN Department C ON B.dep_code = C.dep_code "
+					+ "    JOIN Position D ON B.pos_code = D.pos_code "
+					+ "    WHERE B.now_working = '재직' ) "
+					+ "    GROUP BY name, id, dep_name "
+					+ "    ORDER BY dep_name, pos_name ) "
+					+ "WHERE pos_code < 4  ";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -74,7 +76,7 @@ public class ProjectDAO {
 	}
 	
 	
-	//프로젝트 총괄자 (리스트-대리급 이상)
+	//프로젝트 담당자 (과장급 이상)
 		public List<ProjectDTO> listMaster() {
 			List<ProjectDTO> list = new ArrayList<ProjectDTO>();
 			PreparedStatement pstmt = null;
@@ -90,7 +92,7 @@ public class ProjectDAO {
 					+ " JOIN Employee_History B ON A.id = B.id "
 					+ " JOIN Department C ON B.dep_code = C.dep_code "
 					+ " JOIN Position D ON B.pos_code = D.pos_code "
-					+ " WHERE B.now_working = '재직' AND B.pos_code >= 3 ) "
+					+ " WHERE B.now_working = '재직' AND B.pos_code >= 4 ) "
 					+ " GROUP BY name, id, dep_name "
 					+ " ORDER BY dep_name, pos_name ";
 				
@@ -173,6 +175,7 @@ public class ProjectDAO {
 			
 			return result;
 		}
+		
 		
 		// 프로젝트 등록하기
 		public void insertProject(ProjectDTO dto) throws SQLException  {
@@ -332,7 +335,7 @@ public class ProjectDAO {
 		}
 	
 	
-		// ** 내가 참여자인 프로젝트 리스트
+		// ** 내가 참여자 or 마스터인 프로젝트 리스트
 		public List<ProjectDTO> listProject(ProjectDTO dto){
 			List<ProjectDTO> list = new ArrayList<>();
 			PreparedStatement pstmt = null;
@@ -341,25 +344,27 @@ public class ProjectDAO {
 			
 			try {
 				
-				//내 사번으로 연관된 프로젝트 리스트
-				sql = " SELECT E.name, A.pro_code, A.id id_p, A.pro_name, A.pro_clear, A.pro_type, A.pro_master, A.pro_outline, A.pro_content, A.pro_sdate, A.pro_edate "
-						+ "	, B.pd_part, B.pd_code, B.pd_ing, C.id pj_id, C.pj_role "
+				//내 사번으로 연관된 프로젝트 list
+				sql = " SELECT DISTINCT E.ori_filename, E.name, A.pro_code, A.id id_p, A.pro_name, A.pro_clear, A.pro_type, A.pro_master, A.pro_outline, A.pro_content, A.pro_sdate, A.pro_edate "
+						+ "	, B.pd_part, B.pd_code, B.pd_ing "
 						+ "	FROM Employee E "
 						+ " JOIN project A ON A.pro_master = E.id "
 						+ "	JOIN project_detail B ON A.pro_code = B.pro_code "
 						+ "	JOIN project_join C ON B.pd_code = C.pd_code "
-						+ "	WHERE C.id = ? "
-						+ "	ORDER BY A.pro_sdate DESC ";
+						+ "	WHERE C.id = ? OR A.pro_master = ? "
+						+ "	ORDER BY A.pro_sdate ASC ";
 				
 				pstmt = conn.prepareStatement(sql);
 				
 				pstmt.setString(1, dto.getPj_id());
-				
+				pstmt.setString(2, dto.getPj_id());
+
 				rs = pstmt.executeQuery();
 				
 				while(rs.next()) {
 					ProjectDTO dto2 = new ProjectDTO();
 					
+					dto2.setPro_profile(rs.getString("ori_filename"));
 					dto2.setName_p(rs.getString("name"));
 					dto2.setPro_code(rs.getString("pro_code"));
 					dto2.setId_p(rs.getString("id_p")); //작성한사람의 사번
@@ -374,8 +379,6 @@ public class ProjectDAO {
 					dto2.setPd_part(rs.getInt("pd_part"));
 					dto2.setPd_code(rs.getString("pd_code"));
 					dto2.setPd_ing(rs.getInt("pd_ing"));
-					dto2.setPj_id(rs.getString("pj_id"));
-					dto2.setPj_role(rs.getString("pj_role"));
 					
 					list.add(dto2);
 				}
@@ -402,7 +405,7 @@ public class ProjectDAO {
 			return list;
 		}
 		
-		//프로젝트별 주요 리스트
+		//프로젝트 article 주요 정보 출력~~~~~~~~~
 		public ProjectDTO readProject(String pro_code, String me_id) {
 			ProjectDTO dto = null;
 			PreparedStatement pstmt = null;
@@ -411,32 +414,36 @@ public class ProjectDAO {
 			
 			try {
 				
-				//1.일단 프로젝트 읽기 (내 사번, 프로젝트 코드 필요)
+				String pro_master_id = null;
+				
+				//1.해당 프로젝트 내용 읽기 (내 사번, 프로젝트 코드 필요)
 				sql = " SELECT E.name, E.mail, E.phone, E.tel, E.id id_p, B.pd_ing, "
-						+ " A.pro_code, A.id pro_writer, A.pro_name, A.pro_clear, A.pro_type, A.pro_master, A.pro_outline, A.pro_content, A.pro_sdate, A.pro_edate "
+						+ " A.pro_code, A.pro_writer pro_writer, A.pro_name, A.pro_clear, A.pro_type, B.pd_code, A.pro_master, A.pro_outline, A.pro_content, A.pro_sdate, A.pro_edate "
 						+ " FROM Employee E "
 						+ " JOIN project A ON A.pro_master = E.id "
 						+ " JOIN project_detail B ON A.pro_code = B.pro_code "
 						+ " JOIN project_join C ON B.pd_code = C.pd_code "
-						+ " WHERE C.id = ? AND A.pro_code = ? "
+						+ " WHERE (C.id = ? OR A.pro_master = ?) AND A.pro_code = ? "
 						+ " ORDER BY A.pro_sdate DESC ";
 				
 				pstmt = conn.prepareStatement(sql);
 				
 				pstmt.setString(1, me_id);
-				pstmt.setString(2, pro_code);
+				pstmt.setString(2, me_id);
+				pstmt.setString(3, pro_code);
 				
 				rs = pstmt.executeQuery();
 				
 				while(rs.next()) {
 					dto = new ProjectDTO();
 					
-					dto.setPro_writer(rs.getString("pro_writer"));
-					dto.setPro_name(rs.getString("pro_name"));
-					dto.setPro_clear(rs.getString("pro_clear"));
-					dto.setPro_type(rs.getString("pro_type"));
-					dto.setPd_ing(rs.getInt("pd_ing"));
-					dto.setPro_master(rs.getString("name"));
+					dto.setPro_writer(rs.getString("pro_writer")); //작성자,편집자 사번
+					dto.setPro_name(rs.getString("pro_name")); //프로젝트명
+					dto.setPro_clear(rs.getString("pro_clear")); //진행중
+					dto.setPro_type(rs.getString("pro_type")); //타입
+					dto.setPd_code(rs.getString("pd_code")); //pd code
+					dto.setPd_ing(rs.getInt("pd_ing")); //진행률
+					dto.setPro_master(rs.getString("name")); //담당자 이름
 					dto.setPro_outline(rs.getString("pro_outline"));
 					dto.setPro_content(rs.getString("pro_content"));
 					dto.setPro_sdate(rs.getDate("pro_sdate").toString());
@@ -444,8 +451,10 @@ public class ProjectDAO {
 					dto.setPro_mail(rs.getString("mail"));
 					dto.setPro_phone(rs.getString("phone"));
 					dto.setPro_tel(rs.getString("tel"));
-					//마스터 아이디
+					//마스터 사번
 					dto.setId_p(rs.getString("id_p"));
+					
+					pro_master_id = dto.getId_p();
 					
 				}
 				
@@ -455,26 +464,27 @@ public class ProjectDAO {
 				pstmt = null;
 				
 				//프로젝트 담당자 부서,급
-				sql = "SELECT name, dep_name, MIN(pos_name) pos_name "
+				sql = "SELECT name, dep_name, MIN(pos_name) pos_name, ori_filename "
 						+ "FROM ( "
-						+ "SELECT A.name, A.id, date_iss date_iss ,C.dep_name, D.pos_name "
+						+ "SELECT A.name, A.id, date_iss date_iss ,C.dep_name, D.pos_name, A.ori_filename "
 						+ "FROM Employee A "
 						+ "JOIN Employee_History B ON A.id = B.id "
 						+ "JOIN Department C ON B.dep_code = C.dep_code "
 						+ "JOIN Position D ON B.pos_code = D.pos_code "
 						+ "WHERE A.id = ? ) "
-						+ "GROUP BY name, id, dep_name "
+						+ "GROUP BY name, id, dep_name, ori_filename "
 						+ "ORDER BY dep_name, pos_name ";
 				
 				pstmt = conn.prepareStatement(sql);
 				
-				pstmt.setString(1, dto.getId_p());
+				pstmt.setString(1, pro_master_id);
 				
 				rs = pstmt.executeQuery();
 				
 				while(rs.next()) {
 					dto.setDep_name(rs.getString("dep_name"));
 					dto.setPos_name(rs.getString("pos_name"));
+					dto.setPro_profile(rs.getString("ori_filename"));
 					
 				}
 				
@@ -512,7 +522,7 @@ public class ProjectDAO {
 				
 				pstmt = conn.prepareStatement(sql);
 				
-				//작성자 = 마지막 수정자 사번으로 변경하기!
+				//id_p = 마지막 수정자 사번으로 변경하기!
 				pstmt.setString(1, dto.getId_p());
 				pstmt.setString(2, dto.getPro_type());
 				pstmt.setString(3, dto.getPro_name());
@@ -542,7 +552,7 @@ public class ProjectDAO {
 			
 		}
 		
-		//프로젝트 폼에 등록된 내용 출력
+		//프로젝트 수정폼 :  등록된 내용 출력
 		public ProjectDTO readUpdateProject(String pro_code) {
 			ProjectDTO dto = null;
 			PreparedStatement pstmt = null;
@@ -628,7 +638,7 @@ public class ProjectDAO {
 			return dto;
 		}
 		
-		//프로젝트 참여자 정보 가져오기
+		//프로젝트 article : 참여자 정보 가져오기
 		//프로젝트 코드랑, pd_code 필요함!
 		public List<ProjectDTO> listProjectEmployee(String pro_code) throws SQLException {
 			List<ProjectDTO> list = new ArrayList<>();
@@ -658,9 +668,9 @@ public class ProjectDAO {
 				pstmt = null;
 				
 				//list로 받기
-				sql = " SELECT name, dep_name, MIN(pos_name) pos_name, id "
+				sql = " SELECT name, dep_name, MIN(pos_name) pos_name, id, ori_filename "
 						+ " FROM ( "
-						+ " SELECT A.name, A.id, date_iss date_iss ,C.dep_name, D.pos_name "
+						+ " SELECT A.name, A.id, date_iss date_iss ,C.dep_name, D.pos_name, A.ori_filename "
 						+ " FROM Employee A "
 						+ " JOIN Employee_History B ON A.id = B.id "
 						+ " JOIN Department C ON B.dep_code = C.dep_code "
@@ -668,7 +678,7 @@ public class ProjectDAO {
 						+ " WHERE A.id in  (SELECT id FROM Employee WHERE id in ( "
 						+ " SELECT id FROM project_join "
 						+ " WHERE pd_code = ? ) )) "
-						+ " GROUP BY name, id, dep_name "
+						+ " GROUP BY name, id, dep_name, ori_filename "
 						+ " ORDER BY dep_name, pos_name  ";
 				
 				pstmt = conn.prepareStatement(sql);
@@ -684,6 +694,7 @@ public class ProjectDAO {
 					dto.setDep_name(rs.getString("dep_name"));
 					dto.setPos_name(rs.getString("pos_name"));
 					dto.setPj_id(rs.getString("id"));;
+					dto.setPro_profile(rs.getString("ori_filename"));
 					
 					list.add(dto);
 				}
@@ -709,6 +720,135 @@ public class ProjectDAO {
 			}
 			
 			return list;
+		}
+		
+		//프로젝트 삭제
+		public void deleteProject(String pro_code, String pd_code) throws SQLException {
+			PreparedStatement pstmt = null;
+			String sql;
+			
+			//순서 : 참여자 - 디테일 - 프로젝트순
+			
+			try {
+				//참여자 테이블 삭제
+				conn.setAutoCommit(false);
+				
+				sql = " DELETE FROM project_join WHERE pd_code = ? ";
+				
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, pd_code);
+				
+				pstmt.executeUpdate();
+				
+				pstmt.close();
+				pstmt = null;
+				
+				sql = " DELETE FROM project_detail WHERE pro_code = ? ";
+				
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, pro_code);
+				
+				pstmt.executeUpdate();
+				
+				pstmt.close();
+				pstmt = null;
+				
+				sql = " DELETE FROM project WHERE pro_code = ? ";
+				
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, pro_code);
+				
+				pstmt.executeUpdate();
+				
+				pstmt.close();
+				pstmt = null;
+				
+				conn.commit();
+				
+
+			} catch (SQLException e) {
+				try {
+					conn.rollback();
+				} catch (Exception e2) {
+				}
+				e.printStackTrace();
+				throw e;
+				
+			} finally {
+				if(pstmt!=null) {
+					try {
+						
+					} catch (Exception e2) {
+					}
+				}
+				
+				try {
+					conn.setAutoCommit(true);
+				} catch (Exception e2) {
+				}
+			}
+			
+			
+			
+		}
+		
+		//사번 읽어서 정보 가져오기
+		public ProjectDTO readId(String id_p) throws SQLException {
+			PreparedStatement pstmt = null;
+			ProjectDTO dto = new ProjectDTO();
+			ResultSet rs = null;
+			String sql = null;
+			
+			try {
+				
+				sql = "SELECT name, dep_name, MIN(pos_name) pos_name, ori_filename "
+						+ "FROM ( "
+						+ "SELECT A.name, A.id, date_iss date_iss ,C.dep_name, D.pos_name, A.ori_filename "
+						+ "FROM Employee A "
+						+ "JOIN Employee_History B ON A.id = B.id "
+						+ "JOIN Department C ON B.dep_code = C.dep_code "
+						+ "JOIN Position D ON B.pos_code = D.pos_code "
+						+ "WHERE A.id = ? ) "
+						+ "GROUP BY name, id, dep_name, ori_filename "
+						+ "ORDER BY dep_name, pos_name ";
+				
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, id_p);
+				
+				rs = pstmt.executeQuery();
+				
+				while(rs.next()) {
+					
+					dto.setName_p(rs.getString("name"));
+					dto.setDep_name(rs.getString("dep_name"));
+					dto.setPos_name(rs.getString("pos_name"));
+					dto.setPro_profile(rs.getString("ori_filename"));
+					
+				}
+				
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw e;
+			} finally {
+				if(rs!=null) {
+					try {
+						rs.close();
+					} catch (Exception e2) {
+					}
+				}
+				
+				if(pstmt!=null) {
+					try {
+						pstmt.close();
+					} catch (Exception e2) {
+					}
+				}
+			}
+			
+			return dto;
 		}
 		
 		

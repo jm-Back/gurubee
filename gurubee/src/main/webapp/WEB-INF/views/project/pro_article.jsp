@@ -31,9 +31,6 @@ background-color: #fff; /*스크롤바 트랙 색상*/
 border-radius: 10px; /*스크롤바 트랙 라운드*/ 
  /*스크롤바 트랙 안쪽 그림자*/}
 
-
-
-
 .plus__project {
 	font-size: 20px;
 	font-weight:600;
@@ -190,6 +187,14 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 	
 }
 
+.last__edit {
+	color: #81F54F;
+}
+
+.last__edit2 {
+	color: black;
+}
+
 </style>
 
 <script type="text/javascript">
@@ -207,7 +212,7 @@ $(function(){
 
 }); 
 
-/*
+
 <c:if test="${sessionScope.member.id=='admin'}">
 function deleteBoard() {
     if(confirm("게시글을 삭제 하시 겠습니까 ? ")) {
@@ -217,7 +222,16 @@ function deleteBoard() {
     }
 }
 </c:if>
-*/
+
+$(function(){
+	$(".delete__red").click(function(){
+		if(confirm("프로젝트를 삭제하시겠습니까?")){
+			alert("삭제 되었습니다.")
+			return;
+		}
+		
+	});
+});
 
 
 </script>
@@ -244,9 +258,12 @@ function deleteBoard() {
 					<div class="dropdown">
 						<i class="fa-solid fa-ellipsis-vertical " data-bs-toggle="dropdown" aria-expanded="false"></i>
 						<input type="hidden" value="${pro_code}" name="pro_code">
+						<input type="hidden" value="${pd_code}" name="pd_code">
 						<ul class="dropdown-menu">
 							<li><a class="dropdown-item" href="${pageContext.request.contextPath}/project/update.do?pro_code=${pro_code}">프로젝트 수정</a></li>
-							<li><a class="dropdown-item delete__red" href="#">프로젝트 삭제</a></li>
+						<c:if test="${sessionScope.member.id == dto.id_p}">
+							<li><a class="dropdown-item delete__red" href="${pageContext.request.contextPath}/project/delete_ok.do?pro_code=${pro_code}&pd_code=${pd_code}">프로젝트 삭제</a></li>
+						</c:if>
 						</ul>
 					</div>
 				</div>
@@ -277,6 +294,7 @@ function deleteBoard() {
 				</div>
 			</div>	
 			
+			
 			<!-- 프로젝트 참여자 목록 -->
 			<div class="p-3 mb-4 project__detail__design shadow p-1 rounded">
 				<div class="d-flex justify-content-between">
@@ -285,7 +303,7 @@ function deleteBoard() {
 				<!-- 참여자 삭제 이벤트 존재함 -->
 				<form method="post">
 					<c:forEach var="dto" items="${list_emp}" varStatus="status">
-						<div class="emp__list shadow-sm" ><img class="profile__small" src="${pageContext.request.contextPath}/resources/images/profile.jpg">&nbsp;${dto.name_p}(${dto.pos_name})/${dto.dep_name} 
+						<div class="emp__list shadow-sm" ><img class="profile__small" src="${pageContext.request.contextPath}/resources/images/${dto.pro_profile}">&nbsp;${dto.name_p}(${dto.pos_name})/${dto.dep_name} 
 							<div class="fa__location">
 								<i class="fa-solid fa-rectangle-xmark "></i>
 								<input type="hidden" value="${dto.pj_id}" >
@@ -303,20 +321,21 @@ function deleteBoard() {
 					<div onclick="location.href='${pageContext.request.contextPath}/project/list.do'">&nbsp;<i class="fa-solid fa-chevron-left"></i>&nbsp;리스트로 돌아가기</div>
 				</div>
 			</div>	
-			<div class="pro_master_profile mb-5 mt-2 shadow p-1 rounded" >
+			<div class="pro_master_profile mb-4 mt-2 shadow p-1 rounded" >
 				<div class="box_photo">
-					<img class="profile" src="${pageContext.request.contextPath}/resources/images/profile.jpg" >
+					<img class="profile" src="${pageContext.request.contextPath}/resources/images/${dto.pro_profile}" >
 				<div class="pt-5 mt-6">
 					<div class="profile__font"> ${dto.pro_master}</div>
 					<div class="profile__font2"><i class="fa-solid fa-circle-user"></i>&nbsp;${dto.pos_name} / ${dto.dep_name}</div>
 					<div class="profile__font2"><i class="fa-solid fa-phone"></i>&nbsp;${dto.pro_tel} (${dto.pro_phone})</div>
 					<div><button class="btn btn-primary master__call" type="button">쪽지 보내기</button></div>
 				</div>
-				
-				
 				</div>
-				
-				
+			</div>
+			<div class="p-3 mb-3  shadow p-3 rounded" >
+				<div class="d-flex justify-content-between">
+					<div class="last__edit">&nbsp;●&nbsp;&nbsp;<span class="last__edit2">&nbsp;프로젝트 작성자&nbsp;&nbsp;${vo.name_p}&nbsp;&nbsp;</span></div>
+				</div>
 			</div>
 		</div>
 

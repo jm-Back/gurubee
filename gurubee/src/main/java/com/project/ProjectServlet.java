@@ -47,16 +47,25 @@ public class ProjectServlet extends MyServlet{
 			updateForm(req, resp);
 		}else if (uri.indexOf("update_ok.do") != -1) {
 			updateSubmit(req, resp);			
-		} else if(uri.indexOf("progress.do") != -1) {
+		} else if(uri.indexOf("progress.do") != -1) { //진행현황 수정
 			progressUpdate(req, resp);
 		} else if(uri.indexOf("progress_ok.do") != -1) {
 			progressSubmit(req, resp);
-		} else if(uri.indexOf("delete_ok.do") != -1) {
+		} else if(uri.indexOf("delete_ok.do") != -1) { //프로젝트 삭제(담당자전용)
 			projectdelete(req, resp);
+		} else if(uri.indexOf("delete_emp_ok.do") != -1) { //프로젝트 참여자 삭제
+			projectempdelete(req, resp);
 		}
-		
+		 
 	}
 	
+
+	//프로젝트 참여자 삭제 버튼 
+	private void projectempdelete(HttpServletRequest req, HttpServletResponse resp) {
+		// 프로젝트 참여자 삭제 버튼
+		
+	}
+
 
 	private void projectForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		//프로젝트 메인 리스트
@@ -180,22 +189,29 @@ public class ProjectServlet extends MyServlet{
 			
 			String me_id = info.getId();
 			String pro_code = req.getParameter("pro_code");
-			
-			//프로젝트 메인 정보 가져오기!
+			String pd_code = req.getParameter("pd_code");
+			String id_p = req.getParameter("id_p");
+
+			// 1. 프로젝트 메인 정보 가져오기!
 			ProjectDTO dto = dao.readProject(pro_code, me_id);
 			if (dto == null) { // 프로젝트가 없으면 다시 리스트로
 				resp.sendRedirect(cp + "/project/list.do");
 				return;
 			}
 
-			//참여자 상세 정보 가져오기 (이름,부서,직책)
+			// 2. 참여자 상세 정보 가져오기 (이름,부서,직책)
 			List<ProjectDTO> list_emp = null;
 			list_emp = dao.listProjectEmployee(pro_code);
 			
+			// 3. 작성자 정보 가져오기 readId
+			ProjectDTO vo = dao.readId(id_p);
+
 			//JSP 로 전달할 속성
 			req.setAttribute("dto", dto);
 			req.setAttribute("pro_code", pro_code);
 			req.setAttribute("list_emp", list_emp);
+			req.setAttribute("pd_code", pd_code);
+			req.setAttribute("vo", vo);
 
 			forward(req, resp, "/WEB-INF/views/project/pro_article.jsp");
 			return;
@@ -254,7 +270,7 @@ public class ProjectServlet extends MyServlet{
 		
 		try {
 			ProjectDTO dto = new ProjectDTO();
-			
+
 			dto.setPro_code(req.getParameter("pro_code"));
 			dto.setId_p(info.getId());
 			dto.setPro_type(req.getParameter("pro_type"));
@@ -266,6 +282,7 @@ public class ProjectServlet extends MyServlet{
 			
 			dao.updateProject(dto);
 
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -284,8 +301,23 @@ public class ProjectServlet extends MyServlet{
 		
 	}
 
-	private void projectdelete(HttpServletRequest req, HttpServletResponse resp) {
-		// TODO Auto-generated method stub
+	private void projectdelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		// 프로젝트 삭제 (담당자만 가능!)
+		ProjectDAO dao = new ProjectDAO();
+	
+		String cp = req.getContextPath();
+
+		try {
+			String pro_code = req.getParameter("pro_code");
+			String pd_code = req.getParameter("pd_code");
+			
+			dao.deleteProject(pro_code, pd_code);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		resp.sendRedirect(cp + "/project/list.do");
 		
 	}
 	

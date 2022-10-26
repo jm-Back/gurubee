@@ -104,10 +104,17 @@ public class ProjectDTO {
 
 	private String pj_role;
 	
-	//추가 부서
+	//사진! 프로젝트 프로필
+	private String pro_profile;
 	
 	
 	
+	public String getPro_profile() {
+		return pro_profile;
+	}
+	public void setPro_profile(String pro_profile) {
+		this.pro_profile = pro_profile;
+	}
 	public String getPro_code() {
 		return pro_code;
 	}

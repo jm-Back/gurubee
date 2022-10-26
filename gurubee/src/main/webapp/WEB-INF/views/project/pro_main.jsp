@@ -33,8 +33,17 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 
 
 .btn_projectAdd {
-	border:  1px solid gray;
 	border-radius: 60px;
+	font-size: 23px;
+	font-weight:600;
+	cursor: pointer;
+	color: white;
+	background-color: #01d6b7;
+	opacity: 80%;
+	width: 300px;
+	height: 100px;
+	border: none;
+
 };
 
 .card {
@@ -94,17 +103,29 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 }
 
 .clear__state {
-	margin-right: 7px;
 	padding: 2px 14px;
-	display: block;
+	display: inline-block;
 	border: 3px solid  #ffd980 ;
 	outline: none;
 	border-radius: 10px;
 	font-size: 19px;
 	font-weight: 600;
 	background: #ffd980;
+	margin-left: 20px;
 }
 
+.profile__small {
+	height: 60px;
+	width: 60px;
+	object-fit: cover;
+    border-radius: 100%;
+    border: 2px solid #eee ;
+    padding: 3px;
+}
+
+h6 {
+	font-weight: 600;
+}
 
 
 </style>
@@ -129,10 +150,10 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 			
 			
 		<!-- 프로젝트 메인 등록, 내용 -->
-<div class="container" > 프로젝트 메인 	
+<div class="container" >	
 	<form name="projectAdd" method="post">
-		<div>
-			<button type="button" class="btn_projectAdd" onclick="location.href='${pageContext.request.contextPath}/project/write.do'"><i class="fa-solid fa-plus"></i> 새 프로젝트</button>
+		<div class="">
+			<button type="button" class="btn_projectAdd shadow p-1 rounded " onclick="location.href='${pageContext.request.contextPath}/project/write.do'"><i class="fa-solid fa-plus"></i> 새 프로젝트</button>
 		</div>
 	</form>
 </div>
@@ -142,17 +163,23 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 		<div class="row">
 		<c:forEach var="dto" items="${list}" varStatus="status">
 			<div class="col-md-4 ">
-				<div onclick="location.href='${pageContext.request.contextPath}/project/article.do?pro_code=${dto.pro_code}'" class="card p-3 mb-4 pointer shadow p-1 rounded">
+				<div onclick="location.href='${pageContext.request.contextPath}/project/article.do?pro_code=${dto.pro_code}&pd_code=${dto.pd_code}&id_p=${dto.id_p}'" class="card p-3 mb-4 pointer shadow p-1 rounded">
 					<div class="d-flex justify-content-between">
 						<div class="d-flex flex-row align-items-center">
 							<div class="p_photo"></div>
-							<div class="ms-2 p-details">
-								<input type="hidden" value="${dto.pro_code}"> 
-								<input type="hidden" value="${dto.pd_code}">
-								<h6 class="mb-0">${dto.name_p}</h6> <span>${dto.pro_sdate} ~ ${dto.pro_edate}</span>
+								<div><img class="profile__small" src="${pageContext.request.contextPath}/resources/images/${dto.pro_profile}"></div>
+							<div class="side__place" style="justify-content: ;">
+								<div class="ms-2 p-details">
+									<input type="hidden" value="${dto.pro_code}"> 
+									<input type="hidden" value="${dto.pd_code}">
+									<input type="hidden" value="${dto.id_p}" >
+									<h6 class="mb-0 font__bold">${dto.name_p}</h6> <span>${dto.pro_sdate} ~ ${dto.pro_edate}</span>
+									<div class="clear__state">${dto.pro_clear}</div>
+								</div>
+								
 							</div>
 						</div>
-						<div class="clear__state"><div>${dto.pro_clear}</div></div>
+						
 					</div>
 					<div class="mt-5">
 						<h3 class="heading">${dto.pro_name}</h3>
