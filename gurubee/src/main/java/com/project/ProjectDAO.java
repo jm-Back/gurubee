@@ -632,7 +632,6 @@ public class ProjectDAO {
 		//프로젝트 코드랑, pd_code 필요함!
 		public List<ProjectDTO> listProjectEmployee(String pro_code) throws SQLException {
 			List<ProjectDTO> list = new ArrayList<>();
-			ProjectDTO dto = new ProjectDTO();
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			String sql;
@@ -659,7 +658,18 @@ public class ProjectDAO {
 				pstmt = null;
 				
 				//list로 받기
-				sql = " SELECT id FROM project_join WHERE pd_code = ? ";
+				sql = " SELECT name, dep_name, MIN(pos_name) pos_name, id "
+						+ " FROM ( "
+						+ " SELECT A.name, A.id, date_iss date_iss ,C.dep_name, D.pos_name "
+						+ " FROM Employee A "
+						+ " JOIN Employee_History B ON A.id = B.id "
+						+ " JOIN Department C ON B.dep_code = C.dep_code "
+						+ " JOIN Position D ON B.pos_code = D.pos_code "
+						+ " WHERE A.id in  (SELECT id FROM Employee WHERE id in ( "
+						+ " SELECT id FROM project_join "
+						+ " WHERE pd_code = ? ) )) "
+						+ " GROUP BY name, id, dep_name "
+						+ " ORDER BY dep_name, pos_name  ";
 				
 				pstmt = conn.prepareStatement(sql);
 				
@@ -668,41 +678,15 @@ public class ProjectDAO {
 				rs = pstmt.executeQuery();
 				
 				while(rs.next()) {
-					dto.setId_p(rs.getString("id"));
+					ProjectDTO dto = new ProjectDTO();
+					
+					dto.setName_p(rs.getString("name"));
+					dto.setDep_name(rs.getString("dep_name"));
+					dto.setPos_name(rs.getString("pos_name"));
+					dto.setPj_id(rs.getString("id"));;
 					
 					list.add(dto);
 				}
-				
-
-				/*
-				 for(int i=0; i<emp_id.length; i++) {
-					 
-					 sql = " SELECT name, dep_name, MIN(pos_name) pos_name "
-					 		+ " FROM ( "
-					 		+ " SELECT A.name, A.id, date_iss date_iss ,C.dep_name, D.pos_name "
-					 		+ " FROM Employee A "
-					 		+ " JOIN Employee_History B ON A.id = B.id "
-					 		+ " JOIN Department C ON B.dep_code = C.dep_code "
-					 		+ " JOIN Position D ON B.pos_code = D.pos_code "
-					 		+ " WHERE A.id = ? ) "
-					 		+ " GROUP BY name, id, dep_name "
-					 		+ " ORDER BY dep_name, pos_name ";
-					 
-					 pstmt = conn.prepareStatement(sql);
-					 
-					 pstmt.setString(1, emp_id[i]);
-					 
-					 rs = pstmt.executeQuery();
-					 
-					 while(rs.next()) {
-						 dto.setName_p(rs.getString("name"));
-						 dto.setDep_name(rs.getString("dep_name"));
-						 dto.setPos_name(rs.getString("pos_name"));
-						 
-						 list.add(dto);
-					 }
-				 } */
-
 
 			} catch (SQLException e) {
 				e.printStackTrace();

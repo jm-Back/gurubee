@@ -402,7 +402,7 @@ function sendOk(){
 							<h3></h3>
 						<div class="row">
 							<div class="col-md-12" style="margin-bottom: -15px;">
-								<button type="button" class="att_master_btn btn btn-primary mb-3 shadow-sm" ${mode=='update'?'disabled="disabled"':""}>담당자 선택하기</button>
+								<button type="button" class="att_master_btn btn btn-primary mb-3 shadow-sm" ${mode=='update'?'disabled="disabled"': ''}>담당자 선택하기</button>
 								<input class="shadow-sm" type="hidden" name="pro_master" value="${dto.pro_master}">
 								<c:if test="${mode=='write'}">
 									<button type="button" class="att_employee_btn btn btn-primary mb-3 shadow-sm" >참여자 선택하기</button>

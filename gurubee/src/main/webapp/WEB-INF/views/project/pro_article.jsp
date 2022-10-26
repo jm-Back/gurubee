@@ -149,6 +149,7 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
     margin-top: 13px;
     margin-left: 8px;
     margin-right: 3px;
+    font-weight: 600;
 }
 
 .profile__font {
@@ -181,15 +182,45 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 .fa__location {
 	display:inline-block;
 	text-align: right;
-	padding-left: 5px;
 	color: #01d6b7;
 	font-size: 19px;
 	vertical-align: middle;
 	padding-bottom: 3px;
 	cursor: pointer;
+	
 }
 
 </style>
+
+<script type="text/javascript">
+
+$(function(){
+	$(".fa__location").click(function(e){
+		const index = $(e.target).parent().parent().index();
+
+		if(confirm("프로젝트 참여자에서 삭제하시겠습니까?")){
+			$(".emp__list").eq(index).remove();
+			return;
+		}
+		
+	});
+
+}); 
+
+/*
+<c:if test="${sessionScope.member.id=='admin'}">
+function deleteBoard() {
+    if(confirm("게시글을 삭제 하시 겠습니까 ? ")) {
+	    let query = "num=${dto.num}&${query}";
+	    let url = "${pageContext.request.contextPath}/notice/delete.do?" + query;
+    	location.href = url;
+    }
+}
+</c:if>
+*/
+
+
+</script>
 
 </head>
 <body>
@@ -251,16 +282,18 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 				<div class="d-flex justify-content-between">
 					<div class="project_title">프로젝트 참여자 리스트</div>
 				</div>
-				<div class=" ">
-					<div class="emp__list shadow-sm" ><img class="profile__small" src="${pageContext.request.contextPath}/resources/images/profile.jpg" >&nbsp;이정재(과장)/개발팀
-						<div class="fa__location"><i class="fa-solid fa-rectangle-xmark "></i></div></div>
-					<div class="emp__list shadow-sm" ><img class="profile__small" src="${pageContext.request.contextPath}/resources/images/profile.jpg" >&nbsp;이정재(과장)/개발팀
-						<div class="fa__location"><i class="fa-solid fa-rectangle-xmark "></i></div></div>
-					<div class="emp__list shadow-sm" ><img class="profile__small" src="${pageContext.request.contextPath}/resources/images/profile.jpg" >&nbsp;이정재(과장)/개발팀
-						<div class="fa__location"><i class="fa-solid fa-rectangle-xmark "></i></div></div>
-					<div class="emp__list shadow-sm" ><img class="profile__small" src="${pageContext.request.contextPath}/resources/images/profile.jpg" >&nbsp;이정재(과장)/개발팀
-						<div class="fa__location"><i class="fa-solid fa-rectangle-xmark "></i></div></div>
-				</div>
+				<!-- 참여자 삭제 이벤트 존재함 -->
+				<form method="post">
+					<c:forEach var="dto" items="${list_emp}" varStatus="status">
+						<div class="emp__list shadow-sm" ><img class="profile__small" src="${pageContext.request.contextPath}/resources/images/profile.jpg">&nbsp;${dto.name_p}(${dto.pos_name})/${dto.dep_name} 
+							<div class="fa__location">
+								<i class="fa-solid fa-rectangle-xmark "></i>
+								<input type="hidden" value="${dto.pj_id}" >
+							</div>
+						</div>
+							
+					</c:forEach>
+				</form>
 			</div>
 			
 		</div>

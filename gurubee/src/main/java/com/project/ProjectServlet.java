@@ -188,17 +188,18 @@ public class ProjectServlet extends MyServlet{
 				return;
 			}
 
-			List<ProjectDTO> project_e = null;
-			project_e = dao.listProjectEmployee(pro_code);
-			
-			System.out.println(project_e);
+			//참여자 상세 정보 가져오기 (이름,부서,직책)
+			List<ProjectDTO> list_emp = null;
+			list_emp = dao.listProjectEmployee(pro_code);
 			
 			//JSP 로 전달할 속성
 			req.setAttribute("dto", dto);
 			req.setAttribute("pro_code", pro_code);
+			req.setAttribute("list_emp", list_emp);
 
 			forward(req, resp, "/WEB-INF/views/project/pro_article.jsp");
 			return;
+			
 			
 		} catch (Exception e) {
 			e.printStackTrace();
