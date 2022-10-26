@@ -10,7 +10,7 @@ public class EdocEmpDTO {
 	private int pos_code; // 결재자 직급코드
 	
 	private String apper_num; // 결재자 번호
-	private String app_num; // 결재번호. (E_Approval - app_num)
+	private int app_num; // 결재번호. (E_Approval - app_num)
 	private int app_result;
 	private int app_level;
 	private String app_date;
@@ -52,10 +52,10 @@ public class EdocEmpDTO {
 	public void setApper_num(String apper_num) {
 		this.apper_num = apper_num;
 	}
-	public String getApp_num() {
+	public int getApp_num() {
 		return app_num;
 	}
-	public void setApp_num(String app_num) {
+	public void setApp_num(int app_num) {
 		this.app_num = app_num;
 	}
 	public int getApp_result() {

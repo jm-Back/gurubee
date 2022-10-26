@@ -58,15 +58,20 @@ function ajaxFun(url, method, query, dataType, fn) {
 function sendOk() {
   	const f = document.writeForm;
   	
-	let edoc = $(".edocSelect option:selected").val();
-	let content = f.content.value.trim();
-	let temp = 1; // 임시구분
+	let edoc = f.edocSelect.value.trim(); // 문서구분
+	let content = oEditors.getById["ir1"].getIR(); // 문서폼
+	let memo = f.memo.value;
+	let id_array = [f.empId1.value, f.empId2.value, f.empId3.value, f.empId4.value];
+	oEditors.getById["ir1"].exec("UPDATE_CONTENTS_FIELD", []);
 	
-	alert(content);
-	alert(edoc);
+	// 결재자 사번 빈 값 없애기 
+	const id_apper_array = id_array.filter(
+		(element) => true		
+	);
 	
-  
-  	if(! edoc) {
+	console.log(id_array);
+  	
+  	if(! edoc.trim()) {
       	alert("문서구분을 선택하세요. ");
   	    return false;
  	}
@@ -76,13 +81,12 @@ function sendOk() {
     	$("#content").focus();
     	return false;
   	}
- 	
- 	if(id_apper1==="" && id_apper2==="" && id_apper3==="" && id_apper4===""){
- 		alert("수신자는 1명 이상 선택해야합니다.");
+  
+ 	if(id_apper_array.length < 1) {
+ 		alert("수신자는 1명 이상 선택하세요. ");
  		return false;
  	}
  	
-  
  	f.action = "${pageContext.request.contextPath}/edoc/write_ok.do";
   
   	f.submit();
@@ -114,10 +118,12 @@ $(function(){
     	
 	});
 	
+	
 	// 사원 검색 클릭
 	$("form input[name=empSearch]").on("click", function() {
 		clickEmpSearch($(this));
 	});
+	
 	
     // 문서구분 select - 값에 따른 문서폼 가져오기
     $("select[name=edocSelect]").change(function() {
@@ -130,20 +136,22 @@ $(function(){
         const fn = function(doc_form) {
     		// 문서구분이 선택되면 문서폼 가져와서 에디터 content 채우기
     		oEditors.getById["ir1"].exec("SET_IR", ['']);
-    		oEditors.getById["ir1"].exec("PASTE_HTML", [doc_form]); 
+    		oEditors.getById["ir1"].exec("PASTE_HTML", [doc_form]);
     	}
         
         ajaxFun(url, "post", query, "text", fn);
 	});
     
-   // 모달에서 select 된 사원
+    
+    // 수신자 검색 - select 된 사원 데이터 가져오기
     $("body").on("click", "#btnEmpSelect", function() {
     	let $ele = $(this).closest(".modal-content").find("select");
+    	
 		let id_apper = $ele.val();
     	let name_apper = $ele.find("option:selected").attr("data-name"); 
     	let pos_code = $ele.attr("data-posCode");
     	
-    	alert(id_apper+": "+name_apper+": "+pos_code);
+    	// alert(id_apper+": "+name_apper+": "+pos_code);
     	if(pos_code === "3") {
     		$("#empId1").val(id_apper);
 			$("#empSearch1").val(name_apper);
@@ -159,58 +167,35 @@ $(function(){
     	}
 	});
    
-   /*
-   // 수신자 사원 선택 btnEmpSelect
-	$("#btnEmpSelect").click(function() {
-		alert("선택햇삼");
-		let id_apper = $(this).val();
-    	let name_apper = $(this).find("option:selected").attr("data-name"); 
-    	let pos_code = $(this).find("option:selected").attr("data-posCode");
-    	$("body").on("click", ".btnEmpSelect", function() {
-		});
+    
+ 	// 수신자 검색 - select 된 사원 삭제
+    $("body").on("click", "#btnEmpDelete", function() {
+    	let $ele = $(this).closest(".modal-content").find("select");
+    	let pos_code = $ele.attr("data-posCode");
+    	
     	if(pos_code === "3") {
-    		$("#empId1").attr("value", id_apper);
-			$("#empSearch1").attr("value", name_apper);
+    		$("#empId1").val("");
+			$("#empSearch1").val("");
     	} else if (pos_code === "4") {
-    		$("#empId2").attr("value", id_apper);
-			$("#empSearch2").attr("value", name_apper);
+    		$("#empId2").val("");
+			$("#empSearch2").val("");
     	} else if (pos_code === "5") {
-    		$("#empId3").attr("value", id_apper);
-			$("#empSearch3").attr("value", name_apper);
+    		$("#empId3").val("");
+			$("#empSearch3").val("");
     	} else if (pos_code === "6") {
-    		$("#empId4").attr("value", id_apper);
-			$("#empSearch4").attr("value", name_apper);
-    	}
-	});
-   */
-   
-   // 수신자 사원 삭제 btnEmpCancle
-   	$("#btnEmpCancle").click(function() {
-   		alert("취소햇삼");
-   		let pos_code = $(this).find("option:selected").attr("data-posCode");
-   		alert(pos_code);
-   		if(pos_code === "3") {
-    		$("#empId1").attr("value", '');
-			$("#empSearch1").attr("value", '');
-    	} else if (pos_code === "4") {
-    		$("#empId2").attr("value", '');
-			$("#empSearch2").attr("value", '');
-    	} else if (pos_code === "5") {
-    		$("#empId3").attr("value", '');
-			$("#empSearch3").attr("value", '');
-    	} else if (pos_code === "6") {
-    		$("#empId4").attr("value", '');
-			$("#empSearch4").attr("value", '');
+    		$("#empId4").val("");
+			$("#empSearch4").val("");
     	}
 	});
    
-   
+
     
 });
 
+// 수신자 사원 검색 ajax 
 function clickEmpSearch(object) {
 	let pos_code = object.attr("data-posCode");
-	alert(pos_code);
+	// alert(pos_code);
 	
 	let url = "${pageContext.request.contextPath}/edoc/write_searchEmp.do"
 	let query = "pos_code="+encodeURIComponent(pos_code);
@@ -243,16 +228,6 @@ function clickEmpSearch(object) {
 					<tr>
 						<th class="fs-6">문서구분</th>
 						<td>
-							<!-- 
-							<div class="btn-group-vertical" role="group" aria-label="Vertical button group">	
-							<button type="button" class="btn btn-dark" id="">휴가신청서</button>
-							<button type="button" class="btn btn-dark" id="">DB접근권한신청서</button>
-							<button type="button" class="btn btn-dark" id="">구매요청의뢰서</button>
-							<button type="button" class="btn btn-dark" id="">재택근무신청서</button>
-							<button type="button" class="btn btn-dark" id="">법인카드지출결의서</button>
-							<button type="button" class="btn btn-dark" id="">출장신청서</button>
-							</div>
-							 -->
 							<select class="form-select" aria-label="Default select example" name="edocSelect" id="edocSelect"
 								style="width: 50%;">
 								<option selected>문서구분 선택</option>
@@ -289,22 +264,22 @@ function clickEmpSearch(object) {
 								<div>
 									<p><input type="text" id="empSearch1" name="empSearch" class="form-control" data-posCode="3"
                                 	style="width: 27%;" placeholder="대리 - 사원 검색" readonly="readonly">
-                                	<input type="hidden" id="empId1" name="empId">
+                                	<input type="hidden" id="empId1" name="empId" value="">
                                 	</p>
                                 	
                                 	<p><input type="text" id="empSearch2" name="empSearch" class="form-control" data-posCode="4"
                                 	style="width: 27%;" placeholder="과장 - 사원 검색" readonly="readonly">
-                                	<input type="hidden" id="empId2" name="empId">
+                                	<input type="hidden" id="empId2" name="empId" value="">
                                 	</p>
                                 	 
                                 	<p><input type="text" id="empSearch3" name=empSearch class="form-control" data-posCode="5"
                                 	style="width: 27%;" placeholder="차장 - 사원 검색" readonly="readonly"> 	
-                                	<input type="hidden" id="empId2" name="empId">
+                                	<input type="hidden" id="empId3" name="empId" value="">
                                 	</p> 
                                 	
                                 	<p><input type="text" id="empSearch4" name="empSearch" class="form-control" data-posCode="6"
                                 	style="width: 27%;" placeholder="부장 - 사원 검색" readonly="readonly">
-                                	<input type="hidden" id="empId2" name="empId">
+                                	<input type="hidden" id="empId4" name="empId" value="">
                         		</div>
 							</div>
 						</td>
@@ -326,8 +301,16 @@ function clickEmpSearch(object) {
 							</div>
 						</td>
 					</tr>
+					
+					<tr>
+						<th class="fs-6">메모</th>
+						<td> 
+							<div class="mb-3">
+  							<input class="form-control" type="text" id="memo" multiple style="width: 50%; height: 80px;">
+							</div>
+						</td>
+					</tr>
 				</table>
-				
 				<div style="text-align: right;">
 					<button type="button" onclick="saveOk();" class="btn btn-secondary" style="font-size: 17px;">임시작성</button>
 				</div>
@@ -335,7 +318,7 @@ function clickEmpSearch(object) {
 				<div style="text-align: center;">
 					<button type="button" onclick="sendOk();" class="btn btn-success" style="font-size: 20px;">결제요청</button>
 				</div>
-				<input type="hidden" name="id" value="${sessionScope.member.id}" class="form-control">
+				<input type="hidden" name="temp" value=" " class="form-control">
 			</form>
 		</div>
 	
@@ -354,8 +337,8 @@ function clickEmpSearch(object) {
         							<div id="empList">  </div>
       						</div>
       						<div class="modal-footer">
-        						<button type="button" class="btn btn-secondary" id="btnEmpSelect" data-bs-dismiss="modal" aria-label="Close">선택하기</button>
-       							<button type="button" class="btn btn-primary" id="btnEmpCancle" data-bs-dismiss="modal">취소하기</button>
+        						<button type="button" class="btn btn-secondary" id="btnEmpSelect" data-bs-dismiss="modal">선택하기</button>
+       							<button type="button" class="btn btn-primary" id="btnEmpDelete" data-bs-dismiss="modal">취소하기</button>
       						</div>
     					</div>
   					</div>

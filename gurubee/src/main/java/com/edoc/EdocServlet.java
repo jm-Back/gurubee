@@ -1,22 +1,20 @@
 package com.edoc;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.json.JSONObject;
 
 import com.login.SessionInfo;
 import com.util.MyServlet;
-import com.util.MyUtil;
-import com.util.MyUtilBootstrap;
 
+@MultipartConfig
 @WebServlet("/edoc/*")
 public class EdocServlet extends MyServlet {
 	private static final long serialVersionUID = 1L;
@@ -47,22 +45,18 @@ public class EdocServlet extends MyServlet {
 			listEmp(req, resp);
 		} else if(uri.indexOf("write_edocForm.do") != -1) {
 			getEdocForm(req, resp);
-		}
+		} else if(uri.indexOf("list.do") != -1) {
+			listEdoc(req, resp);
+		} 
 	}
 	
 	protected void writeForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// 글 작성 폼
-		HttpSession session = req.getSession();
-		SessionInfo info = (SessionInfo) session.getAttribute("member");
-		
-		// EdocDAO dao = new EdocDAO();
-
 		String path = "/WEB-INF/views/edoc/write.jsp";
 		forward(req, resp, path);
 	}
 	
 	protected void writeSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// 글 작성 폼
+		// 결재문서 등록 폼
 		EdocDAO dao = new EdocDAO();
 		HttpSession session = req.getSession();
 		SessionInfo info = (SessionInfo) session.getAttribute("member");
@@ -74,23 +68,41 @@ public class EdocServlet extends MyServlet {
 		}
 		
 		try {
+			// 전자결재문서 등록
 			EdocDTO edocdto = new EdocDTO();
 			
 			edocdto.setId_write(info.getId());
-			edocdto.setApp_doc(req.getParameter("edoc"));
-			edocdto.setApp_doc(req.getParameter("content"));
-			edocdto.setTemp(Integer.parseInt(req.getParameter("temp")));
+			edocdto.setApp_doc(req.getParameter("edocSelect"));
+			edocdto.setDoc_form(req.getParameter("content"));
+			edocdto.setDoc_num(edocdto.getApp_doc()+"-"+edocdto.getId_write());
+			edocdto.setTemp(1);
 			
+			System.out.println(edocdto.getDoc_form());
+			System.out.println(edocdto.getId_write());
 			
-			EdocEmpDTO empdto = new EdocEmpDTO();
-			// 넘어온 수신자 id 배열에 담고 dto 넣기
-			// empdto.setId_apper(req.getParameter("id_apper"));
+			dao.insertEApproval(edocdto);
+			
+			String app_id[] = req.getParameterValues("empId"); // 수신자 사번
+			
+			// 전자결재문서 결재자 등록
+			// 수신자 아이디 갯수만큼 반복
+			for (int i = 0; i < app_id.length; i++) {
+				if (! (app_id[i] == null || app_id[i].length() == 0)) {
+					System.out.println(app_id[i]);
+					EdocEmpDTO empdto = new EdocEmpDTO();
+					empdto.setId_apper(app_id[i]);
+					empdto.setApp_level(i + 1);
+					empdto.setMemo("memo");
+
+					dao.insertEApprover(empdto);
+				}
+			}
+			
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		
+		// resp.sendRedirect(cp + "/edoc/main.do");
 	}
 	
 	protected void listEmp(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -143,4 +155,9 @@ public class EdocServlet extends MyServlet {
 		resp.sendError(400);
 	}
 
+	// 결재문서함 리스트 listEdoc
+	protected void listEdoc(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String path = "/WEB-INF/views/edoc/list.jsp";
+		forward(req, resp, path);
+	}
 }

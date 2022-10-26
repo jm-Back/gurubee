@@ -10,48 +10,31 @@ import com.util.DBConn;
 
 public class EdocDAO {
 	private Connection conn = DBConn.getConnection();
-	/*
-	public EdocEmpDTO loginMemberInfo(String id) {
-		EdocEmpDTO empdto = null;
+	
+	// 전자결재문서 
+	public int insertEApproval(EdocDTO edocdto) {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
+		int app_num = 0; // 전자결재번호. 
 		String sql;
 		
 		try {
-			
-			LoginDAO 로 옮김
-			sql = "SELECT e.id, name, mail, phone, tel, pos_name, dep_name "
-					+ " FROM (SELECT his_no, date_iss, reason, id, pos_code, dep_code, division, "
-					+ "    now_working, type, startdate, enddate, "
-					+ "    ROW_NUMBER() OVER(PARTITION BY id ORDER BY pos_code DESC) as now "
-					+ "    FROM employee_history)his LEFT OUTER JOIN employee e ON his.id = e.id "
-					+ " LEFT OUTER JOIN department d ON his.dep_code = d.dep_code "
-					+ " LEFT OUTER JOIN position p ON p.pos_code = his.pos_code "
-					+ " where e.id=? and now=1 and now_working='재직' "
-					+ " order by enddate DESC;";
-			
-			sql = "";
+			sql = "INSERT INTO E_APPROVAL (app_num, app_doc, id, app_date, doc_form, doc_num, temp) "
+					+ " VALUES (APPVAL_SEQ.NEXTVAL, ?, ?, SYSDATE, ?, ?, ?) ";
 			
 			pstmt = conn.prepareStatement(sql);
 			
-			pstmt.setString(1, id);
-			
+			pstmt.setString(1, edocdto.getApp_doc());
+			pstmt.setString(2, edocdto.getId_write());
+			pstmt.setString(3, edocdto.getDoc_form());
+			pstmt.setString(4, edocdto.getDoc_num());
+			pstmt.setInt(5, edocdto.getTemp());
 			
 			rs = pstmt.executeQuery();
-			
-			if(rs.next()) {
-				// edocemp = new EdocEmpDTO();
-			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			if( rs != null) {
-				try {
-					rs.close();
-				} catch (Exception e2) {
-				}
-			}
 			if(pstmt != null) {
 				try {
 					pstmt.close();
@@ -59,10 +42,60 @@ public class EdocDAO {
 				}
 			}
 		}
-				
-		return empdto;
+		
+		return app_num;
 	}
-	*/
+	
+	// 전자결재자 
+	public void insertEApprover(EdocEmpDTO empdto) {
+		PreparedStatement pstmt = null;
+		String sql;
+		int app_num=0;
+		ResultSet rs = null;
+		
+		try {
+			sql = "SELECT LAST_NUMBER as app_num "
+					+ " FROM USER_SEQUENCES "
+					+ " WHERE SEQUENCE_NAME='APPVAL_SEQ' ";
+				
+			pstmt = conn.prepareStatement(sql);
+				
+			rs = pstmt.executeQuery();
+				
+			if(rs.next()) {
+				app_num = rs.getInt(1)-1;
+			}
+			
+			pstmt.close();
+			
+			if(app_num==0) {
+				return;
+			}
+			
+			sql = "INSERT INTO E_APPROVER(apper_num, app_num, id, app_result, memo, app_level, app_date) "
+				+ " VALUES(APPVER_SEQ.NEXTVAL, ?, ?, ?, ?, ?, SYSDATE)";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, app_num);
+			pstmt.setString(2, empdto.getId_apper());
+			pstmt.setInt(3, 0); // 대기
+			pstmt.setString(4, empdto.getMemo());
+			pstmt.setInt(5, empdto.getApp_level());
+			
+			pstmt.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+				}
+			}
+		}
+	}
 	
 	// 특정 직급의 모든 부서 사원 리스트 가져오기
 	public List<EdocEmpDTO> posEmpList(int pos_code) {
@@ -168,24 +201,7 @@ public class EdocDAO {
 		return formdto;
 	}
 	
-	public void insertEAppro(String app_doc) {
-		PreparedStatement pstmt = null;
-		String sql;
 		
-		try {
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if(pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (Exception e2) {
-				}
-			}
-		}
-		
-		
-	}
+	
 	
 }
