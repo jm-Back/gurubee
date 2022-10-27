@@ -1,6 +1,7 @@
 package com.mypage;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -32,10 +33,10 @@ public class MypageServlet extends MyServlet{
 		if(uri.indexOf("mypage.do") != - 1) {
 			selectemployee(req, resp); // mypage main(사용자정보 불러오기) [mypage.jsp (tab기능 사용예정)]
 			
-		} else if(uri.indexOf("mypage_write.do") != -1) {
+		} else if(uri.indexOf("mypage_update.do") != -1) {
 			mypageWriteForm(req, resp); // mypage 개인정보수정 폼 [mypage_write.jsp (tab1에서 출력)]
 			
-		} else if(uri.indexOf("mypage_ok.do") != -1) {
+		} else if(uri.indexOf("mypage_update_ok.do") != -1) {
 			mypageWriteOkSubmit(req, resp); // // mypage 개인정보수정처리
 						
 		} else if(uri.indexOf("myatt.do") != -1) {
@@ -90,7 +91,7 @@ public class MypageServlet extends MyServlet{
 		
 		MypageDAO dao = new MypageDAO();
 		
-		SessionInfo dto = dao.selectemployee(info.getId());
+		UserDTO dto = dao.selectemployee(info.getId());
 		
 		req.setAttribute("dto", dto);
 		
@@ -101,48 +102,43 @@ public class MypageServlet extends MyServlet{
 	
 	private void mypageWriteForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		//mypage에서 개인정보 수정 폼
-		req.setAttribute("mode", "write");
-		forward(req, resp, "/WEB-INF/views/mypage/mypage_write.jsp");
-		
-	}
-
-	private void mypageWriteOkSubmit(HttpServletRequest req, HttpServletResponse resp) {
-		// mypage 개인정보수정 완료
 		MypageDAO dao = new MypageDAO();
 		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		UserDTO dto = dao.selectemployee(info.getId());
+		
+		req.setAttribute("dto", dto);
+		forward(req, resp, "/WEB-INF/views/mypage/mypage_update.jsp");
+	}
+
+	private void mypageWriteOkSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+		// mypage 개인정보수정 완료
+		MypageDAO dao = new MypageDAO();
 		
 		String cp = req.getContextPath();
 		if (req.getMethod().equalsIgnoreCase("GET")) {
+			resp.sendRedirect(cp + "/");
 			return;
 		}
 		
 		try {
+			HttpSession session = req.getSession();
 			SessionInfo info = (SessionInfo) session.getAttribute("member");
-			if (info == null) {
-				resp.sendRedirect(cp + "/member/mypage_ok.do");
-				return;
-			}
-			SessionInfo dto = new SessionInfo();
 			
-			dto.setSave_filename(req.getParameter("save_filename"));
+			UserDTO dto = new UserDTO();
 			
-			dto.setId(req.getParameter("id"));
+			dto.setOri_filename(req.getParameter("ori_filename"));
+			
+			dto.setId(info.getId());
 			dto.setPwd(req.getParameter("pwd"));
-			dto.setName(req.getParameter("name"));
-			
-			String reg1 = req.getParameter("reg1");
-			String reg2 = req.getParameter("reg2");
-			dto.setReg(reg1 +"-"+ reg2);
-			
-			String email1 = req.getParameter("email1");
-			String email2 = req.getParameter("email2");
-			dto.setEmail(email1 + "@" + email2);
 
-			String phone1 = req.getParameter("phone1");
-			String phone2 = req.getParameter("phone2");
-			String phone3 = req.getParameter("phone3");
-			dto.setPhone(phone1 + "-" + phone2 + "-" + phone3);
+			String reg1 = req.getParameter("reg");
+			String reg2 = req.getParameter("reg2");
 			
+			dto.setReg(reg1+"-"+reg2);
+
+			dto.setEmail(req.getParameter("email"));
+			dto.setPhone(req.getParameter("phone"));
 			dto.setTel(req.getParameter("tel"));
 			
 			dao.mypageWriteForm(dto);
@@ -150,59 +146,71 @@ public class MypageServlet extends MyServlet{
 			e.printStackTrace();
 		}
 		
+		resp.sendRedirect(cp + "/");
 	}
 
 
-	private void myattForm(HttpServletRequest req, HttpServletResponse resp) {
+	private void myattForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 근태관리 홈
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		
+		MypageDAO dao = new MypageDAO();
+		
+		UserDTO dto = dao.selectemployee(info.getId());
+		List<MypageDTO> listMyAtt = dao.myattForm(info.getId());
+		
+		req.setAttribute("dto", dto);
+		req.setAttribute("listMyAtt", listMyAtt);
+		
+		forward(req, resp, "/WEB-INF/views/mypage/myatt.jsp");
+	}
+
+	private void myattListForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 	}
 
-	private void myattListForm(HttpServletRequest req, HttpServletResponse resp) {
+	private void myattupdateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
 
 	}
 
-	private void myattupdateForm(HttpServletRequest req, HttpServletResponse resp) {
-
-	}
-
-	private void myattupdateOkSubmit(HttpServletRequest req, HttpServletResponse resp) {
+	private void myattupdateOkSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
 
 	}
 	
-	private void myattarticleForm(HttpServletRequest req, HttpServletResponse resp) {
+	private void myattarticleForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
 
 	}
 	
-	private void myoffForm(HttpServletRequest req, HttpServletResponse resp) {
+	private void myoffForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
 		// 연차관리
 	}
 	
-	private void myoffuseForm(HttpServletRequest req, HttpServletResponse resp) {
+	private void myoffuseForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
 
 	}
 	
-	private void myofflistForm(HttpServletRequest req, HttpServletResponse resp) {
+	private void myofflistForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
 
 	}
 	
-	private void myoffwriteForm(HttpServletRequest req, HttpServletResponse resp) {
+	private void myoffwriteForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
 
 	}
 	
-	private void mypayForm(HttpServletRequest req, HttpServletResponse resp) {
+	private void mypayForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
 		// 급여명세서
 	}
 	
-	private void mypayarticleForm(HttpServletRequest req, HttpServletResponse resp) {
+	private void mypayarticleForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
 
 	}
 	
-	private void mypaylistSubmit(HttpServletRequest req, HttpServletResponse resp) {
+	private void mypaylistSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
 
 	}
 	
-	private void myworkSubmit(HttpServletRequest req, HttpServletResponse resp) {
+	private void myworkSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
 
 	}
 	

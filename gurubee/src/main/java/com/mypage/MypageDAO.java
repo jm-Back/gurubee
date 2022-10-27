@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.login.SessionInfo;
 import com.util.DBConn;
@@ -12,16 +14,16 @@ public class MypageDAO {
 private Connection conn = DBConn.getConnection();
 	//---------
 	// mypage에 사용자 정보 불러오기
-	public SessionInfo selectemployee(String id) {
+	public UserDTO selectemployee(String id) {
 		PreparedStatement pstmt = null;
 		String sql;
 		ResultSet rs = null;
-		SessionInfo dto = null;
+		UserDTO dto = null;
 		
 		try {
 		
 			sql = "SELECT his.id, pwd, name, reg, mail, phone, tel, pos_name, dep_name,"
-			 		+ "	ori_filename, save_filename "
+			 		+ "	ori_filename "
 			 		+ " FROM (SELECT his_no, date_iss, reason, id, pos_code, dep_code, division, "
 			 		+ "    now_working, type, startdate, enddate, "
 			 		+ "    ROW_NUMBER() OVER(PARTITION BY id ORDER BY pos_code DESC) as now "
@@ -39,16 +41,24 @@ private Connection conn = DBConn.getConnection();
 			rs = pstmt.executeQuery();
 			
 			if(rs.next()) {
-				dto = new SessionInfo();
+				dto = new UserDTO();
 				
 				dto.setId(rs.getString("id"));
 				dto.setPwd(rs.getString("pwd"));
 				dto.setName(rs.getString("name"));
-				dto.setReg(rs.getString("reg"));
+				String reg = rs.getString("reg");
+				if(reg != null) {
+					String [] rr = reg.split("-");
+					if(rr.length==2) {
+						dto.setReg(rr[0]);
+						dto.setReg2(rr[1]);
+					}
+				}
+				
+				
 				dto.setEmail(rs.getString("mail"));
 				dto.setPhone(rs.getString("phone"));
 				dto.setTel(rs.getString("tel"));
-				dto.setSave_filename(rs.getString("save_filename"));
 				dto.setOri_filename(rs.getString("ori_filename"));
 				
 				dto.setPos_name(rs.getString("pos_name"));
@@ -73,19 +83,18 @@ private Connection conn = DBConn.getConnection();
 			}
 		}
 
-		
 		return dto;
 	}
 
 	//mypage_write 작성
-	public void mypageWriteForm(SessionInfo dto) throws SQLException {
+	public void mypageWriteForm(UserDTO dto) throws SQLException {
 		PreparedStatement pstmt = null;
 		String sql;
 		
 		try {
 		
-			sql = "UPDATE employee pwd=?, reg=?, email=?, phone=?, tel=?, "
-					+ " save_filename=?  WHERE id=?";
+			sql = "UPDATE employee SET pwd=?, reg=?, email=?, phone=?, tel=?, "
+					+ " ori_filename=?  WHERE id=?";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -94,16 +103,71 @@ private Connection conn = DBConn.getConnection();
 			pstmt.setString(3, dto.getEmail());
 			pstmt.setString(4, dto.getPhone());
 			pstmt.setString(5, dto.getTel());
-			pstmt.setString(7, dto.getSave_filename());
+			pstmt.setString(7, dto.getOri_filename());
 			pstmt.setString(8, dto.getId());
 			 
 			pstmt.executeUpdate();
 			
 		
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			throw e;
 		} finally {
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e2) {
+				}
+			}
+		}
+	}
+	
+	// myatt 정보 불러오기
+	public List<MypageDTO> myattForm(String id) {
+		List<MypageDTO> list = new ArrayList<MypageDTO>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		SessionInfo dto = null;
+		MypageDTO ddto = null;
+		String sql;
+		
+		try {
+			sql = " SELECT A.id, att_id, att_start, att_end, att_ing "
+					+ " FROM ( "
+					+ " SELECT A.id "
+					+ " FROM Employee A "
+					+ " JOIN Attendence ON att_id = att_id, att_start = att_start, att_end = att_end, att_ing = att_ing)";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, id);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				dto = new SessionInfo();
+				
+				dto.setId(rs.getString("id"));
+				
+				ddto = new MypageDTO();
+				
+				
+				ddto.setAtt_id(rs.getInt("att_id"));
+				ddto.setAtt_start(rs.getInt("att_start"));
+				ddto.setAtt_end(rs.getInt("att_end"));
+				ddto.setAtt_ing(rs.getString("att_ing"));
+				
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e2) {
+				}
+			}
 			
 			if(pstmt != null) {
 				try {
@@ -111,7 +175,10 @@ private Connection conn = DBConn.getConnection();
 				} catch (Exception e2) {
 				}
 			}
+			
 		}
+		
+		return list;
 	}
 	
 	
