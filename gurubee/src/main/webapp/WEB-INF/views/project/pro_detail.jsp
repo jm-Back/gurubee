@@ -4,7 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 	<!--  상세 프로젝트 챕터 추가하기 -->
-<form id="project__detail__form">
+<form id="project__detail__form" method="post">
 <c:forEach var="deo" items="${list_detail}">
 	<div class="row">
 		<div class="col-md-12">
@@ -12,8 +12,8 @@
 				<div class="row">
 					<div class="col-md-12 pt-2 pb-4 justify-content-between">
 						<img class="profile__project__detail" src="${pageContext.request.contextPath}/resources/images/${me.pro_profile}">
-						<span class="font__project__detail">&nbsp;&nbsp; ${deo.pd_subject} </span>
-						<input type="hidden" value="">
+						<span class="font__project__detail">&nbsp;&nbsp; ${deo.pd_subject}</span>
+						<input type="hidden" value="${deo.pd_writer}" name="pd_writer">
 						<i class="fa-regular fa-pen-to-square edit__icon" data-bs-toggle="dropdown" aria-expanded="false"></i>
 						<ul class="dropdown-menu">
 							<li><a class="dropdown-item" href="${pageContext.request.contextPath}/project/">상세 프로젝트 수정</a></li>
@@ -29,6 +29,7 @@
 					<div class="col-md-2 pb-3 detail__title" >
 						세부 프로젝트 진행기간 
 					</div>
+					<input type="hidden" value="${deo.pd_code}" name="pd_code">
 					<input type="date" class="col-md-3 pb-3 mt-3 detail__content" value="${deo.pd_sdate}" name="pd_sdate" readonly="readonly">
 					<input type="date" class="col-md-3 pb-3 mt-3 detail__content" value="${deo.pd_edate}" name="pd_edate" readonly="readonly">
 				</div>
@@ -53,3 +54,7 @@
 	</div>
 </c:forEach>
 </form>
+
+<div class="page-navigation page__design">
+	${paging}
+</div>	

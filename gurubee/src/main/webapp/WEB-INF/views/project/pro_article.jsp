@@ -40,6 +40,14 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 	opacity: 80%;
 }
 
+.plus__project__title {
+	font-size: 22px;
+	font-weight:600;
+	color: white;
+	background-color: #01d6b7;
+	opacity: 80%;
+}
+
 .plus__project2:hover {
 	opacity: 100%;
 }
@@ -297,6 +305,16 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 	height: 50px;
 }
 
+.modal__size {
+	width: 100%;
+}
+
+.click__icon {
+	cursor: pointer;
+}
+
+
+
 </style>
 
 <script type="text/javascript">
@@ -338,10 +356,10 @@ $(function(){
 
 function listPage(page){
 	let url = "${pageContext.request.contextPath}/project/listDetail.do";
-	let pd_code = "${pd_code}";
+	let pro_code = "${pro_code}";
 	let pd_writer = $("input[name=pd_writer]").val();
 	console.log(pd_writer);
-	let query = "pd_code="+pd_code+"&pageNo="+page+"&pd_writer="+pd_writer;
+	let query = "pro_code="+pro_code+"&pageNo="+page+"&pd_writer="+pd_writer;
 	let selector = "#here_detail_list";
 	
 	const fn = function(data){
@@ -352,8 +370,6 @@ function listPage(page){
 	ajaxFun(url, "get", query, "html", fn);
 	
 }
-
-
 
 
 //참여자 삭제하기 (db 에서도 삭제함)
@@ -382,6 +398,55 @@ $(function(){
 	});
 	
 });
+
+
+//프로젝트 상세 등록 !!!!!!!!!!!!
+$(function(){
+	$(".plus__project").click(function(){
+		$("#detail__add").modal("show");
+		
+	});
+	
+	$(".btnClose").click(function(){
+		$("#detail__add").modal("hide");
+	});
+	
+	$("#add__detail__submit").click(function(){
+		//pd_code, pro_code, 등등 다 넘기기
+		let pd_code = "${pd_code}";
+		let pro_code = $("input[name=pro_code]").val();
+		
+		let pd_subject = $("input[name=pd_subject]").val();
+		let pd_content = $(".pd_content").val();
+		let pd_sdate = $("input[name=pd_sdate]").val();
+		let pd_edate = $("input[name=pd_edate]").val();
+		
+		let url = "${pageContext.request.contextPath}/project/listDetail_insert.do";
+		let query = "pd_code="+pd_code+"&pro_code="+pro_code;
+		query += "&pd_subject="+pd_subject;
+		query += "&pd_content="+pd_content;
+		query += "&pd_sdate="+pd_sdate;
+		query += "&pd_edate="+pd_edate;
+		
+		const fn = function(data){
+			if(data.state === "true"){
+				$("#detail__add").modal("hide");
+				listPage(1);
+				//window.location.reload();
+				
+			} else {
+				alert("프로젝트 챕터 등록이 실패했습니다.")
+
+			}
+		};
+		
+		ajaxFun(url, "post", query, "json", fn);
+		
+		
+	});
+	
+});
+
 
 //참여자 등록
 $(function(){
@@ -457,11 +522,11 @@ $(function(){
 <div class="container mt-3 mb-3">
 	<div class="row">
 		<div class="col-md-8">
-			<div class="p-3 plus__project shadow p-3 rounded" >
+			<div class="p-3 plus__project__title shadow p-3 rounded" >
 				<div class="d-flex justify-content-between">
 					<div  class="project__update__icon">Project name : ${dto.pro_name}&nbsp;&nbsp;&nbsp;</div>
 					<div class="dropdown">
-						<i class="fa-solid fa-ellipsis-vertical " data-bs-toggle="dropdown" aria-expanded="false"></i>
+						<i class="fa-solid fa-ellipsis-vertical click__icon " data-bs-toggle="dropdown" aria-expanded="false"></i>
 						<input type="hidden" value="${pro_code}" name="pro_code">
 						<input type="hidden" value="${pd_code}" name="pd_code">
 						<input type="hidden" value="${dto.pd_writer}" name="pd_writer">
@@ -564,9 +629,6 @@ $(function(){
 </div>
 
 
-
-
-
 	<!-- 마스터 선택 모달창 -->
 <div class="modal fade" id="Emp__list__add" tabindex="-1" 
 		data-bs-backdrop="static" data-bs-keyboard="false"
@@ -603,6 +665,48 @@ $(function(){
 		</div>
 	</div>
 </div>
+
+
+	<!-- 프로젝트 상세 추가 모달창 -->
+<form id="add__detail__form" method="post">
+<div class="modal fade modal__size" id="detail__add" tabindex="-1" 
+		data-bs-backdrop="static" data-bs-keyboard="false"
+		aria-labelledby="myDialogModalLabel2" aria-hidden="true">
+	<div class="modal-dialog ">
+		<div class="modal-content ">
+			<div class="modal-header">
+				<h5 class="modal-title" id="detail__addLabel2">프로젝트 챕터 추가</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+        		<p>새로운 프로젝트 챕터를 추가하세요!<p>
+					<form name="Form_add_detail" method="post">
+						<table class="table form-table">
+							<tr>
+							    <td><span>프로젝트 챕터명</span></td>
+							    <td><input type="text" name="pd_subject"></td>
+							</tr>
+							<tr>
+							    <td ><span>진행 기간</span></td>
+							    <td><input type="date" name="pd_sdate"> ~ <input type="date" name="pd_edate"></td>
+							</tr>
+							<tr>
+							    <td ><span>프로젝트 챕터 내용</span></td>
+							    <td><textarea name="pd_content" class="pd_content"></textarea> </td>
+							</tr>
+						</table>
+					</form>				
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary btnClose">닫기</button>
+				<button id="add__detail__submit" type="button" class="btn btn-primary">등록하기</button>
+			</div>
+		</div>
+	</div>
+</div>
+</form>
+
+
 
 
 

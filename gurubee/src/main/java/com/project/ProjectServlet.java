@@ -61,6 +61,8 @@ public class ProjectServlet extends MyServlet{
 			addProjectemp(req, resp);
 		} else if(uri.indexOf("listDetail.do") != -1) { //디테일 시작------!(리스트)
 			detailList(req, resp);
+		} else if(uri.indexOf("listDetail_insert.do") != -1) { //디테일 수정
+			detailInsert(req, resp);
 		} 
 		 
 	}
@@ -403,17 +405,18 @@ public class ProjectServlet extends MyServlet{
 		
 		try {
 			
-			String pd_code = req.getParameter("pd_code");
+			String pro_code = req.getParameter("pro_code");
 			String page = req.getParameter("pageNo");
 			String id_p = req.getParameter("pd_writer");
+			
 			
 			int current_page = 1;
 			if(page !=null) {
 				current_page = Integer.parseInt(page);
 			}
 			
-			int dataCount = dao.dataCountDetail(pd_code);
-			int size = 1;
+			int dataCount = dao.dataCountDetail(pro_code);
+			int size = 2;
 			int total_page = util.pageCount(dataCount, size);
 			
 			if(total_page < current_page) {
@@ -424,18 +427,22 @@ public class ProjectServlet extends MyServlet{
 			if(offset < 0) offset = 0;
 			
 			//세부 사항 출력!
-			List<ProjectDTO> list_detail = dao.detailProjectlist(pd_code, offset, size);
+			List<ProjectDTO> list_detail = dao.detailProjectlist(pro_code, offset, size);
+			
 			ProjectDTO me = dao.readId(id_p);
 			
 			for(ProjectDTO dto : list_detail) {
 				dto.setPd_content(util.htmlSymbols(dto.getPd_content()));
 			}
 			
+			String paging = util.pagingMethod(current_page, total_page, "listPage");
+			
 			req.setAttribute("list_detail", list_detail);
 			req.setAttribute("dataCount", dataCount);
 			req.setAttribute("pageNo", current_page);
 			req.setAttribute("total_page", total_page);
 			req.setAttribute("me", me);
+			req.setAttribute("paging", paging);
 			
 			forward(req, resp, "/WEB-INF/views/project/pro_detail.jsp");
 			
@@ -451,7 +458,45 @@ public class ProjectServlet extends MyServlet{
 		
 	}
 
-	
+	private void detailInsert(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		// 디테일 추가 (상세 프로젝트)
+		ProjectDAO dao = new ProjectDAO();
+		
+		//현재 id 필요함
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		String state = "false";
+		
+		try {
+			
+			String pro_code = req.getParameter("pro_code");
+			
+			ProjectDTO dto = new ProjectDTO();
+			
+			dto.setPd_subject(req.getParameter("pd_subject"));
+			dto.setPd_content(req.getParameter("pd_content"));
+			dto.setPd_sdate(req.getParameter("pd_sdate"));
+			dto.setPd_edate(req.getParameter("pd_edate"));
+			dto.setPd_writer(info.getId());
+			
+			dao.insertProjectDetail(dto, pro_code);
+			
+			state = "true";
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		JSONObject job = new JSONObject();
+		job.put("state", state);
+		
+		resp.setContentType("text/html;charset=utf-8");
+		PrintWriter out = resp.getWriter();
+		out.print(job.toString());
+		
+		
+	}
 	
 	
 

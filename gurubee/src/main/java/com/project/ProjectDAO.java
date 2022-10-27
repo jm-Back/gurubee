@@ -349,7 +349,7 @@ public class ProjectDAO {
 				
 				//내 사번으로 연관된 프로젝트 list
 				sql = " SELECT DISTINCT E.ori_filename, E.name, A.pro_code, A.id id_p, A.pro_name, A.pro_clear, A.pro_type, A.pro_master, A.pro_outline, A.pro_content, A.pro_sdate, A.pro_edate "
-						+ "	, B.pd_part, B.pd_code, B.pd_ing "
+						+ "	, B.pd_part, B.pd_ing "
 						+ "	FROM Employee E "
 						+ " JOIN project A ON A.pro_master = E.id "
 						+ "	JOIN project_detail B ON A.pro_code = B.pro_code "
@@ -380,7 +380,6 @@ public class ProjectDAO {
 					dto2.setPro_sdate(rs.getDate("pro_sdate").toString());
 					dto2.setPro_edate(rs.getDate("pro_edate").toString());
 					dto2.setPd_part(rs.getInt("pd_part"));
-					dto2.setPd_code(rs.getString("pd_code"));
 					dto2.setPd_ing(rs.getInt("pd_ing"));
 					
 					list.add(dto2);
@@ -962,7 +961,7 @@ public class ProjectDAO {
 		
 		
 		//세부 프로젝트 디테일 - list 정보 가져오기
-		public List<ProjectDTO> detailProjectlist(String pd_code, int offset, int size) throws SQLException{
+		public List<ProjectDTO> detailProjectlist(String pro_code, int offset, int size) throws SQLException{
 			List<ProjectDTO> list = new ArrayList<>();
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
@@ -973,12 +972,12 @@ public class ProjectDAO {
 				sql = " SELECT pd_code, pro_code, pd_rank, pd_subject, pd_content, pd_part, pd_ing, "
 						+ " pd_sdate, pd_edate, pd_writer "
 						+ " FROM project_detail "
-						+ " WHERE pd_code = ? "
+						+ " WHERE pro_code = ? "
 						+ " ORDER BY pd_rank ASC "
 						+ " OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ";
 				
 				pstmt = conn.prepareStatement(sql);
-				pstmt.setString(1, pd_code);
+				pstmt.setString(1, pro_code);
 				pstmt.setInt(2, offset);
 				pstmt.setInt(3, size);
 				
@@ -1026,7 +1025,7 @@ public class ProjectDAO {
 		
 		
 		//세부 프로젝트 사항 갯수
-		public int dataCountDetail(String pd_code) {
+		public int dataCountDetail(String pro_code) {
 			int result = 0;
 			PreparedStatement pstmt = null;
 			ResultSet rs= null;
@@ -1035,11 +1034,11 @@ public class ProjectDAO {
 			try {
 				
 				sql = " SELECT COUNT(*) FROM project_detail "
-						+ " WHERE pd_code = ? ";
+						+ " WHERE pro_code = ? ";
 				
 				pstmt = conn.prepareStatement(sql);
 				
-				pstmt.setString(1, pd_code);
+				pstmt.setString(1, pro_code);
 				
 				rs = pstmt.executeQuery();
 				
@@ -1071,50 +1070,61 @@ public class ProjectDAO {
 		
 		
 		//세부 프로젝트 추가 = insert (기존 프로젝트들의 max part 를 변경해야한다...ㅎㅎ..)
-		public void insertProjectDetail(ProjectDTO dto) throws SQLException {
+		public void insertProjectDetail(ProjectDTO dto, String pro_code) throws SQLException {
 			PreparedStatement pstmt = null;
+			ResultSet rs = null;
 			String sql;
+			
+			int pd_rank = 0;
+			
 			
 			try {
 				
 				conn.setAutoCommit(false);
 				
-				//1. 기존 프로젝트 내용들에서 pd_part, pd_rank 값 참고해야함... ㅎ 
-				sql = " ";
+				//1. 기존 프로젝트 내용들에서 pd_rank 값 참고해야함... ㅎ 
+				//pd, pro 코드는 있음
+				sql = " select MAX(pd_rank) pd_rank from project_detail where pro_code = ? GROUP BY pd_code";
 				
 				pstmt = conn.prepareStatement(sql);
 				
-				pstmt.executeQuery();
+				pstmt.setString(1, pro_code);
+				rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					pd_rank = rs.getInt(1);
+				}
 				
 				pstmt.close();
 				pstmt = null;
 				
 				
 				//2. 세부 프로젝트 내용 추가 (ing = 0 / part 는 기존 프로젝트들에서 나누기 / pd_rank 도 기존것에서 +1
-				sql = " INSERT INTO project_detail(pd_num, pd_code, pro_code, pd_rank, pd_subject, pd_content, "
+				sql = " INSERT INTO project_detail(pd_code, pro_code, pd_rank, pd_subject, pd_content, "
 						+ " pd_part, pd_ing, pd_sdate, pd_edate, pd_writer ) "
-						+ " VALUES(pd_num_seq.NEXTVAL, ?, ?, ?, ?, ?, ?, 0, ?, ?, ? ) ";
+						+ " VALUES(pd_seq.NEXTVAL, ?, ?, ?, ?, 100, 0, ?, ?, ? ) ";
 				
 				pstmt = conn.prepareStatement(sql);
 				
-				pstmt.setString(1, dto.getPd_code());
-				pstmt.setString(2, dto.getPro_code());
-				pstmt.setInt(3, dto.getPd_rank());
-				pstmt.setString(4, dto.getPd_subject());
-				pstmt.setString(5, dto.getPd_content());
-				pstmt.setInt(6, dto.getPd_part());
-				pstmt.setString(7, dto.getPd_sdate().toString());
-				pstmt.setString(8, dto.getPd_edate().toString());
-				pstmt.setString(9, dto.getPd_writer());
+				pstmt.setString(1, pro_code);
+				pstmt.setInt(2, pd_rank+1);
+				pstmt.setString(3, dto.getPd_subject());
+				pstmt.setString(4, dto.getPd_content());
+				pstmt.setString(5, dto.getPd_sdate().toString());
+				pstmt.setString(6, dto.getPd_edate().toString());
+				pstmt.setString(7, dto.getPd_writer());
 			
 				pstmt.executeQuery();
 				
-				pstmt.close();
-				pstmt = null;
-				
+				conn.commit();
 				
 				
 			} catch (SQLException e) {
+				try {
+					conn.rollback();
+				} catch (Exception e2) {
+				}
+				
 				e.printStackTrace();
 				throw e;
 			} finally {
@@ -1132,6 +1142,8 @@ public class ProjectDAO {
 			}
 			
 		}
+		
+		//2- 프로젝트 갯수로 part 나누기
 		
 		
 	
