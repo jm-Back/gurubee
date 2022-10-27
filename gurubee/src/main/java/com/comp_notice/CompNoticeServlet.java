@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 import com.login.SessionInfo;
+import com.util.FileManager;
 import com.util.MyUploadServlet;
 import com.util.MyUtil;
 import com.util.MyUtilBootstrap;
@@ -44,7 +45,12 @@ public class CompNoticeServlet extends MyUploadServlet {
 			return;
 		}
 		
-		// 파일을 저장할 경로
+		/*
+		파일을 저장할 경로
+		getRealPath : webapp 경로까지를 의미
+		File.separator : 프로그램이 실행 중인 OS에 해당하는 구분자를 리턴
+						 ex) windows : /, Linux : \
+		*/
 		String root = session.getServletContext().getRealPath("/");
 		pathname = root + "uploads" + File.separator + "comp_notice";
 		
@@ -56,6 +62,12 @@ public class CompNoticeServlet extends MyUploadServlet {
 			writeSubmit(req, resp);
 		} else if(uri.indexOf("article.do") != -1) {
 			article(req, resp);
+		} else if(uri.indexOf("update.do") != -1) {
+			updateForm(req, resp);
+		} else if(uri.indexOf("update_ok.do") != -1) {
+			updateSubmit(req, resp);
+		} else if(uri.indexOf("deleteFile.do") != -1) {
+			deleteFile(req, resp);
 		}
 		
 	}
@@ -274,6 +286,169 @@ public class CompNoticeServlet extends MyUploadServlet {
 		}
 		
 		 resp.sendRedirect(cp + "/comp_notice/list.do?" + query);
+	}
+	
+	// 글 수정폼
+	protected void updateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		CompNoticeDAO dao = new CompNoticeDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		String cp = req.getContextPath();
+		
+		String page = req.getParameter("page");
+		
+		try {
+			
+			// 수정할 게시물의 DB 접근하기 위해 공지사항 번호 필요
+			long num = Long.parseLong(req.getParameter("num"));
+			
+			CompNoticeDTO dto = dao.readBoard(num);
+			
+			// 수정을 누르기전 해당 게시물이 삭제 되었을 경우( ex) 관리자에 의한 삭제 )
+			if(dto == null) {
+				resp.sendRedirect(cp + "/comp_notice/list.do");
+				return;
+			}
+			
+			// 게시물 작성자와 로그인한 사용자 아이디가 다를 경우
+			if(! dto.getWriter_id().equals(info.getId())) {
+				resp.sendRedirect(cp + "/comp_notice/list.do");
+				return;
+			}
+			
+			req.setAttribute("page", page);
+			req.setAttribute("dto", dto);
+			req.setAttribute("mode", "update");
+			
+			forward(req, resp, "/WEB-INF/views/comp_notice/write.jsp");
+			return;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		// 예외발생시 리스트로 리다이렉트
+		resp.sendRedirect(cp + "/comp_notice/list.do");
+	}
+	
+	// 수정 완료
+	protected void updateSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		CompNoticeDAO dao = new CompNoticeDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		String cp = req.getContextPath();
+		
+		// POST 방식이 아니라 GET 방식으로 쏠 경우 (보안 위험)
+		if(req.getMethod().equalsIgnoreCase("GET")) {
+			resp.sendRedirect(cp + "/comp_notice/list.do");
+			return;
+		}
+		
+		String page = req.getParameter("page");
+		
+		try {
+			
+			CompNoticeDTO dto = new CompNoticeDTO();
+			
+			dto.setNum(Long.parseLong(req.getParameter("num")));
+			dto.setNotice_title(req.getParameter("notice_title"));
+			dto.setNotice_content(req.getParameter("notice_content"));
+			dto.setOri_filename(req.getParameter("originalFilename"));
+			dto.setSave_filename(req.getParameter("saveFilename"));
+			
+			dto.setWriter_id(info.getId());
+			
+			Part p = req.getPart("selectFile");
+			Map<String, String> map = doFileUpload(p, pathname);
+			if(map != null) { // 파일이 있을 때
+				if(req.getParameter("saveFilename").length() != 0) {
+					
+					// 기존 파일 삭제
+					FileManager.doFiledelete(pathname, req.getParameter("saveFilename"));
+				}
+				
+				// 새로운 파일
+				String saveFilename = map.get("saveFilename");
+				String originalFilename = map.get("originalFilename");
+				
+				dto.setSave_filename(saveFilename);
+				dto.setOri_filename(originalFilename);
+			}
+			
+			dao.updateBoard(dto);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		resp.sendRedirect(cp + "/comp_notice/list.do?page=" + page);
+		
+	}
+	
+	// 게시물 수정시 파일 삭제
+	protected void deleteFile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		CompNoticeDAO dao = new CompNoticeDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		String cp = req.getContextPath();
+		
+		String page = req.getParameter("page");
+		
+		try {
+			
+			long num = Long.parseLong(req.getParameter("num"));
+			
+			CompNoticeDTO dto = dao.readBoard(num);
+			
+			// 게시물이 존재하지 않을 경우
+			if(dto == null) {
+				resp.sendRedirect(cp + "/comp_notice/list.do?page=" + page);
+				return;
+			}
+			
+			// 작성자가 아닐 경우
+			if(! info.getId().equals(dto.getWriter_id())) {
+				resp.sendRedirect(cp + "/comp_notice/list.do?page=" + page);
+				return;
+			}
+			
+			// 파일 삭제
+			FileManager.doFiledelete(pathname, dto.getSave_filename());
+			
+			// 파일명과 파일크기 변경
+			dto.setOri_filename("");
+			dto.setSave_filename("");
+			
+			dao.updateBoard(dto);
+			
+			req.setAttribute("page", page);
+			req.setAttribute("dto", dto);
+			req.setAttribute("mode", "update");
+			
+			forward(req, resp, "/WEB-INF/views/comp_notice/write.jsp");
+			return;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		resp.sendRedirect(cp + "/comp_notice/list.do");
+	}
+	
+	// 게시글 삭제
+	protected void delete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		
+		
 	}
 
 }

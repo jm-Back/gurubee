@@ -67,6 +67,7 @@ function check() {
 
 <header>
 	<jsp:include page="/WEB-INF/views/layout/header.jsp"/>
+	<jsp:include page="/WEB-INF/views/layout/sidebar.jsp"/>
 </header>
 
 <main>
@@ -112,7 +113,7 @@ function check() {
 								<td class="table-light col-sm-2" scope="row">첨부된파일</td>
 								<td> 
 									<p class="form-control-plaintext">
-										<c:if test="${not empty dto.save_Filename}">
+										<c:if test="${not empty dto.save_filename}">
 											<a href="javascript:deleteFile('${dto.num}');"><i class="bi bi-trash"></i></a>
 											${dto.ori_filename}
 										</c:if>
@@ -133,8 +134,8 @@ function check() {
 								<c:if test="${mode=='update'}">
 									<input type="hidden" name="num" value="${dto.num}">
 									<input type="hidden" name="page" value="${page}">
-									<input type="hidden" name="saveFilename" value="${dto.save_Filename}">
-									<input type="hidden" name="originalFilename" value="${dto.ori_Filename}">
+									<input type="hidden" name="saveFilename" value="${dto.save_filename}">
+									<input type="hidden" name="originalFilename" value="${dto.ori_filename}">
 								</c:if>
 							</td>
 						</tr>

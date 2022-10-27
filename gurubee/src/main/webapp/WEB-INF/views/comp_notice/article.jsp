@@ -245,6 +245,7 @@ $(function(){
 
 <header>
 	<jsp:include page="/WEB-INF/views/layout/header.jsp"/>
+	<jsp:include page="/WEB-INF/views/layout/sidebar.jsp"/>
 </header>
 
 <main>
@@ -364,5 +365,10 @@ $(function(){
 	</div>
 </main>
 
+<footer>
+	<jsp:include page="/WEB-INF/views/layout/footer.jsp"/>
+</footer>
+
+<jsp:include page="/WEB-INF/views/layout/staticFooter.jsp"/>
 </body>
 </html>

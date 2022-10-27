@@ -243,7 +243,7 @@ public class CompNoticeDAO {
 		
 		try {
 			
-			sql = " SELECT notice_num, name, notice_title, views, save_filename "
+			sql = " SELECT n.notice_num, e.name, n.notice_title, n.views, nf.save_filename, "
 					+ " TO_CHAR(regdate, 'YYYY-MM-DD') regdate "
 					+ " FROM noticeAll n "
 					+ " JOIN employee e ON n.id = e.id "
@@ -322,9 +322,10 @@ public class CompNoticeDAO {
 		try {
 			
 			sql = " SELECT n.notice_num, notice_title, notice_content, "
-					+ " save_filename, ori_filename, views, regdate "
+					+ " nf.save_filename, nf.ori_filename, views, regdate, name, n.id "
 					+ " FROM noticeAll n "
 					+ " JOIN noticeAllFile nf ON n.notice_num = nf.notice_num "
+					+ " JOIN employee e ON n.id = e.id "
 					+ " WHERE n.notice_num = ? ";
 			
 			pstmt = conn.prepareStatement(sql);
@@ -343,6 +344,9 @@ public class CompNoticeDAO {
 				dto.setOri_filename(rs.getString("ori_filename"));
 				dto.setRegdate(rs.getString("regdate"));
 				dto.setViews(rs.getInt("views"));
+				
+				dto.setWriter_name(rs.getString("name"));
+				dto.setWriter_id(rs.getString("id"));
 				
 			}
 			
@@ -581,6 +585,8 @@ public class CompNoticeDAO {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, dto.getNotice_title());
 			pstmt.setString(2, dto.getNotice_content());
+			pstmt.setLong(3, dto.getNum());
+			pstmt.setString(4, dto.getWriter_id());
 			
 			pstmt.executeUpdate();
 			
