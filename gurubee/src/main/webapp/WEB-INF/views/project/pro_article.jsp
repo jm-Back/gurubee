@@ -32,7 +32,7 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
  /*스크롤바 트랙 안쪽 그림자*/}
 
 .plus__project {
-	font-size: 20px;
+	font-size: 22px;
 	font-weight:600;
 	cursor: pointer;
 	color: white;
@@ -218,6 +218,84 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 	cursor: pointer;
 }
 
+/*프로젝트 디테일 부분!*/
+.profile__project__detail {
+	height: 80px;
+	width: 80px;
+	object-fit: cover;
+    border-radius: 100%;
+    border: 2px solid #eee ;
+    padding: 3px;
+    margin-left: 30px;
+}
+
+
+.font__project__detail {
+	font-weight: 600;
+	font-size: 24px;
+	padding-top: 10px;
+}
+
+.edit__icon {
+	font-size: 30px;
+	color: gray;
+	float: right;
+	padding-right: 30px;
+	cursor: pointer;
+	opacity: 80%;
+}
+
+.edit__icon:hover {
+	opacity: 100%;
+}
+
+.hr__style {
+	color: gray;
+}
+
+.detail__title {
+	margin-left: 80px;
+	margin-top: 10px;
+	border-radius: 10px;
+	font-size: 18px;
+	padding: 5px;
+	text-align: left;
+	font-weight: 600;
+}
+
+.detail__content {
+	margin-left: 20px;
+	margin-top: 10px;
+	border-radius: 10px;
+	font-size: 18px;
+	padding: 7px;
+	padding-left: 30px;
+	text-align: left;
+	background: #F3F3F3;
+	border: none;
+}
+
+.detail__content__textarea {
+	margin-left: 20px;
+	margin-top: 10px;
+	border-radius: 10px;
+	font-size: 18px;
+	padding-top: 20px;
+	padding-left: 20px;
+	height: 220px;
+	background: #F3F3F3;
+	border: none;
+}
+
+.progress__design {
+	margin-top: 20px;
+	height: 30px;
+	margin-left: 9px;
+}
+
+.progress__main {
+	height: 50px;
+}
 
 </style>
 
@@ -253,6 +331,31 @@ function ajaxFun(url, method, query, dataType, fn) {
 	});
 }
 
+//페이징 처리
+$(function(){
+	listPage(1);
+});
+
+function listPage(page){
+	let url = "${pageContext.request.contextPath}/project/listDetail.do";
+	let pd_code = "${pd_code}";
+	let pd_writer = $("input[name=pd_writer]").val();
+	console.log(pd_writer);
+	let query = "pd_code="+pd_code+"&pageNo="+page+"&pd_writer="+pd_writer;
+	let selector = "#here_detail_list";
+	
+	const fn = function(data){
+		 $(selector).html(data);
+		
+	};
+	
+	ajaxFun(url, "get", query, "html", fn);
+	
+}
+
+
+
+
 //참여자 삭제하기 (db 에서도 삭제함)
 $(function(){
 	$(".fa__location").click(function(){
@@ -261,10 +364,10 @@ $(function(){
 		}
 		
 		let pj_id = $(this).attr("data-pjId");
-		let pd_code = $("input[name=pd_code]").val();
+		let pro_code = $("input[name=pro_code]").val();
 		
 		let url = "${pageContext.request.contextPath}/project/delete_emp_ok.do";
-		let query = "pj_id="+pj_id+"&pd_code="+pd_code;
+		let query = "pj_id="+pj_id+"&pro_code="+pro_code;
 		
 		const fn = function(data){
 			if(data.state === "true"){
@@ -294,9 +397,9 @@ $(function(){
 	
 	//새로운 참여자 - 등록하기 눌렀을 때
 	$("#add__emp__submit").click(function(){
-		//사번, pd_code 필요함
+		//사번, pro_code 필요함
 		let pj_id = $("#selectAddEmp option:selected").attr("data-empId"); //사번
-		let pd_code = "${pd_code}";
+		let pro_code = "${pro_code}";
 
 		if($("#selectAddEmp option:selected").length < 1 || $("#selectAddEmp option:selected").length > 1){
 			alert("추가 참여자 등록은 1명씩 가능합니다.");
@@ -304,7 +407,7 @@ $(function(){
 		}
 		
 		let url = "${pageContext.request.contextPath}/project/add_employee.do";
-		let query = "pj_id="+pj_id+"&pd_code="+pd_code;
+		let query = "pj_id="+pj_id+"&pro_code="+pro_code;
 		
 		//등록
 		const fn = function(data){
@@ -321,9 +424,6 @@ $(function(){
 		
 	});
 });
-
-
-
 
 
 $(function(){
@@ -364,6 +464,7 @@ $(function(){
 						<i class="fa-solid fa-ellipsis-vertical " data-bs-toggle="dropdown" aria-expanded="false"></i>
 						<input type="hidden" value="${pro_code}" name="pro_code">
 						<input type="hidden" value="${pd_code}" name="pd_code">
+						<input type="hidden" value="${dto.pd_writer}" name="pd_writer">
 						<ul class="dropdown-menu">
 							<li><a class="dropdown-item" href="${pageContext.request.contextPath}/project/update.do?pro_code=${pro_code}">프로젝트 수정</a></li>
 						<c:if test="${sessionScope.member.id == dto.id_p}">
@@ -382,7 +483,7 @@ $(function(){
 					<div >${dto.pro_outline}</div>
 				</div>
 				<div class="progress">
-					<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: ${dto.pd_ing}%" aria-valuenow="${dto.pd_ing}" aria-valuemin="0" aria-valuemax="100"></div>
+					<div class="progress-bar progress-bar-striped progress-bar-animated progress__main" role="progressbar" style="width: ${dto.pd_ing}%" aria-valuenow="${dto.pd_ing}" aria-valuemin="0" aria-valuemax="100"></div>
 				</div>
 				<div class="d-flex pt-4">
 					<div >${dto.pro_sdate}</div> &nbsp; ~ &nbsp; <div >${dto.pro_edate}</div>
@@ -440,7 +541,8 @@ $(function(){
 			</div>
 			<div class="p-3 mb-3  shadow p-3 rounded" >
 				<div class="d-flex justify-content-between">
-					<div class="last__edit">&nbsp;●&nbsp;&nbsp;<span class="last__edit2">&nbsp;프로젝트 작성자&nbsp;&nbsp;${vo.name_p}&nbsp;&nbsp;</span></div>
+					<div class="last__edit">&nbsp;●&nbsp;&nbsp;<span class="last__edit2">&nbsp;프로젝트 만든이&nbsp;&nbsp;${vo.name_p}&nbsp;&nbsp;</span></div>
+					<input type="hidden" name="id_p" value="${vo.id_p}">
 				</div>
 			</div>
 		</div>
@@ -449,14 +551,20 @@ $(function(){
 	</div>
 	<div class="row">
 		<div class="col-md-12">
-			<div class="p-4 mb-4 mt-2 plus__project plus__project2 shadow p-3 mb-5 rounded">
+			<div class="p-4 mb-2 mt-2 plus__project plus__project2 shadow p-3 mb-3 rounded">
 				<div class="d-flex justify-content-between">
 					<div ><i class="fa-solid fa-plus"></i>&nbsp;프로젝트 챕터 추가</div>
 				</div>
 			</div>	
 		</div>
 	</div>
+	
+	<!--  상세 프로젝트 챕터 추가하기 -->
+	<div id="here_detail_list"></div>
 </div>
+
+
+
 
 
 	<!-- 마스터 선택 모달창 -->

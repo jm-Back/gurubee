@@ -134,6 +134,8 @@ public class ProjectDAO {
 			return list;
 		}
 		
+		
+		//프로젝트 마스터 이름
 		public String listProject_master(ProjectDTO dto) {
 			String result = null;
 			PreparedStatement pstmt = null;
@@ -209,14 +211,15 @@ public class ProjectDAO {
 				
 				//디테일 테이블 등록
 				sql = " INSERT INTO Project_detail(pd_code, pro_code, pd_rank, pd_subject, pd_content, "
-						+ " pd_part, pd_ing, pd_sdate, pd_edate ) "
-						+ " VALUES (pd_seq.NEXTVAL, pro_seq.CURRVAL, 1, '챕터1', '내용', 100, 0, ?, ? ) ";
+						+ " pd_part, pd_ing, pd_sdate, pd_edate, pd_writer ) "
+						+ " VALUES (pd_seq.NEXTVAL, pro_seq.CURRVAL, 1, '챕터1', '내용', 100, 0, ?, ?, ? ) ";
 				
 				pstmt = conn.prepareStatement(sql);
 				
 				//파트 - 비중 : 100 / 진척율 : 0
 				pstmt.setString(1, dto.getPro_sdate()); //첫 시작일은 프로젝트 시작일
 				pstmt.setString(2, dto.getPro_edate()); //마지막도 마찬가지
+				pstmt.setString(3, dto.getPro_master()); //담당자가 상세정보 1순위 가져감
 				
 				pstmt.executeUpdate();
 				
@@ -260,8 +263,8 @@ public class ProjectDAO {
 			try {
 				//참여자 테이블 등록 (참여자 목록만큼 돌려줌)
 
-					sql = "INSERT INTO Project_join(pj_code, pd_code, id, pj_role ) "
-							+ " 	VALUES(pj_seq.NEXTVAL , pd_seq.CURRVAL, ?, '참여자') ";
+					sql = "INSERT INTO Project_join(pj_code, pro_code, id, pj_role ) "
+							+ " 	VALUES(pj_seq.NEXTVAL , pro_seq.CURRVAL, ?, '참여자') ";
 					
 					pstmt =conn.prepareStatement(sql);
 					pstmt.setString(1, dto.getPj_id());
@@ -350,7 +353,7 @@ public class ProjectDAO {
 						+ "	FROM Employee E "
 						+ " JOIN project A ON A.pro_master = E.id "
 						+ "	JOIN project_detail B ON A.pro_code = B.pro_code "
-						+ "	JOIN project_join C ON B.pd_code = C.pd_code "
+						+ "	JOIN project_join C ON A.pro_code = C.pro_code "
 						+ "	WHERE C.id = ? OR A.pro_master = ? "
 						+ "	ORDER BY A.pro_sdate ASC ";
 				
@@ -418,11 +421,11 @@ public class ProjectDAO {
 				
 				//1.해당 프로젝트 내용 읽기 (내 사번, 프로젝트 코드 필요)
 				sql = " SELECT E.name, E.mail, E.phone, E.tel, E.id id_p, B.pd_ing, "
-						+ " A.pro_code, A.pro_writer pro_writer, A.pro_name, A.pro_clear, A.pro_type, B.pd_code, A.pro_master, A.pro_outline, A.pro_content, A.pro_sdate, A.pro_edate "
+						+ " A.pro_code, A.pro_writer pro_writer, B.pd_writer pd_writer, A.pro_name, A.pro_clear, A.pro_type, B.pd_code, A.pro_master, A.pro_outline, A.pro_content, A.pro_sdate, A.pro_edate "
 						+ " FROM Employee E "
 						+ " JOIN project A ON A.pro_master = E.id "
 						+ " JOIN project_detail B ON A.pro_code = B.pro_code "
-						+ " JOIN project_join C ON B.pd_code = C.pd_code "
+						+ " JOIN project_join C ON A.pro_code = C.pro_code "
 						+ " WHERE (C.id = ? OR A.pro_master = ?) AND A.pro_code = ? "
 						+ " ORDER BY A.pro_sdate DESC ";
 				
@@ -451,6 +454,7 @@ public class ProjectDAO {
 					dto.setPro_mail(rs.getString("mail"));
 					dto.setPro_phone(rs.getString("phone"));
 					dto.setPro_tel(rs.getString("tel"));
+					dto.setPd_writer(rs.getString("pd_writer"));
 					//마스터 사번
 					dto.setId_p(rs.getString("id_p"));
 					
@@ -518,7 +522,7 @@ public class ProjectDAO {
 			
 			try {
 				
-				sql = " UPDATE Project SET id=?, pro_type= ? , pro_name = ?, pro_outline=?, pro_content=?, pro_sdate=?, pro_edate=?  WHERE pro_code = ? ";
+				sql = " UPDATE Project SET pro_writer=?, pro_type= ? , pro_name = ?, pro_outline=?, pro_content=?, pro_sdate=?, pro_edate=?  WHERE pro_code = ? ";
 				
 				pstmt = conn.prepareStatement(sql);
 				
@@ -639,18 +643,17 @@ public class ProjectDAO {
 		}
 		
 		//프로젝트 article : 참여자 정보 가져오기
-		//프로젝트 코드랑, pd_code 필요함!
+		//프로젝트 코드 필요함!
 		public List<ProjectDTO> listProjectEmployee(String pro_code) throws SQLException {
 			List<ProjectDTO> list = new ArrayList<>();
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			String sql;
-			String pd_code = null;
 			
 			try {
 				
-				//프로젝트 디테일 코드 구하기
-				sql = " SELECT pd_code FROM project_detail WHERE pro_code = ? ";
+				//*프로젝트 디테일 코드 구하기
+				/*sql = " SELECT pd_code FROM project_detail WHERE pro_code = ? ";
 				
 				pstmt = conn.prepareStatement(sql);
 				
@@ -665,7 +668,7 @@ public class ProjectDAO {
 				rs.close();
 				pstmt.close();
 				rs = null;
-				pstmt = null;
+				pstmt = null; */
 				
 				//list로 받기
 				sql = " SELECT name, dep_name, MIN(pos_name) pos_name, id, ori_filename "
@@ -677,13 +680,13 @@ public class ProjectDAO {
 						+ " JOIN Position D ON B.pos_code = D.pos_code "
 						+ " WHERE A.id in  (SELECT id FROM Employee WHERE id in ( "
 						+ " SELECT id FROM project_join "
-						+ " WHERE pd_code = ? ) )) "
+						+ " WHERE pro_code = ? ) )) "
 						+ " GROUP BY name, id, dep_name, ori_filename "
 						+ " ORDER BY dep_name, pos_name  ";
 				
 				pstmt = conn.prepareStatement(sql);
 				
-				pstmt.setString(1, pd_code);
+				pstmt.setString(1, pro_code);
 				
 				rs = pstmt.executeQuery();
 				
@@ -801,7 +804,7 @@ public class ProjectDAO {
 			
 			try {
 				
-				sql = "SELECT name, dep_name, MIN(pos_name) pos_name, ori_filename "
+				sql = "SELECT id, name, dep_name, MIN(pos_name) pos_name, ori_filename "
 						+ "FROM ( "
 						+ "SELECT A.name, A.id, date_iss date_iss ,C.dep_name, D.pos_name, A.ori_filename "
 						+ "FROM Employee A "
@@ -821,6 +824,7 @@ public class ProjectDAO {
 				
 				while(rs.next()) {
 					
+					dto.setId_p(rs.getString("id"));
 					dto.setName_p(rs.getString("name"));
 					dto.setDep_name(rs.getString("dep_name"));
 					dto.setPos_name(rs.getString("pos_name"));
@@ -852,18 +856,18 @@ public class ProjectDAO {
 		}
 		
 		//프로젝트 참여자 삭제하기 (ajax 로 만들기!!)
-		public void deleteEmployeeList(String pj_id, String pd_code) throws SQLException {
+		public void deleteEmployeeList(String pj_id, String pro_code) throws SQLException {
 			PreparedStatement pstmt = null;
 			String sql;
 			
 			try {
 				sql = " DELETE FROM project_join "
-						+ " WHERE id = ? AND pd_code = ? ";
+						+ " WHERE id = ? AND pro_code = ? ";
 				
 				pstmt = conn.prepareStatement(sql);
 				
 				pstmt.setString(1, pj_id);
-				pstmt.setString(2, pd_code);
+				pstmt.setString(2, pro_code);
 				
 				pstmt.executeUpdate();
 				
@@ -883,18 +887,18 @@ public class ProjectDAO {
 		}
 		
 		//프로젝트 참여자 추가 
-		public void addEmployee(String pd_code, String pj_id) throws SQLException {
+		public void addEmployee(String pro_code, String pj_id) throws SQLException {
 			PreparedStatement pstmt = null;
 			String sql;
 			
 			try {
 				
-				sql = " INSERT INTO project_join(pj_code, pd_code, id, pj_role) "
+				sql = " INSERT INTO project_join(pj_code, pro_code, id, pj_role) "
 						+ " VALUES(pj_seq.NEXTVAL, ?, ?, '참여자') ";
 				
 				pstmt = conn.prepareStatement(sql);
 				
-				pstmt.setString(1, pd_code);
+				pstmt.setString(1, pro_code);
 				pstmt.setString(2, pj_id);
 				pstmt.executeUpdate();
 				
@@ -913,7 +917,7 @@ public class ProjectDAO {
 		}
 		
 		//프로젝트 참여자 중복 검사
-		public int checkEmployee(String pd_code, String pj_id) throws SQLException {
+		public int checkEmployee(String pro_code, String pj_id) throws SQLException {
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			int result = 0;
@@ -921,11 +925,11 @@ public class ProjectDAO {
 			
 			try {
 				
-				sql = " SELECT COUNT(*) FROM project_join WHERE pd_code = ? AND id = ? ";
+				sql = " SELECT COUNT(*) FROM project_join WHERE pro_code = ? AND id = ? ";
 				
 				pstmt = conn.prepareStatement(sql);
 				
-				pstmt.setString(1, pd_code);
+				pstmt.setString(1, pro_code);
 				pstmt.setString(2, pj_id);
 				
 				rs = pstmt.executeQuery();
@@ -956,6 +960,180 @@ public class ProjectDAO {
 			
 		}
 		
+		
+		//세부 프로젝트 디테일 - list 정보 가져오기
+		public List<ProjectDTO> detailProjectlist(String pd_code, int offset, int size) throws SQLException{
+			List<ProjectDTO> list = new ArrayList<>();
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql;
+			
+			try {
+				
+				sql = " SELECT pd_code, pro_code, pd_rank, pd_subject, pd_content, pd_part, pd_ing, "
+						+ " pd_sdate, pd_edate, pd_writer "
+						+ " FROM project_detail "
+						+ " WHERE pd_code = ? "
+						+ " ORDER BY pd_rank ASC "
+						+ " OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ";
+				
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, pd_code);
+				pstmt.setInt(2, offset);
+				pstmt.setInt(3, size);
+				
+				rs = pstmt.executeQuery();
+				
+				while(rs.next()) {
+					ProjectDTO dto = new ProjectDTO();
+					
+					dto.setPd_code(rs.getString("pd_code"));
+					dto.setPro_code(rs.getString("pro_code"));
+					dto.setPd_rank(rs.getInt("pd_rank"));
+					dto.setPd_subject(rs.getString("pd_subject"));
+					dto.setPd_content(rs.getString("pd_content"));
+					dto.setPd_part(rs.getInt("pd_part"));
+					dto.setPd_ing(rs.getInt("pd_ing"));
+					dto.setPd_sdate(rs.getDate("pd_sdate").toString());
+					dto.setPd_edate(rs.getDate("pd_edate").toString());
+					dto.setPd_writer(rs.getString("pd_writer"));
+					
+					list.add(dto);
+					
+				}
 
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw e;
+			} finally {
+				if(rs!=null) {
+					try {
+						rs.close();
+					} catch (Exception e2) {
+					}
+				}
+				
+				if(pstmt !=null) {
+					try {
+						pstmt.close();
+					} catch (Exception e2) {
+					}
+				}
+			}
+
+			return list;
+		}
+		
+		
+		//세부 프로젝트 사항 갯수
+		public int dataCountDetail(String pd_code) {
+			int result = 0;
+			PreparedStatement pstmt = null;
+			ResultSet rs= null;
+			String sql;
+			
+			try {
+				
+				sql = " SELECT COUNT(*) FROM project_detail "
+						+ " WHERE pd_code = ? ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, pd_code);
+				
+				rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					result = rs.getInt(1);
+				}
+				
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if(rs!=null) {
+					try {
+						rs.close();
+					} catch (Exception e2) {
+					}
+				}
+				
+				if(pstmt!=null) {
+					try {
+						pstmt.close();
+					} catch (Exception e2) {
+					}
+				}
+			}
+			
+			return result;
+		}
+		
+		
+		//세부 프로젝트 추가 = insert (기존 프로젝트들의 max part 를 변경해야한다...ㅎㅎ..)
+		public void insertProjectDetail(ProjectDTO dto) throws SQLException {
+			PreparedStatement pstmt = null;
+			String sql;
+			
+			try {
+				
+				conn.setAutoCommit(false);
+				
+				//1. 기존 프로젝트 내용들에서 pd_part, pd_rank 값 참고해야함... ㅎ 
+				sql = " ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.executeQuery();
+				
+				pstmt.close();
+				pstmt = null;
+				
+				
+				//2. 세부 프로젝트 내용 추가 (ing = 0 / part 는 기존 프로젝트들에서 나누기 / pd_rank 도 기존것에서 +1
+				sql = " INSERT INTO project_detail(pd_num, pd_code, pro_code, pd_rank, pd_subject, pd_content, "
+						+ " pd_part, pd_ing, pd_sdate, pd_edate, pd_writer ) "
+						+ " VALUES(pd_num_seq.NEXTVAL, ?, ?, ?, ?, ?, ?, 0, ?, ?, ? ) ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, dto.getPd_code());
+				pstmt.setString(2, dto.getPro_code());
+				pstmt.setInt(3, dto.getPd_rank());
+				pstmt.setString(4, dto.getPd_subject());
+				pstmt.setString(5, dto.getPd_content());
+				pstmt.setInt(6, dto.getPd_part());
+				pstmt.setString(7, dto.getPd_sdate().toString());
+				pstmt.setString(8, dto.getPd_edate().toString());
+				pstmt.setString(9, dto.getPd_writer());
+			
+				pstmt.executeQuery();
+				
+				pstmt.close();
+				pstmt = null;
+				
+				
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw e;
+			} finally {
+				if(pstmt!=null) {
+					try {
+						pstmt.close();
+					} catch (Exception e) {
+					}
+				}
+				
+				try {
+					conn.setAutoCommit(true);
+				} catch (Exception e2) {
+				}
+			}
+			
+		}
+		
+		
+	
 	
 }

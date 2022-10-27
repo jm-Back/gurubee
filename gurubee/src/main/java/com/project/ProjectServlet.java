@@ -14,6 +14,8 @@ import org.json.JSONObject;
 
 import com.login.SessionInfo;
 import com.util.MyServlet;
+import com.util.MyUtil;
+import com.util.MyUtilBootstrap;
 
 
 @WebServlet("/project/*")
@@ -57,7 +59,9 @@ public class ProjectServlet extends MyServlet{
 			projectempdelete(req, resp);
 		} else if(uri.indexOf("add_employee.do") != -1) { //프로젝트 참여자 추가등록
 			addProjectemp(req, resp);
-		}
+		} else if(uri.indexOf("listDetail.do") != -1) { //디테일 시작------!(리스트)
+			detailList(req, resp);
+		} 
 		 
 	}
 
@@ -332,9 +336,9 @@ public class ProjectServlet extends MyServlet{
 		
 		try {
 			String pj_id = req.getParameter("pj_id");
-			String pd_code = req.getParameter("pd_code");
+			String pro_code = req.getParameter("pro_code");
 			
-			dao.deleteEmployeeList(pj_id, pd_code);
+			dao.deleteEmployeeList(pj_id, pro_code);
 			
 			//삭제 되면 true
 			state = "true";
@@ -363,16 +367,16 @@ public class ProjectServlet extends MyServlet{
 			
 			//등록할 사원의 id 사번, 해당 프로젝트 pd_code 필요
 			String pj_id = req.getParameter("pj_id");
-			String pd_code = req.getParameter("pd_code");
+			String pro_code = req.getParameter("pro_code");
 			
 			//중복 검사
-			int result = dao.checkEmployee(pd_code, pj_id);
+			int result = dao.checkEmployee(pro_code, pj_id);
 			if(result > 0) {
 				state = "false";
 				return;
 				
 			} else {
-				dao.addEmployee(pd_code, pj_id);
+				dao.addEmployee(pro_code, pj_id);
 				state = "true";
 			}
 
@@ -387,6 +391,62 @@ public class ProjectServlet extends MyServlet{
 		resp.setContentType("text/html;charset=utf-8");
 		PrintWriter out = resp.getWriter();
 		out.print(job.toString());
+		
+		
+	}
+	
+
+	private void detailList(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		// 디테일 리스트 (출력하기) json
+		ProjectDAO dao = new ProjectDAO();
+		MyUtil util = new MyUtilBootstrap();
+		
+		try {
+			
+			String pd_code = req.getParameter("pd_code");
+			String page = req.getParameter("pageNo");
+			String id_p = req.getParameter("pd_writer");
+			
+			int current_page = 1;
+			if(page !=null) {
+				current_page = Integer.parseInt(page);
+			}
+			
+			int dataCount = dao.dataCountDetail(pd_code);
+			int size = 1;
+			int total_page = util.pageCount(dataCount, size);
+			
+			if(total_page < current_page) {
+				current_page = total_page;
+			}
+			
+			int offset = (current_page - 1) * size;
+			if(offset < 0) offset = 0;
+			
+			//세부 사항 출력!
+			List<ProjectDTO> list_detail = dao.detailProjectlist(pd_code, offset, size);
+			ProjectDTO me = dao.readId(id_p);
+			
+			for(ProjectDTO dto : list_detail) {
+				dto.setPd_content(util.htmlSymbols(dto.getPd_content()));
+			}
+			
+			req.setAttribute("list_detail", list_detail);
+			req.setAttribute("dataCount", dataCount);
+			req.setAttribute("pageNo", current_page);
+			req.setAttribute("total_page", total_page);
+			req.setAttribute("me", me);
+			
+			forward(req, resp, "/WEB-INF/views/project/pro_detail.jsp");
+			
+			return;
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		resp.sendError(400);
 		
 		
 	}

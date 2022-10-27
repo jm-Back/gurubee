@@ -43,8 +43,21 @@ public class ProjectDTO {
 	private String pro_mail;
 	private String pro_phone;
 	private String pro_tel;
+	private String pd_num;
+	private String pd_writer;
 	
-	
+	public String getPd_writer() {
+		return pd_writer;
+	}
+	public void setPd_writer(String pd_writer) {
+		this.pd_writer = pd_writer;
+	}
+	public String getPd_num() {
+		return pd_num;
+	}
+	public void setPd_num(String pd_num) {
+		this.pd_num = pd_num;
+	}
 	public String getPro_mail() {
 		return pro_mail;
 	}
@@ -67,7 +80,7 @@ public class ProjectDTO {
 	//프로젝트 상세
 	private String pd_code;
 	private int pd_rank;
-	private String pd_subejct;
+	private String pd_subject;
 	private String pd_content;
 	private int pd_part;
 	private int pd_ing;
@@ -194,11 +207,11 @@ public class ProjectDTO {
 	public void setPd_rank(int pd_rank) {
 		this.pd_rank = pd_rank;
 	}
-	public String getPd_subejct() {
-		return pd_subejct;
+	public String getPd_subject() {
+		return pd_subject;
 	}
-	public void setPd_subejct(String pd_subejct) {
-		this.pd_subejct = pd_subejct;
+	public void setPd_subject(String pd_subject) {
+		this.pd_subject = pd_subject;
 	}
 	public String getPd_content() {
 		return pd_content;
