@@ -56,7 +56,7 @@ a:link, a:visited {
    <li><a href="${pageContext.request.contextPath}/edoc/confirm.do">결재하기</a></li>
    		<!-- 결재하기 완료  /edoc/confirm_ok.do -->
    		<li><a href="${pageContext.request.contextPath}/edoc/list.do">결재문서 리스트</a></li>
-   <li><a href="${pageContext.request.contextPath}/edoc/list_reveice.do">결재문서 리스트 수신함</a></li>
+   <li><a href="${pageContext.request.contextPath}/edoc/list_receive.do">결재문서 리스트 수신함</a></li>
    <li><a href="${pageContext.request.contextPath}/edoc/list_send.do">결재문서 리스트 발신함</a></li>
    <li><a href="${pageContext.request.contextPath}/edoc/update.do">결재문서 수정폼</a></li>
    		<!-- 결재문서 수정 완료  /edoc/update_ok.do -->

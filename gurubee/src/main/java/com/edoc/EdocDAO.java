@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.util.DBConn;
 
@@ -17,8 +19,8 @@ public class EdocDAO {
 		String sql;
 		
 		try {
-			sql = "INSERT INTO E_APPROVAL (app_num, app_doc, id, app_date, doc_form, title, temp) "
-					+ " VALUES (APPVAL_SEQ.NEXTVAL, ?, ?, SYSDATE, ?, ?, ?) ";
+			sql = "INSERT INTO E_APPROVAL (app_num, app_doc, id, app_date, doc_form, title, temp, result) "
+					+ " VALUES (APPVAL_SEQ.NEXTVAL, ?, ?, SYSDATE, ?, ?, ?, 0) ";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -198,7 +200,217 @@ public class EdocDAO {
 		return formdto;
 	}
 	
+	// 결재문서 발신함 리스트
+	public List<EdocDTO> listEApproval(String writeId) {
+		List<EdocDTO> list = new ArrayList<>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
 		
+		try {
+			/*
+			sql = "SELECT app_num, app_doc, result, title, TO_CHAR(app_date,'YYYY-MM-DD')app_date, temp"
+				+ " FROM E_APPROVAL "
+				+ " WHERE (temp=1 OR temp=-1) AND (id IN ?) "
+				+ " ORDER BY app_date DESC ";
+			*/
+			
+			sql = "select al.app_num, al.app_doc, TO_CHAR(al.app_date,'YYYY-MM-DD')app_date, al.id, al.title, resultList "
+				+ " FROM E_APPROVAL al "
+				+ " LEFT OUTER JOIN  "
+				+ "    (SELECT app_num, LISTAGG(app_result, ',') WITHIN GROUP(ORDER BY id) "
+				+ "        AS resultList "
+				+ "     FROM E_APPROVER "
+				+ "     GROUP BY app_num "
+				+ "    ) er "
+				+ "    ON er.app_num = al.app_num "
+				+ " WHERE (temp=1 OR temp=-1) AND (al.ID IN ?) "
+				+ " ORDER BY app_date DESC ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, writeId);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				EdocDTO edocdto = new EdocDTO();
+				
+				edocdto.setApp_num(rs.getInt("app_num"));
+				edocdto.setApp_doc(rs.getString("app_doc"));
+				
+				if(rs.getString("resultList").contains("-1")) {
+					edocdto.setResult(-1);
+				} else if(rs.getString("resultList").contains("0")) {
+					edocdto.setResult(0);
+				} else {
+					edocdto.setResult(1);
+				}
+				
+				edocdto.setTitle(rs.getString("title"));
+				edocdto.setApp_date(rs.getString("app_date"));
+				list.add(edocdto);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if( rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e2) {
+				}
+			}
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+				}
+			}
+		}
+
+		return list;
+	}
+
+	
+	// 발신한 결재문서의 수신자 리스트 
+	public List<EdocEmpDTO> listEApprover(int app_num) {
+		List<EdocEmpDTO> list = new ArrayList<>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			sql = " SELECT app_num, e.id, name, p.pos_code, pos_name, "
+				+ "		apper_num, dep_name, app_result, app_level, app_date, memo, result "
+				+ " FROM E_APPROVER er "
+				+ " LEFT OUTER JOIN Employee e ON e.id = er.id "
+				+ " LEFT OUTER JOIN (SELECT his_no, date_iss, reason, id, pos_code, dep_code, division, "
+				+ "    now_working, type, startdate, enddate, "
+				+ "    ROW_NUMBER() OVER(PARTITION BY id ORDER BY pos_code DESC) as now "
+				+ "    FROM employee_history)his ON his.id = e.id "
+				+ " LEFT OUTER JOIN department d ON his.dep_code = d.dep_code "
+				+ " LEFT OUTER JOIN position p ON p.pos_code = his.pos_code "
+				+ " WHERE now=1 AND now_working='재직' AND app_num = ? "
+				+ " ORDER BY app_num, app_level ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, app_num);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				EdocEmpDTO empdto = new EdocEmpDTO();
+				
+				empdto.setId_apper(rs.getString("id"));
+				empdto.setName_apper(rs.getString("name"));
+				empdto.setDep_name(rs.getString("dep_name"));
+				empdto.setPos_code(rs.getInt("pos_code"));
+				empdto.setPos_name(rs.getString("pos_name"));
+				empdto.setApp_num(rs.getInt("app_num"));
+				empdto.setApper_num(rs.getString("apper_num"));
+				empdto.setApp_result(rs.getInt("app_result"));
+				empdto.setApp_level(rs.getInt("app_level"));
+				empdto.setApp_date(rs.getString("app_date"));
+				empdto.setMemo(rs.getString("memo"));
+				empdto.setApp_result(rs.getInt("result"));
+				
+				list.add(empdto);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if( rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e2) {
+				}
+			}
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+				}
+			}
+		}
+
+		return list;
+	}
+	
+	
+	// 결재문서에 대한 결재상태 가져오기 
+	public List<String> listAppResult(String writeId) {
+		List<Integer> appNumlist = null;
+		List<String> list = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			sql = "SELECT app_num, app_doc, result, title, TO_CHAR(app_date,'YYYY-MM-DD')app_date, temp"
+					+ " FROM E_APPROVAL "
+					+ " WHERE (temp=1 OR temp=-1) AND (id IN ?) "
+					+ " ORDER BY app_date DESC ";
+
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setString(1, writeId);
+
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				System.out.println(rs.getInt("app_num"));
+				appNumlist.add(rs.getInt("app_num"));
+			}
+			
+			pstmt.close();
+			/*	
+			sql = " SELECT app_num, id, app_result, app_level, app_date "
+				+ " FROM E_APPROVER "
+				+ " WHERE app_num = ? ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			for(int i = 0; i<appNumlist.size(); i++){
+				pstmt.setInt(1, appNumlist.get(i));
+				
+				rs = pstmt.executeQuery();
+				
+				while(rs.next()) {
+					if(rs.getInt("app_result")==-1) {
+						list.add(rs.getInt("app_level")+"차반려");
+					} else if(rs.getInt("app_result")==0) {
+						list.add(rs.getInt("app_level")+"차대기");
+					} else {
+						list.add(rs.getInt("app_level")+"차승인");
+					}
+					
+				}
+			}
+			*/
+		} catch (Exception e) {
+			e.printStackTrace();
+		}  finally {
+			if( rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e2) {
+				}
+			}
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+				}
+			}
+		}
+		
+		return list;
+	}
+	
+	
 	
 	
 }

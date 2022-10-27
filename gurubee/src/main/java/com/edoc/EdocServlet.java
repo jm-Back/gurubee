@@ -1,6 +1,7 @@
 package com.edoc;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONObject;
 
 import com.login.SessionInfo;
 import com.util.MyServlet;
@@ -51,7 +53,10 @@ public class EdocServlet extends MyServlet {
 			listSend(req, resp);
 		} else if(uri.indexOf("list_receive.do") != -1) {
 			listReceive(req, resp);
+		} else if(uri.indexOf("appResult.do") != -1) {
+			currentAppResult(req, resp);
 		} 
+		
 	}
 	
 	protected void writeForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -155,13 +160,61 @@ public class EdocServlet extends MyServlet {
 
 	// 결재문서 발신함 리스트 
 	protected void listSend(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String path = "/WEB-INF/views/edoc/list_send.jsp";
-		forward(req, resp, path);
+		EdocDAO dao = new EdocDAO();
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		
+		try {
+			// 결재문서 리스트 가져오기
+			String id = info.getId();
+			List<EdocDTO> myEdocList = dao.listEApproval(id);
+
+			req.setAttribute("list", myEdocList);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		forward(req, resp, "/WEB-INF/views/edoc/list_send.jsp");
+	}
+	
+	// 문서의 처리결과 가져오기
+	protected void currentAppResult(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// 문서의 처ꈰ결과 가져오기. AJAX:JSON
+		EdocDAO dao = new EdocDAO();
+		
+		try {
+			/*
+			int app_num = Integer.parseInt(req.getParameter("app_num"));
+			
+			String[] num_array = req.getParameterValues("app_num");
+					
+			for(int i=0; i<num_array.length; i++){
+				String result = dao.resultApprover(Integer.parseInt(num_array[i]));
+				
+				System.out.println(num_array[i] + "번 문서 처리결과:" +result);
+			}			
+			
+			
+			JSONObject job = new JSONObject();
+			job.put("result", result);
+			
+			resp.setContentType("text/html; charset=utf-8");
+			PrintWriter out = resp.getWriter();
+			out.print(job.toString());
+			
+			return;
+			*/
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		resp.sendError(400);
 	}
 	
 	// 결재문서 수신함 리스트 
 	protected void listReceive(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String path = "/WEB-INF/views/edoc/list_reveice.jsp";
+		String path = "/WEB-INF/views/edoc/list_receive.jsp";
 		forward(req, resp, path);
 	}
 }
