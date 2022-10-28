@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -215,17 +217,21 @@ public class EdocDAO {
 				+ " ORDER BY app_date DESC ";
 			*/
 			
-			sql = "select al.app_num, al.app_doc, TO_CHAR(al.app_date,'YYYY-MM-DD')app_date, al.id, al.title, resultList "
-				+ " FROM E_APPROVAL al "
-				+ " LEFT OUTER JOIN  "
-				+ "    (SELECT app_num, LISTAGG(app_result, ',') WITHIN GROUP(ORDER BY id) "
-				+ "        AS resultList "
-				+ "     FROM E_APPROVER "
-				+ "     GROUP BY app_num "
-				+ "    ) er "
-				+ "    ON er.app_num = al.app_num "
-				+ " WHERE (temp=1 OR temp=-1) AND (al.ID IN ?) "
-				+ " ORDER BY app_date DESC ";
+			sql = "select al.app_num, al.app_doc, TO_CHAR(al.app_date,'YYYY-MM-DD')app_date, al.id, "
+					+ "	al.title, resultList, apperList "
+					+ " FROM E_APPROVAL al "
+					+ " LEFT OUTER JOIN "
+					+ "    (SELECT app_num, LISTAGG(app_result, ',') WITHIN GROUP(ORDER BY app_level) "
+					+ "        AS resultList, "
+					+ "        LISTAGG(e.name, ',') WITHIN GROUP(ORDER BY app_level) "
+					+ "        AS apperList "
+					+ "     FROM E_APPROVER er "
+					+ "     LEFT OUTER JOIN EMPLOYEE e ON er.id=e.id "
+					+ "     GROUP BY app_num "
+					+ "    ) er "
+					+ "    ON er.app_num = al.app_num "
+					+ " WHERE (temp=1 OR temp=-1) AND al.id = ? "
+					+ " ORDER BY app_date DESC ";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -239,16 +245,28 @@ public class EdocDAO {
 				edocdto.setApp_num(rs.getInt("app_num"));
 				edocdto.setApp_doc(rs.getString("app_doc"));
 				
-				if(rs.getString("resultList").contains("-1")) {
-					edocdto.setResult(-1);
-				} else if(rs.getString("resultList").contains("0")) {
-					edocdto.setResult(0);
-				} else {
-					edocdto.setResult(1);
+				String[] rr, aa;
+				rr = rs.getString("resultList").split(",");
+				aa = rs.getString("apperList").split(",");
+				
+				for(int i=0; i<rr.length; i++) {
+					if(rs.getString("resultList").contains("-1")) {
+						edocdto.setResult((Arrays.asList(rr).indexOf("-1")+1)+"차반려");
+						edocdto.setResult_name(aa[Arrays.asList(rr).indexOf("-1")]);
+					} else if(rs.getString("resultList").contains("1")) {
+						edocdto.setResult("승인");
+						edocdto.setResult_name(aa[rr.length-1]);
+					} else {
+						edocdto.setResult((Arrays.asList(rr).indexOf("0")+1)+"차대기");
+						edocdto.setResult_name(aa[Arrays.asList(rr).indexOf("0")]);
+					}
+					
 				}
+				System.out.println(edocdto.getApp_num() + ": " +edocdto.getResult() + ", " + edocdto.getResult_name());
 				
 				edocdto.setTitle(rs.getString("title"));
 				edocdto.setApp_date(rs.getString("app_date"));
+				
 				list.add(edocdto);
 			}
 			

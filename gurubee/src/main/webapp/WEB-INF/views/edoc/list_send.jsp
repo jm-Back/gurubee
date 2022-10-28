@@ -2,6 +2,7 @@
 <%@ page trimDirectiveWhitespaces="true"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -128,6 +129,7 @@ function appResult() {
 									<td style="width: 5%">No</td>
 									<td style="width: 10%">문서구분</td>
 									<td style="width: 10%">결재상태</td>
+									<td style="width: 10%">마지막결재자</td>
 									<td style="width: 30%">제목</td>
 									<td style="width: 10%">작성일</td>
 									<td style="width: 10%">처리결과</td>
@@ -141,19 +143,17 @@ function appResult() {
 										<td>${dto.app_num}</td>
 										<td>${dto.app_doc}</td>
 										<td>
-											<div id="currentResult"></div>
-											<c:choose>
-												<c:when test="${dto.result == 0}">
-													<button class="btn btn-success" disabled style="border-radius: 20px;">진행중</button>
-												</c:when>
-												<c:when test="${dto.result == -1}">
-													<button class="btn btn-success" disabled style="border-radius: 20px;">반려</button>
-												</c:when>
-												<c:otherwise>
-													<button class="btn btn-success" disabled style="border-radius: 20px;">승인</button>
-												</c:otherwise>
-											</c:choose>
+											<c:if test="${fn:contains(dto.result, '반려')}">
+												<button class="btn btn-warning" disabled style="border-radius: 20px;">${dto.result}</button>
+											</c:if>
+											<c:if test="${fn:contains(dto.result, '승인')}">
+												<button class="btn btn-success" disabled style="border-radius: 20px;">${dto.result}</button>
+											</c:if>
+											<c:if test="${fn:contains(dto.result, '대기')}">
+												<button class="btn btn-success" disabled style="border-radius: 20px;">${dto.result}</button>
+											</c:if>
 										</td>
+										<td>${dto.result_name}</td>
 										<td>
 											<c:if test="${dto.temp == -1}">
 												<button class="btn btn-outline-success" disabled style="border-radius: 20px; width: 85px;">수정 이력</button>		
@@ -162,17 +162,15 @@ function appResult() {
 										</td>
 										<td>${dto.app_date}</td>
 										<td>
-											<c:choose>
-												<c:when test="${dto.result == 0}">
-													<button class="btn btn-success" disabled style="border-radius: 20px;">진행중</button>
-												</c:when>
-												<c:when test="${dto.result == -1}">
-													<button class="btn btn-success" disabled style="border-radius: 20px;">반려</button>
-												</c:when>
-												<c:otherwise>
-													<button class="btn btn-success" disabled style="border-radius: 20px;">승인</button>
-												</c:otherwise>
-											</c:choose>
+											<c:if test="${fn:contains(dto.result, '반려')}">
+												<button class="btn btn-warning" disabled style="border-radius: 20px;">반려</button>
+											</c:if>
+											<c:if test="${fn:contains(dto.result, '승인')}">
+												<button class="btn btn-success" disabled style="border-radius: 20px;">승인</button>
+											</c:if>
+											<c:if test="${fn:contains(dto.result, '대기')}">
+												<button class="btn btn-success" disabled style="border-radius: 20px;">진행중</button>
+											</c:if>
 										</td>
 									</tr>
 									<input type="hidden" name="app_num" value="${dto.app_num}">
