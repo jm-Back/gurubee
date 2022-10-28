@@ -12,12 +12,12 @@
 	<c:forEach var="vo" items="${listReply}">
 		<tr class='list-header'>
 			<td width='50%'>
-				<span class='bold'>${vo.writer_name}</span>
+				<span class='bold'>${vo.reply_name}</span>
 			</td>
 			<td width='50%' align='right'>
-				<span>${vo.reg_date}</span>
+				<span>${vo.rep_regdate}</span>
 				<c:choose>
-					<c:when test="${sessionScope.member.id=='abmin' || sessionScope.member.id==vo.writer_id}">
+					<c:when test="${sessionScope.member.id=='admin' || sessionScope.member.id==vo.reply_id}">
 						<span class="deleteReply" data-replyNum='${vo.replyNum}' data-pageNo='${pageNo}'>| 삭제</span>
 					</c:when>
 					<c:otherwise>
@@ -29,14 +29,10 @@
 		<tr>
 			<td colspan='2' valign='top'>내용입니다.</td>
 		</tr>
-			<td colspan="2" valign='top'>${vo.content}</td>
+			<td colspan="2" valign='top'>${vo.rep_contents}</td>
 		<tr>
 			<td>
 				<button type='button' class='btn btn-light btnReplyAnswerLayout' data-replyNum='${vo.replyNum}'>답글 <span id="answerCount${vo.replyNum}">${vo.answerCount}</span></button>
-			</td>
-			<td align='right'>
-				<button type='button' class='btn btn-light btnSendReplyLike' data-replyNum='10' data-replyLike='1' title="좋아요"><i class="bi bi-hand-thumbs-up"></i> <span>5</span></button>
-				<button type='button' class='btn btn-light btnSendReplyLike' data-replyNum='10' data-replyLike='0' title="싫어요"><i class="bi bi-hand-thumbs-down"></i> <span>3</span></button>	        
 			</td>
 		</tr>
 	

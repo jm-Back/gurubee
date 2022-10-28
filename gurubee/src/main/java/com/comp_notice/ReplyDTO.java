@@ -2,7 +2,7 @@ package com.comp_notice;
 
 public class ReplyDTO {
 	
-	private long reply_num;  	 // 댓글 번호
+	private long replyNum;  	 // 댓글 번호
 	private long notice_num; 	 // 공지 사항 번호
 	private String reply_id; 	 // 댓글 작성자 아이디
 	private String reply_name;   // 댓글 작성자 이름
@@ -11,11 +11,11 @@ public class ReplyDTO {
 	private long answer; 		 // 대댓글 번호
 	private int answerCount; 	 // 대댓글 갯수
 	
-	public long getReply_num() {
-		return reply_num;
+	public long getReplyNum() {
+		return replyNum;
 	}
-	public void setReply_num(long reply_num) {
-		this.reply_num = reply_num;
+	public void setReplyNum(long replyNum) {
+		this.replyNum = replyNum;
 	}
 	public long getNotice_num() {
 		return notice_num;
