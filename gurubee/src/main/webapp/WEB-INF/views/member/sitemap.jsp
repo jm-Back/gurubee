@@ -66,25 +66,31 @@ a:link, a:visited {
 <hr>
 <h4>마이페이지(형우님)</h4>
 <ul>
-	
-   
    		<!-- 마이페이지  /mypage/mypage.do -->
    	<li><a href="${pageContext.request.contextPath}/mypage/mypage.do">마이페이지</a></li>
-   <li><a href="${pageContext.request.contextPath}/mypage/mypage_write.do">개인정보 등록폼</a></li>
-   		<!-- 개인정보 등록(DB저장) /mypage/mypage_ok -->
-   <li><a href="${pageContext.request.contextPath}/mypage/mypage_write.do">개인정보 수정폼</a></li>
-   		<!-- 개인정보 수정 완료(DB저장)  /mypage/update_ok.do -->
-   		
+   	<li><a href="${pageContext.request.contextPath}/mypage/mypage_update.do">개인정보 수정폼</a></li>
+   		<!-- 개인정보 수정 완료(DB저장)  /mypage/mypage_update_ok.do -->
+</ul>
+ <ul>  		
    		<!-- 근태 관리 /mypage/att.do -->
-   <li><a href="${pageContext.request.contextPath}/mypage/mypage_write.do">월별근태관리 조회</a></li>
-   <li><a href="${pageContext.request.contextPath}/mypage/att_write.do">출퇴근 등록</a></li>
-   		<!-- 출퇴근 등록 완료(DB저장)  /mypage/att_write_ok.do -->
-   <li><a href="${pageContext.request.contextPath}/mypage/att_article.do">총 근무시간 출력</a></li>
-   <li><a href="${pageContext.request.contextPath}/mypage/mypage/myoff.do">연차 사용 현황</a></li>
-   <li><a href="${pageContext.request.contextPath}/mypage/myoff_list.do">연차 신청 내역</a></li>
-   <li><a href="${pageContext.request.contextPath}/mypage/mypage_write.do">연차/휴가 신청</a></li>
-   <li><a href="${pageContext.request.contextPath}/mypage/mypay_article.do">월별 급여 명세서 조회</a></li>
+ 	<li><a href="${pageContext.request.contextPath}/mypage/myatt.do">개인근태관리</a></li>
+   	<li><a href="${pageContext.request.contextPath}/mypage/myatt_list.do">월별근태관리 조회</a></li>
+   	<li><a href="${pageContext.request.contextPath}/mypage/myatt_write.do">출퇴근등록</a></li>
+   		<!-- 출퇴근 등록 완료(DB저장)  /mypage/myatt_write_ok.do -->
+   	<!-- 
+   	<li><a href="${pageContext.request.contextPath}/mypage/myatt_article.do">총 근무시간 출력</a></li>
+   		리스트에 최초 근무일자랑 현재일 불러와서 계산해서 출력...? -->
+</ul>
+ <ul>    
+ 	<li><a href="${pageContext.request.contextPath}/mypage/myoff.do">개인연차관리</a></li>
+   	<li><a href="${pageContext.request.contextPath}/mypage/myoff.do">연차 사용 현황</a></li>
+   	<li><a href="${pageContext.request.contextPath}/mypage/myoff_list.do">연차 신청 내역</a></li>
+   	<li><a href="${pageContext.request.contextPath}/mypage/mypage_write.do">연차/휴가 신청</a></li>
+</ul>
+ <ul>   	
+   	<li><a href="${pageContext.request.contextPath}/mypage/mypay.do">개인급여관리</a></li>
    <!-- URI 미수정
+   	<li><a href="${pageContext.request.contextPath}/mypage/mypay_article.do">월별 급여 명세서 조회</a></li>
    <li><a href="${pageContext.request.contextPath}/mypage/mypay_article.do">급여명세서 출력</a></li>
    <li><a href="${pageContext.request.contextPath}/mypage/mypay_article.do">개인정보 수정폼</a></li> -->
 </ul>
