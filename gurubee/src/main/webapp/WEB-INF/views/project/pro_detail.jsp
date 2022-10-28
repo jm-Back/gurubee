@@ -14,12 +14,12 @@
 						<img class="profile__project__detail" src="${pageContext.request.contextPath}/resources/images/${me.pro_profile}">
 						<span class="font__project__detail">&nbsp;&nbsp; ${deo.pd_subject}</span>
 						<input type="hidden" value="${deo.pd_writer}" name="pd_writer">
+						<i class="fa-solid fa-circle-check edit__icon clear__detail ${deo.pd_ing > 0 ? 'change__color' : ''}" data-pd_code="${deo.pd_code}"></i>
 						<i class="fa-regular fa-pen-to-square edit__icon" data-bs-toggle="dropdown" aria-expanded="false"></i>
 						<ul class="dropdown-menu">
-							<li><a class="dropdown-item" href="${pageContext.request.contextPath}/project/">상세 프로젝트 수정</a></li>
-							<li><a class="dropdown-item" href="${pageContext.request.contextPath}/project/">프로젝트 달성률 수정</a></li>
+							<li class="dropdown-item update__detail" data-pd_code="${deo.pd_code}">프로젝트 챕터 수정</li>
 							<li><hr></li>
-							<li><a class="dropdown-item " href="${pageContext.request.contextPath}/project/">상세 프로젝트 삭제</a></li>
+							<li class="dropdown-item delete__detail" id="delete__detail" data-pd_code="${deo.pd_code}" data-pro_code="${deo.pro_code}">프로젝트 챕터 삭제</li>
 						</ul>
 					</div>
 					<hr class="hr__style"> 
@@ -27,7 +27,7 @@
 
 				<div class="row">
 					<div class="col-md-2 pb-3 detail__title" >
-						세부 프로젝트 진행기간 
+						프로젝트 챕터 진행기간 
 					</div>
 					<input type="hidden" value="${deo.pd_code}" name="pd_code">
 					<input type="date" class="col-md-3 pb-3 mt-3 detail__content" value="${deo.pd_sdate}" name="pd_sdate" readonly="readonly">
@@ -35,17 +35,20 @@
 				</div>
 				<div class="row">
 					<div class="col-md-2 pb-3 detail__title" >
-						세부 프로젝트 진행상황 
+						프로젝트 챕터 진행상황 
 					</div>
 					<div class="col-md-8">
-						<div class=" progress progress-bar-striped  progress-bar-animated progress__design" role="progressbar" style="width: 103%" aria-valuenow="${deo.pd_ing}" aria-valuemin="0" aria-valuemax="${deo.pd_part}"></div>
-						<input type="hidden" name="pd_part" value="${deo.pd_part}">
-						<input type="hidden" name="pd_ing" value="${deo.pd_ing}">
+						<div class="progress progress__design" >
+							<div class="progress-bar ${deo.pd_ing > 0 ? 'progress__color':''}" role="progressbar" style="width: ${deo.pd_ing > 0 ? '100':''}%">
+								<input type="hidden" name="pd_part" value="${deo.pd_part}">
+								<input type="hidden" name="pd_ing" value="${deo.pd_ing}">
+							</div>
+						</div>	
 					</div>
 				</div>
 				<div class="row mb-4">
 					<div class="col-md-2 pb-3 detail__title">
-						세부 프로젝트 내용
+						프로젝트 챕터 내용
 					</div>
 					<textarea class="col-md-8 pb-3 detail__content__textarea" readonly="readonly">${deo.pd_content}</textarea>
 				</div>

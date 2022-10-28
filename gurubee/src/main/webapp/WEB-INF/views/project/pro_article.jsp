@@ -57,6 +57,7 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 	border: 2px solid #eee;
 }
 
+
 /*이전 페이지 가기*/
 .back_to_page {
 	font-size: 15px;
@@ -72,6 +73,7 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 	justify-content: space-between;
 
 }
+
 
 /*프로젝트 마스터 프로필입니다.*/
 .pro_master_profile {
@@ -104,6 +106,7 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 	color: red;
 	text-decoration: none;
 }
+
 
 /*프로젝트 진행중 태그*/
 .clear__state {
@@ -295,11 +298,59 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 	border: none;
 }
 
+
+/*article의 프로그래스바*/
+.progress__design_main {
+	margin-top: 20px;
+	height: 30px;
+	margin-left: 9px;
+	width: 97%;
+	border-radius: 30px;
+}
+
+
+/*디테일의 프로그래스바*/
 .progress__design {
 	margin-top: 20px;
 	height: 30px;
 	margin-left: 9px;
+	width: 103%;
+	border-radius: 30px;
 }
+
+
+.progress__color {
+	background: linear-gradient(to right ,#01d6b7, #ffe498);
+	margin: 7px;
+	border-radius: 30px;
+	transition: 0.4s linear;  
+  	transition-property: width, background-color;  
+}
+
+
+.progress__design .progress__color {
+  width: 85%; 
+  background-color: #EF476F;  
+  animation: progressAnimation 6s;
+}
+
+@keyframes progressAnimation {
+  0%   { width: 5%; background-color: #F9BCCA;}
+  100% { width: 100%; background-color: #EF476F; }
+}
+
+/*${project_ing}*/
+.progress__design_main .progress__color {
+  width: 85%; 
+  background-color: #EF476F;  
+  animation: progressAnimation2 6s;
+}
+
+@keyframes progressAnimation2 {
+  0%   { width: 5%; background-color: #F9BCCA;}
+  100% { width: ${project_ing}%; background-color: #EF476F; }
+}
+
 
 .progress__main {
 	height: 50px;
@@ -311,6 +362,30 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 
 .click__icon {
 	cursor: pointer;
+}
+
+.change__color {
+	color: #ff6666;
+	opacity: 100%
+
+}
+
+
+/*프로젝트 디테일 버튼!!*/
+.clear__detail {
+	cursor: pointer;
+	font-weight: 600;
+}
+
+.delete__detail {
+	color: red;
+	cursor: pointer;
+	font-weight: 600;
+}
+
+.update__detail {
+	cursor: pointer;
+	font-weight: 600;
 }
 
 
@@ -358,7 +433,7 @@ function listPage(page){
 	let url = "${pageContext.request.contextPath}/project/listDetail.do";
 	let pro_code = "${pro_code}";
 	let pd_writer = $("input[name=pd_writer]").val();
-	console.log(pd_writer);
+
 	let query = "pro_code="+pro_code+"&pageNo="+page+"&pd_writer="+pd_writer;
 	let selector = "#here_detail_list";
 	
@@ -400,7 +475,7 @@ $(function(){
 });
 
 
-//프로젝트 상세 등록 !!!!!!!!!!!!
+//프로젝트 챕터 추가등록 !!!!!!!!!!!!
 $(function(){
 	$(".plus__project").click(function(){
 		$("#detail__add").modal("show");
@@ -412,8 +487,7 @@ $(function(){
 	});
 	
 	$("#add__detail__submit").click(function(){
-		//pd_code, pro_code, 등등 다 넘기기
-		let pd_code = "${pd_code}";
+		//pro_code와 내용 등등 다 넘기기
 		let pro_code = $("input[name=pro_code]").val();
 		
 		let pd_subject = $("input[name=pd_subject]").val();
@@ -422,7 +496,7 @@ $(function(){
 		let pd_edate = $("input[name=pd_edate]").val();
 		
 		let url = "${pageContext.request.contextPath}/project/listDetail_insert.do";
-		let query = "pd_code="+pd_code+"&pro_code="+pro_code;
+		let query = "pro_code="+pro_code;
 		query += "&pd_subject="+pd_subject;
 		query += "&pd_content="+pd_content;
 		query += "&pd_sdate="+pd_sdate;
@@ -431,12 +505,76 @@ $(function(){
 		const fn = function(data){
 			if(data.state === "true"){
 				$("#detail__add").modal("hide");
+				window.location.reload();
 				listPage(1);
-				//window.location.reload();
 				
 			} else {
 				alert("프로젝트 챕터 등록이 실패했습니다.")
 
+			}
+		};
+		
+		ajaxFun(url, "post", query, "json", fn);
+		
+		
+	});
+	
+});
+
+//프로젝트 수정 -> 해당 프로젝트 jsp 정보 (update 로 변경, readonly 풀림)
+$(function(){
+	$("body").on("click", ".update__detail", function(){
+		
+		let url = "${pageContext.request.contextPath}/project/listDetail_update.do";
+		
+	});
+	
+});
+
+
+//프로젝트 챕터 삭제
+$(function(){
+	$("body").on("click", "#delete__detail", function(){
+		
+		if(! confirm('프로젝트 챕터를 삭제하시겠습니까? (삭제 전 백업을 권장합니다.)')){
+			return false;
+		}
+		
+		let pd_code = $(this).attr("data-pd_code");
+		let pro_code = $(this).attr("data-pro_code");
+		
+		let url = "${pageContext.request.contextPath}/project/listDetail_delete.do";
+		let query = "pd_code="+pd_code+"&pro_code="+pro_code;
+		
+		const fn = function(data){
+			if(data.state==="true"){
+				alert("삭제 되었습니다.");
+				window.location.reload();
+			}
+		};
+		
+		ajaxFun(url, "post", query, "json", fn);
+		
+	});
+	
+});
+
+//프로젝트 완료 처리
+$(function(){
+	$("body").on("click", ".clear__detail", function(){
+		let pd_code = $(this).attr("data-pd_code");
+		
+		if(! confirm('해당 프로젝트 챕터를 완료처리할까요? ')){
+			return false;
+		}
+		
+		let url = "${pageContext.request.contextPath}/project/listDetail_clear.do";
+		let query = "pd_code="+pd_code; 
+		
+		const fn = function(data){
+			if(data.state==="true"){
+				alert("고생하셨습니다!");
+				window.location.reload();
 			}
 		};
 		
@@ -504,6 +642,7 @@ $(function(){
 });
 
 
+
 </script>
 
 </head>
@@ -528,12 +667,11 @@ $(function(){
 					<div class="dropdown">
 						<i class="fa-solid fa-ellipsis-vertical click__icon " data-bs-toggle="dropdown" aria-expanded="false"></i>
 						<input type="hidden" value="${pro_code}" name="pro_code">
-						<input type="hidden" value="${pd_code}" name="pd_code">
 						<input type="hidden" value="${dto.pd_writer}" name="pd_writer">
 						<ul class="dropdown-menu">
 							<li><a class="dropdown-item" href="${pageContext.request.contextPath}/project/update.do?pro_code=${pro_code}">프로젝트 수정</a></li>
 						<c:if test="${sessionScope.member.id == dto.id_p}">
-							<li><a class="dropdown-item delete__red" href="${pageContext.request.contextPath}/project/delete_ok.do?pro_code=${pro_code}&pd_code=${pd_code}">프로젝트 삭제</a></li>
+							<li><a class="dropdown-item delete__red" href="${pageContext.request.contextPath}/project/delete_ok.do?pro_code=${pro_code}">프로젝트 삭제</a></li>
 						</c:if>
 						</ul>
 					</div>
@@ -547,8 +685,8 @@ $(function(){
 				<div class="d-flex pt-3 pb-2 justify-content-between">
 					<div >${dto.pro_outline}</div>
 				</div>
-				<div class="progress">
-					<div class="progress-bar progress-bar-striped progress-bar-animated progress__main" role="progressbar" style="width: ${dto.pd_ing}%" aria-valuenow="${dto.pd_ing}" aria-valuemin="0" aria-valuemax="100"></div>
+				<div class="progress progress__design_main">
+					<div class="progress-bar progress__color" role="progressbar" style="width: ${project_ing}%"></div>
 				</div>
 				<div class="d-flex pt-4">
 					<div >${dto.pro_sdate}</div> &nbsp; ~ &nbsp; <div >${dto.pro_edate}</div>
@@ -629,7 +767,7 @@ $(function(){
 </div>
 
 
-	<!-- 마스터 선택 모달창 -->
+	<!-- 모달-새로운 프로젝트 참여자 추가 -->
 <div class="modal fade" id="Emp__list__add" tabindex="-1" 
 		data-bs-backdrop="static" data-bs-keyboard="false"
 		aria-labelledby="myDialogModalLabel2" aria-hidden="true">
@@ -680,7 +818,6 @@ $(function(){
 			</div>
 			<div class="modal-body">
         		<p>새로운 프로젝트 챕터를 추가하세요!<p>
-					<form name="Form_add_detail" method="post">
 						<table class="table form-table">
 							<tr>
 							    <td><span>프로젝트 챕터명</span></td>
@@ -694,8 +831,7 @@ $(function(){
 							    <td ><span>프로젝트 챕터 내용</span></td>
 							    <td><textarea name="pd_content" class="pd_content"></textarea> </td>
 							</tr>
-						</table>
-					</form>				
+						</table>		
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary btnClose">닫기</button>

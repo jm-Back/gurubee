@@ -349,7 +349,7 @@ public class ProjectDAO {
 				
 				//내 사번으로 연관된 프로젝트 list
 				sql = " SELECT DISTINCT E.ori_filename, E.name, A.pro_code, A.id id_p, A.pro_name, A.pro_clear, A.pro_type, A.pro_master, A.pro_outline, A.pro_content, A.pro_sdate, A.pro_edate "
-						+ "	, B.pd_part, B.pd_ing "
+						+ "	, B.pd_part "
 						+ "	FROM Employee E "
 						+ " JOIN project A ON A.pro_master = E.id "
 						+ "	JOIN project_detail B ON A.pro_code = B.pro_code "
@@ -380,7 +380,6 @@ public class ProjectDAO {
 					dto2.setPro_sdate(rs.getDate("pro_sdate").toString());
 					dto2.setPro_edate(rs.getDate("pro_edate").toString());
 					dto2.setPd_part(rs.getInt("pd_part"));
-					dto2.setPd_ing(rs.getInt("pd_ing"));
 					
 					list.add(dto2);
 				}
@@ -725,7 +724,7 @@ public class ProjectDAO {
 		}
 		
 		//프로젝트 삭제
-		public void deleteProject(String pro_code, String pd_code) throws SQLException {
+		public void deleteProject(String pro_code) throws SQLException {
 			PreparedStatement pstmt = null;
 			String sql;
 			
@@ -735,10 +734,10 @@ public class ProjectDAO {
 				//참여자 테이블 삭제
 				conn.setAutoCommit(false);
 				
-				sql = " DELETE FROM project_join WHERE pd_code = ? ";
+				sql = " DELETE FROM project_join WHERE pro_code = ? ";
 				
 				pstmt = conn.prepareStatement(sql);
-				pstmt.setString(1, pd_code);
+				pstmt.setString(1, pro_code);
 				
 				pstmt.executeUpdate();
 				
@@ -1143,7 +1142,231 @@ public class ProjectDAO {
 			
 		}
 		
-		//2- 프로젝트 갯수로 part 나누기
+		//2- 프로젝트 챕터 갯수 구하기
+		public int detailCount(String pro_code) throws SQLException {
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql;
+			int result = 0;
+			
+			try {
+				
+				sql = " SELECT COUNT(*) FROM project_detail WHERE pro_code = ? ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					result = rs.getInt(1);
+				}
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw e;
+				
+			} finally {
+				if(pstmt!=null) {
+					try {
+						pstmt.close();
+					} catch (Exception e2) {
+					}
+				}
+				
+				if(rs!=null) {
+					try {
+						rs.close();
+					} catch (Exception e2) {
+					}
+				}
+			}
+			
+			
+			return result;
+			
+		}
+		
+		//지분 변경 *
+		//프로젝트 갯수로 part 지분 나누기 !!
+		public void updatePart(int partCount, String pro_code) throws SQLException {
+			PreparedStatement pstmt = null;
+			String sql;
+			
+			try {
+				
+				sql = " UPDATE project_detail SET pd_part = 100 / ? WHERE pro_code = ? ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setInt(1, partCount);
+				pstmt.setString(2, pro_code);
+				
+				pstmt.executeUpdate();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw e;
+			} finally {
+				if(pstmt!=null) {
+					try {
+						pstmt.close();
+					} catch (Exception e2) {
+					}
+				}
+			}
+		}
+		
+		
+		//프로젝트 지분 총합! pro_code 의 pd_part 를 모두 더한 것 (main이랑 article 에서 볼 것)
+		public int partAll(String pro_code) throws SQLException {
+			PreparedStatement pstmt = null;
+			ResultSet rs= null;
+			int result = 0;
+			String sql;
+			
+			try {
+				
+				sql = " SELECT SUM(pd_part) FROM project_detail "
+						+ " WHERE pro_code = ? AND pd_ing > 0 ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, pro_code);
+				
+				rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					result = rs.getInt(1);
+				}
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw e;
+			} finally {
+				if(rs!=null) {
+					try {
+						rs.close();
+					} catch (Exception e2) {
+					}
+				}
+				
+				if(pstmt!=null) {
+					try {
+						pstmt.close();
+					} catch (Exception e2) {
+					}
+				}
+			}
+
+			return result;
+		}
+		
+		
+		
+		
+		//프로젝트 챕터 삭제하기 / 삭제하면 pd_code 로 
+		public void deleteProjectDetail(String pd_code) throws SQLException {
+			PreparedStatement pstmt = null;
+			String sql;
+			
+			try {
+				
+				sql = " DELETE FROM project_detail WHERE pd_code = ? ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, pd_code);
+				
+				pstmt.executeUpdate();
+	
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw e;
+			} finally {
+				if(pstmt!=null) {
+					try {
+						pstmt.close();
+					} catch (Exception e2) {
+					}
+				}
+				
+			}
+			
+			
+		}
+		
+		
+		//프로젝트 챕터 내용 수정하는 기능
+		public void updateProjectDetail(ProjectDTO dto, String pd_code) throws SQLException {
+			PreparedStatement pstmt = null;
+			String sql;
+			
+			try {
+				
+				sql = " UPDATE project_detail SET pd_subject = ? , pd_content = ? , pd_sdate = ? , pd_edate = ? "
+						+ " WHERE pd_code = ? ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, dto.getPd_subject());
+				pstmt.setString(2, dto.getPd_content());
+				pstmt.setString(3, dto.getPd_sdate());
+				pstmt.setString(4, dto.getPd_edate());
+				
+				pstmt.setString(5, pd_code);
+				
+				pstmt.executeUpdate();
+				
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw e;
+			} finally {
+				if(pstmt!=null) {
+					try {
+						pstmt.close();
+					} catch (Exception e2) {
+					}
+				}
+			}
+			
+		}
+		
+		
+		//프로젝트 상태 변경.... 완료처리..! 
+		public void clearProjectDetail(String pd_code) throws SQLException {
+			PreparedStatement pstmt = null;
+			String sql;
+			
+			try {
+				
+				sql = " UPDATE project_detail SET pd_ing = pd_part WHERE pd_code = ? ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, pd_code);
+				
+				pstmt.executeUpdate();
+				
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw e;
+			} finally {
+				if(pstmt!=null) {
+					try {
+						pstmt.close();
+					} catch (Exception e2) {
+					}
+				}
+			}
+			
+		}
+		
+	
+		
+	
 		
 		
 	

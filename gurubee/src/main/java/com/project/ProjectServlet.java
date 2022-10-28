@@ -59,10 +59,16 @@ public class ProjectServlet extends MyServlet{
 			projectempdelete(req, resp);
 		} else if(uri.indexOf("add_employee.do") != -1) { //프로젝트 참여자 추가등록
 			addProjectemp(req, resp);
-		} else if(uri.indexOf("listDetail.do") != -1) { //디테일 시작------!(리스트)
+		} else if(uri.indexOf("listDetail.do") != -1) { //챕터 시작------!(챕터 리스트)
 			detailList(req, resp);
-		} else if(uri.indexOf("listDetail_insert.do") != -1) { //디테일 수정
+		} else if(uri.indexOf("listDetail_insert.do") != -1) { //챕터 등록
 			detailInsert(req, resp);
+		} else if(uri.indexOf("listDetail_delete.do") != -1) { //챕터 삭제
+			detailDelete(req, resp);
+		} else if(uri.indexOf("listDetail_update.do") != -1) { //챕터 수정폼
+			detailUpdateForm(req, resp);
+		} else if(uri.indexOf("listDetail_clear.do") != -1) { //챕터 완료처리~
+			detailClear(req, resp);
 		} 
 		 
 	}
@@ -88,9 +94,12 @@ public class ProjectServlet extends MyServlet{
 			List<ProjectDTO> list = null;
 			list = dao.listProject(dto);
 			
+			int project_ing = dao.partAll(dto.getPro_code());
+			
 			//포워딩할 JSP 에 넘길 속성
 			req.setAttribute("list", list);
 			req.setAttribute("dataCount", dataCount);
+			req.setAttribute("project_ing", project_ing);
 			
 			
 		} catch (Exception e) {
@@ -210,7 +219,9 @@ public class ProjectServlet extends MyServlet{
 			List<ProjectDTO> list_add_e = null;
 			list_add_e = dao.listemployee();
 			
-
+			// 5. 프로젝트 진척률 가져오기
+			int project_ing = dao.partAll(pro_code);
+			
 			//JSP 로 전달할 속성
 			req.setAttribute("dto", dto);
 			req.setAttribute("pro_code", pro_code);
@@ -218,6 +229,7 @@ public class ProjectServlet extends MyServlet{
 			req.setAttribute("pd_code", pd_code);
 			req.setAttribute("vo", vo);
 			req.setAttribute("list_add_e", list_add_e);
+			req.setAttribute("project_ing", project_ing);
 	
 
 			forward(req, resp, "/WEB-INF/views/project/pro_article.jsp");
@@ -317,9 +329,8 @@ public class ProjectServlet extends MyServlet{
 
 		try {
 			String pro_code = req.getParameter("pro_code");
-			String pd_code = req.getParameter("pd_code");
 			
-			dao.deleteProject(pro_code, pd_code);
+			dao.deleteProject(pro_code);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -435,6 +446,7 @@ public class ProjectServlet extends MyServlet{
 				dto.setPd_content(util.htmlSymbols(dto.getPd_content()));
 			}
 			
+			
 			String paging = util.pagingMethod(current_page, total_page, "listPage");
 			
 			req.setAttribute("list_detail", list_detail);
@@ -459,7 +471,10 @@ public class ProjectServlet extends MyServlet{
 	}
 
 	private void detailInsert(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		// 디테일 추가 (상세 프로젝트)
+		// 프로젝트 챕터 추가 (상세 프로젝트)
+		// 프로젝트 지분 변경 필수
+		// + 지분 최대치 수정해야함
+		
 		ProjectDAO dao = new ProjectDAO();
 		
 		//현재 id 필요함
@@ -482,6 +497,114 @@ public class ProjectServlet extends MyServlet{
 			
 			dao.insertProjectDetail(dto, pro_code);
 			
+			//지분 변경
+			int partCount = dao.dataCountDetail(pro_code);
+			dao.updatePart(partCount, pro_code);
+			
+			state = "true";
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		JSONObject job = new JSONObject();
+		job.put("state", state);
+		job.put("mode", "write");
+		
+		resp.setContentType("text/html;charset=utf-8");
+		PrintWriter out = resp.getWriter();
+		out.print(job.toString());
+		
+		
+	}
+	
+	private void detailDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		// 프로젝트 챕터 삭제 ajax-json
+		// 프로젝트 지분 변경 필수
+		ProjectDAO dao = new ProjectDAO();
+		
+		String state = "false";
+		
+		try {
+			
+			String pd_code = req.getParameter("pd_code");
+			String pro_code = req.getParameter("pro_code");
+			
+			dao.deleteProjectDetail(pd_code);
+			
+			//지분 변경
+			int partCount = dao.dataCountDetail(pro_code);
+			dao.updatePart(partCount, pro_code);
+			
+			//삭제시 true
+			state = "true";
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		JSONObject job = new JSONObject();
+		job.put("state", state);
+		
+		resp.setContentType("text/html;charset=utf-8");
+		PrintWriter out = resp.getWriter();
+		out.print(job.toString());
+
+	}
+	
+
+	private void detailUpdateForm(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		// 프로젝트 챕터 내용 업데이트
+		
+		ProjectDAO dao = new ProjectDAO();
+		
+		String state = "false";
+		
+		try {
+			
+			String pd_code = req.getParameter("pd_code");
+			
+			ProjectDTO dto = new ProjectDTO();
+			
+			dto.setPd_subject(req.getParameter("pd_subject"));
+			dto.setPd_content(req.getParameter("pd_content"));
+			dto.setPd_sdate(req.getParameter("pd_sdate"));
+			dto.setPd_edate(req.getParameter("pd_edate"));
+			
+			dao.updateProjectDetail(dto, pd_code);
+			
+			state = "true";
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		JSONObject job = new JSONObject();
+		job.put("state", state);
+		job.put("mode", "update");
+		
+		resp.setContentType("text/html;charset=utf-8");
+		PrintWriter out = resp.getWriter();
+		out.print(job.toString());
+		
+		
+	}
+	
+
+
+	private void detailClear(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		// 챕터 완료 처리! update
+		
+		ProjectDAO dao = new ProjectDAO();
+		
+		String state = "false";
+		
+		try {
+			
+			String pd_code = req.getParameter("pd_code");
+			
+			dao.clearProjectDetail(pd_code);
+			
 			state = "true";
 			
 		} catch (Exception e) {
@@ -495,8 +618,9 @@ public class ProjectServlet extends MyServlet{
 		PrintWriter out = resp.getWriter();
 		out.print(job.toString());
 		
-		
 	}
+	
+	
 	
 	
 

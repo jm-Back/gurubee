@@ -85,8 +85,19 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
     border-radius: 10px
 }
 
-.progress div {
-    
+.progress__design {
+	margin-top: 20px;
+	height: 30px;
+	width: 100%;
+	border-radius: 30px;
+	margin-right: 30px;
+	
+}
+
+.progress__color {
+	background: linear-gradient(to right ,#01d6b7, #ffe498);
+	margin: 7px;
+	border-radius: 30px;
 }
 
 .text1 {
@@ -185,8 +196,8 @@ h6 {
 						<h3 class="heading">${dto.pro_name}</h3>
 						<div class="mt-3">
 							<p style="color: #404040;">${dto.pro_outline}</p>
-							<div class="progress">
-								<div class="progress-bar progress__ani bg-red progress-bar-striped progress-bar-animated" role="progressbar" style="width: ${dto.pd_ing}%" aria-valuenow="${dto.pd_ing}" aria-valuemin="0" aria-valuemax="100"></div>
+							<div class="progress progress__design">
+								<div class="progress-bar progress__color " role="progressbar" style="width: ${project_ing}%" ></div>
 							</div>
 							<div class="mt-3"><span class="text1">${dto.pro_type}</span>  <span class="text2">[참여자목록]</span></div>
 						</div>
