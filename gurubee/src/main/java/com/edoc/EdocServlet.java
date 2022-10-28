@@ -176,11 +176,18 @@ public class EdocServlet extends MyServlet {
 				current_page = Integer.parseInt(page);
 			}
 			
-			// condition="all", keyword=""
+			// 날짜 myDate, 문서구분 edocSelect
+			String myDate = req.getParameter("myDate");
+			String edoc = req.getParameter("edocSelect");
 			
 			// 전체 데이터 갯수
-			int dataCount;
-			dataCount = dao.edocCount(info.getId());
+			int dataCount=0;
+			// 조건 없을 때
+			if(myDate.equals(null) && edoc.equals(null)) {
+				dataCount = dao.edocCount(info.getId());
+			} else {
+				// dataCount = dao.edocCount(info.getId(), myDate, edoc);
+			}
 			
 			// 전체 페이지 수
 			int size = 5;
@@ -192,7 +199,7 @@ public class EdocServlet extends MyServlet {
 			// 게시물 가져오기
 			int offset = (current_page - 1) * size;
 			if(offset < 0) offset = 0;
-			
+
 			// 결재문서 리스트 가져오기
 			List<EdocDTO> myEdocList = dao.listEApproval(info.getId(), offset, size);
 	
@@ -200,17 +207,8 @@ public class EdocServlet extends MyServlet {
 			String listUrl = cp + "/edoc/list_send.do";
 			String articleUrl = cp + "/edoc/article.do?page=" + current_page;
 			
-			System.out.println("curruent_page: " + current_page);
-			System.out.println("total_page: " + total_page);
-			System.out.println("listUrl: " + listUrl);
-			System.out.println("dataCount: " + dataCount);
-			
 			String paging = util.paging(current_page, total_page, listUrl);
-			
-			
-			System.out.println(current_page +" "+total_page+" "+dataCount+" "+size);
-			System.out.println(articleUrl+" "+paging);
-			
+	
 			req.setAttribute("list", myEdocList);
 			req.setAttribute("page", current_page);
 			req.setAttribute("total_page", total_page);

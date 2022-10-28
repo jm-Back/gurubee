@@ -139,6 +139,48 @@ public class EdocDAO {
 		return result;
 	} 
 	
+	
+	public int edocCount(String writeId, String myDate, String edoc) {
+		int r = 0;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			sql = "SELECT COUNT(*) FROM E_APPROVAL "
+				+ " WHERE id IN ? AND temp NOT IN 0 ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, writeId);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				r = rs.getInt(1);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e2) {
+				}
+			}
+			
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+				}
+			}
+		}
+		
+		return r;
+	} 
+	
 	// 특정 직급의 모든 부서 사원 리스트 가져오기
 	public List<EdocEmpDTO> posEmpList(int pos_code) {
 		List<EdocEmpDTO> list = new ArrayList<>();

@@ -1,8 +1,33 @@
+<%@page import="java.util.Calendar"%>
 <%@ page contentType="text/html; charset=UTF-8"%>
 <%@ page trimDirectiveWhitespaces="true"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%
+	Calendar cal = Calendar.getInstance();
+	int ty = cal.get(Calendar.YEAR);
+	int tm = cal.get(Calendar.MONTH) + 1;
+	int td = cal.get(Calendar.DATE);
+	
+	int year = cal.get(Calendar.YEAR);
+	int month = cal.get(Calendar.MONTH) + 1;
+	
+	String sy = request.getParameter("year");
+	String sm = request.getParameter("month");
+	if(sy != null) {
+		year = Integer.parseInt(sy);
+	}
+	if(sm != null) {
+		month = Integer.parseInt(sm);
+	}
+	
+	cal.set(year, month-1, 1);
+	year = cal.get(Calendar.YEAR);
+	month = cal.get(Calendar.MONTH) + 1;
+	
+	int week = cal.get(Calendar.DAY_OF_WEEK); // 1(일) ~ 7(토)
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -59,48 +84,64 @@ function ajaxFun(url, method, query, dataType, fn) {
 	});
 }
 
-function appResult() {
-	alert('appResult 실행');
-	let url = "${pageContext.request.contextPath}/edoc/appResult.do";
-	let query = "app_num=" + app_num;
+function checkValidDate(value) {
+	var result = true;
+	try {
+	    var date = value.split("-");
+	    var y = parseInt(date[0], 10),
+	        m = parseInt(date[1], 10),
+	        d = parseInt(date[2], 10);
+	    
+	    var dateRegex = /^(?=\d)(?:(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:\x20|$))|(?:2[0-8]|1\d|0?[1-9]))([-.\/])(?:1[012]|0?[1-9])\1(?:1[6-9]|[2-9]\d)?\d\d(?:(?=\x20\d)\x20|$))?(((0?[1-9]|1[012])(:[0-5]\d){0,2}(\x20[AP]M))|([01]\d|2[0-3])(:[0-5]\d){1,2})?$/;
+	    result = dateRegex.test(d+'-'+m+'-'+y);
+	} catch (err) {
+		result = false;
+	}    
+    return result;
+}
+
+// btnContidion
+function conditionSubmit() {
+	const f = document.conditionForm;
 	
-	const fn = function(data) {
-		console.log(data);
-	};
-	ajaxFun(url, "get", query, "json", fn);
+	alert('실행');
+	
+	let myDate = $("form input[name=myDate]").val();
+	let edoc = $("#edocSelect option:selected").attr("data-edoc");
+
+	console.log(myDate, edoc);
+	
+	if(myDate!=="") {
+		if(! checkValidDate(myDate)){
+			alert('올바른 날짜를 입력해주세요.');
+			return;
+		}
+	}
+	
+	f.submit();
 }
 
 $(function() {
-	// $("body").on("click", $("button [name=btnSearchEdoc]"), function() {
+	/*
 	$("form button[name=btnSearchEdoc]").click(function() {
 		let f = document.conditionForm;
 
 		let startDate = $("form input[name=startDate]").val();
 		let endDate = $("form input[name=endDate]").val();
-		let result =  $("#appResultSelect option:selected").attr("data-result");
+		let result =  $("#resultSelect option:selected").attr("data-result");
 		let edoc = $("#edocSelect option:selected").attr("data-edoc");
-		
-		
-		console.log(startDate, endDate, result, edoc);
-		
-		/*
-		let startDate = $(".startDate").val();
-		let endDate = $(".endDate").val();
-		let result =  $(".resultSelect").find("option:selected").attr("data-result");
-		let edoc = $(".edocSelect").find("option:selected").attr("data-edoc");
-		
+		// ! 로 값 존재 확인	
+		startDate = encodeURIComponent(startDate);
+		endDate = encodeURIComponent(endDate);
 		result = encodeURIComponent(result);
 		edoc = encodeURIComponent(edoc);
+
+		let url = "${pageContext.request.contextPath}/edoc/send_condition.do"
 		
-		
-		// let url = "${pageContext.request.contextPath}/edoc/send_condition.do"
-		
-		// let query = "startDate="+startDate
-		// let query = $(".conditionForm").serialize()
-		*/
-		
+		let query = "startDate="+startDate;
+		let query = $(".conditionForm").serialize()
 	});
-	
+	*/
 })
 
 </script>
@@ -118,20 +159,9 @@ $(function() {
 				<div class="body-main">
 					<div class="row board-list-header">
 						<div class="col-12 text-center">
-							<form class="row" id=conditionForm name=conditionForm method="post" enctype="multipart/form-data">
+							<form class="row" id="conditionForm" name="conditionForm" method="post" enctype="multipart/form-data">
 								<div class="col-1 p-1">
-									<input type="text" class="form-control" id="startDate" name="startDate" placeholder="날짜">
-								</div>
-								<div class="col-1 p-1">
-									<input type="text" class="form-control" id="endDate" name="endDate" placeholder="날짜">
-								</div>
-								<div class="col-1 p-1">
-									<select id="appResultSelect" name="appResultSelect" class="form-select">
-										<option selected>처리결과</option>
-										<option value="0" data-result="대기">대기</option>
-										<option value="1" data-result="승인">승인</option>
-										<option value="-1" data-result="반려">반려</option>
-									</select>
+									<input type="text" class="form-control" id="myDate" name="myDate" placeholder="날짜">
 								</div>
 								<div class="col-2 p-1" style="width: 200px;">
 									<select id="edocSelect" name="edocSelect" class="form-select">
@@ -145,7 +175,7 @@ $(function() {
 									</select>	
 								</div>
 								<div class="col-1 p-1">
-									<button type="button" id="btnSearchEdoc" name="btnSearchEdoc" class="btn btn-success" style="height: 35px;"><i class="bi bi-search"></i></button>	
+									<button type="button" id="btnContidion" onclick="conditionSubmit();" class="btn btn-success" style="height: 35px;"><i class="bi bi-search"></i></button>	
 								</div>
 								<input type="hidden" id="page" value=" ">		
 							</form>
