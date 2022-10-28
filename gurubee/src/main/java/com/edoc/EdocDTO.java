@@ -11,7 +11,8 @@ public class EdocDTO {
 	private String doc_form; // 문서폼. CLOB
 	private String title; // 제목
 	private int temp; // 임시 구분. 0:임시, 1:제출
-	private int result; // 최종 처리결과. 0:진행중, 1:승인, -1:반려
+	private String result; // 현재 처리결과. 0:대기, 1:승인, -1:반려
+	private String result_name; // 현재 처리 결재자 이름
 
 	public String getId_write() {
 		return id_write;
@@ -61,13 +62,16 @@ public class EdocDTO {
 	public void setTemp(int temp) {
 		this.temp = temp;
 	}
-	public int getResult() {
+	public String getResult() {
 		return result;
 	}
-	public void setResult(int result) {
+	public void setResult(String result) {
 		this.result = result;
 	}
-	
-	
-	
+	public String getResult_name() {
+		return result_name;
+	}
+	public void setResult_name(String aa) {
+		this.result_name = aa;
+	}
 }
