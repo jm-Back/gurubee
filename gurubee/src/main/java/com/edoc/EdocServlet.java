@@ -12,6 +12,10 @@ import javax.servlet.http.HttpSession;
 
 import com.login.SessionInfo;
 import com.util.MyServlet;
+import com.util.MyUtil;
+import com.util.MyUtilBootstrap;
+
+import oracle.jdbc.internal.KeywordValue;
 
 @MultipartConfig
 @WebServlet("/edoc/*")
@@ -158,16 +162,63 @@ public class EdocServlet extends MyServlet {
 	// 결재문서 발신함 리스트 
 	protected void listSend(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		EdocDAO dao = new EdocDAO();
+		MyUtil util = new MyUtilBootstrap();
+		String cp = req.getContextPath();
+		
 		HttpSession session = req.getSession();
 		SessionInfo info = (SessionInfo) session.getAttribute("member");
 		
 		try {
+			String page = req.getParameter("page");
+			
+			int current_page = 1;
+			if(page != null) {
+				current_page = Integer.parseInt(page);
+			}
+			
+			// condition="all", keyword=""
+			
+			// 전체 데이터 갯수
+			int dataCount;
+			dataCount = dao.edocCount(info.getId());
+			
+			// 전체 페이지 수
+			int size = 5;
+			int total_page = util.pageCount(dataCount, size);
+			if(current_page > total_page) {
+				current_page = total_page;
+			}
+			
+			// 게시물 가져오기
+			int offset = (current_page - 1) * size;
+			if(offset < 0) offset = 0;
+			
 			// 결재문서 리스트 가져오기
-			String id = info.getId();
-			List<EdocDTO> myEdocList = dao.listEApproval(id);
-
+			List<EdocDTO> myEdocList = dao.listEApproval(info.getId(), offset, size);
+	
+			// 페이징 처리
+			String listUrl = cp + "/edoc/list_send.do";
+			String articleUrl = cp + "/edoc/article.do?page=" + current_page;
+			
+			System.out.println("curruent_page: " + current_page);
+			System.out.println("total_page: " + total_page);
+			System.out.println("listUrl: " + listUrl);
+			System.out.println("dataCount: " + dataCount);
+			
+			String paging = util.paging(current_page, total_page, listUrl);
+			
+			
+			System.out.println(current_page +" "+total_page+" "+dataCount+" "+size);
+			System.out.println(articleUrl+" "+paging);
+			
 			req.setAttribute("list", myEdocList);
-
+			req.setAttribute("page", current_page);
+			req.setAttribute("total_page", total_page);
+			req.setAttribute("dataCount", dataCount);
+			req.setAttribute("size", size);
+			req.setAttribute("articleUrl", articleUrl);
+			req.setAttribute("paging", paging);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

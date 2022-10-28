@@ -98,6 +98,47 @@ public class EdocDAO {
 		}
 	}
 	
+	public int edocCount(String writeId) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			sql = "SELECT COUNT(*) FROM E_APPROVAL "
+				+ " WHERE id IN ? AND temp NOT IN 0 ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, writeId);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				result = rs.getInt(1);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e2) {
+				}
+			}
+			
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+				}
+			}
+		}
+		
+		return result;
+	} 
+	
 	// 특정 직급의 모든 부서 사원 리스트 가져오기
 	public List<EdocEmpDTO> posEmpList(int pos_code) {
 		List<EdocEmpDTO> list = new ArrayList<>();
@@ -203,7 +244,7 @@ public class EdocDAO {
 	}
 	
 	// 결재문서 발신함 리스트
-	public List<EdocDTO> listEApproval(String writeId) {
+	public List<EdocDTO> listEApproval(String writeId, int offset, int size) {
 		List<EdocDTO> list = new ArrayList<>();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -218,7 +259,7 @@ public class EdocDAO {
 			*/
 			
 			sql = "select al.app_num, al.app_doc, TO_CHAR(al.app_date,'YYYY-MM-DD')app_date, al.id, "
-					+ "	al.title, resultList, apperList "
+					+ "	al.title, resultList, apperList, al.temp "
 					+ " FROM E_APPROVAL al "
 					+ " LEFT OUTER JOIN "
 					+ "    (SELECT app_num, LISTAGG(app_result, ',') WITHIN GROUP(ORDER BY app_level) "
@@ -231,11 +272,14 @@ public class EdocDAO {
 					+ "    ) er "
 					+ "    ON er.app_num = al.app_num "
 					+ " WHERE (temp=1 OR temp=-1) AND al.id = ? "
-					+ " ORDER BY app_date DESC ";
+					+ " ORDER BY al.app_num DESC "
+					+ " OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ";
 			
 			pstmt = conn.prepareStatement(sql);
 			
 			pstmt.setString(1, writeId);
+			pstmt.setInt(2, offset);
+			pstmt.setInt(3, size);
 			
 			rs = pstmt.executeQuery();
 			
@@ -266,6 +310,7 @@ public class EdocDAO {
 				
 				edocdto.setTitle(rs.getString("title"));
 				edocdto.setApp_date(rs.getString("app_date"));
+				edocdto.setTemp(rs.getInt("temp"));
 				
 				list.add(edocdto);
 			}

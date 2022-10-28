@@ -70,6 +70,38 @@ function appResult() {
 	ajaxFun(url, "get", query, "json", fn);
 }
 
+$(function() {
+	// $("body").on("click", $("button [name=btnSearchEdoc]"), function() {
+	$("form button[name=btnSearchEdoc]").click(function() {
+		let f = document.conditionForm;
+
+		let startDate = $("form input[name=startDate]").val();
+		let endDate = $("form input[name=endDate]").val();
+		let result =  $("#appResultSelect option:selected").attr("data-result");
+		let edoc = $("#edocSelect option:selected").attr("data-edoc");
+		
+		
+		console.log(startDate, endDate, result, edoc);
+		
+		/*
+		let startDate = $(".startDate").val();
+		let endDate = $(".endDate").val();
+		let result =  $(".resultSelect").find("option:selected").attr("data-result");
+		let edoc = $(".edocSelect").find("option:selected").attr("data-edoc");
+		
+		result = encodeURIComponent(result);
+		edoc = encodeURIComponent(edoc);
+		
+		
+		// let url = "${pageContext.request.contextPath}/edoc/send_condition.do"
+		
+		// let query = "startDate="+startDate
+		// let query = $(".conditionForm").serialize()
+		*/
+		
+	});
+	
+})
 
 </script>
 
@@ -86,40 +118,40 @@ function appResult() {
 				<div class="body-main">
 					<div class="row board-list-header">
 						<div class="col-12 text-center">
-							<form class="row" name=conditionForm method="post" enctype="multipart/form-data">
+							<form class="row" id=conditionForm name=conditionForm method="post" enctype="multipart/form-data">
 								<div class="col-1 p-1">
-									<input type="text" class="form-control" id="startDate" name="date" placeholder="날짜">
+									<input type="text" class="form-control" id="startDate" name="startDate" placeholder="날짜">
 								</div>
 								<div class="col-1 p-1">
-									<input type="text" class="form-control" id="endDate" name="date" placeholder="날짜">
+									<input type="text" class="form-control" id="endDate" name="endDate" placeholder="날짜">
 								</div>
 								<div class="col-1 p-1">
-									<select id="appResultSelect" class="form-select">
+									<select id="appResultSelect" name="appResultSelect" class="form-select">
 										<option selected>처리결과</option>
-										<option value="0">대기</option>
-										<option value="1">승인</option>
-										<option value="-1">반려</option>
+										<option value="0" data-result="대기">대기</option>
+										<option value="1" data-result="승인">승인</option>
+										<option value="-1" data-result="반려">반려</option>
 									</select>
 								</div>
 								<div class="col-2 p-1" style="width: 200px;">
-									<select id="edocSelect" class="form-select">
+									<select id="edocSelect" name="edocSelect" class="form-select">
 										<option selected>문서구분</option>
-										<option value="휴가신청서">휴가신청서</option>
-										<option value="접근권한신청서">DB접근권한신청서</option>
-										<option value="구매요청의뢰서">구매요청의뢰서</option>
-										<option value="재택근무신청서">재택근무신청서</option>
-										<option value="법인카드지출의뢰서">법인카드지출의뢰서</option>
+										<option value="휴가신청서" data-edoc="휴가신청서">휴가신청서</option>
+										<option value="접근권한신청서" data-edoc="접근권한신청서">DB접근권한신청서</option>
+										<option value="구매요청의뢰서" data-edoc="구매요청의뢰서">구매요청의뢰서</option>
+										<option value="재택근무신청서" data-edoc="재택근무신청서">재택근무신청서</option>
+										<option value="법인카드지출의뢰서" data-edoc="법인카드지출의뢰서">법인카드지출의뢰서</option>
 										<option value="출장신청서">출장신청서</option>
 									</select>	
 								</div>
 								<div class="col-1 p-1">
-									<button type="button" id="btnSearchEdoc" class="btn btn-success" style="height: 35px;"><i class="bi bi-search"></i></button>	
+									<button type="button" id="btnSearchEdoc" name="btnSearchEdoc" class="btn btn-success" style="height: 35px;"><i class="bi bi-search"></i></button>	
 								</div>
 								<input type="hidden" id="page" value=" ">		
 							</form>
 						</div>
 						
-						<div class="row">3/2 페이지</div>
+						<div class="row">${dataCount}개(${page}/${total_page})</div>
 					</div>
 					
 					<form name="listForm" method="post" enctype="multipart/form-data">
@@ -139,8 +171,7 @@ function appResult() {
 							<tbody>
 							
 								<c:forEach var="dto" items="${list}" varStatus="status">
-									<tr>
-										<td>${dto.app_num}</td>
+									<tr><td>${dto.app_num}</td>
 										<td>${dto.app_doc}</td>
 										<td>
 											<c:if test="${fn:contains(dto.result, '반려')}">
@@ -158,7 +189,7 @@ function appResult() {
 											<c:if test="${dto.temp == -1}">
 												<button class="btn btn-outline-success" disabled style="border-radius: 20px; width: 85px;">수정 이력</button>		
 											</c:if>
-											<a href="#">${dto.title}</a>
+											<a href="${articleUrl}&app_num=${dto.app_num}">${dto.title}</a>
 										</td>
 										<td>${dto.app_date}</td>
 										<td>
@@ -179,15 +210,19 @@ function appResult() {
 							</tbody>
 						</table>
 						
+						
 						<div style="float: right;">
-							<button type="button" id="btnWriteEdoc" class="btn btn-success" style="height: 35px;">문서작성</button>
+							<a href="${pageContext.request.contextPath}/edoc/write.do">
+							<button type="button" id="btnWriteEdoc" class="btn btn-success" style="height: 35px;">문서작성</button></a>
 							<button type="button" id="btnTempEdoc" class="btn btn-success" style="height: 35px;">임시보관함</button>
 						</div>
 						
 					</form>
-					<div class="page-navigation">
-						
-					</div>
+					
+						<div class="page-navigation">
+							${dataCount == 0 ? "등록된 게시물이 없습니다." : paging}
+						</div>
+					
 					
 					<div class="row board-list-footer">
 						

@@ -194,21 +194,21 @@ $(function(){
 		let id_apper = $ele.val();
     	let name_apper = $ele.find("option:selected").attr("data-name"); 
     	let pos_code = $ele.attr("data-posCode");
-    	let pos_name = $ele.attr("data-posName");
+    	// let pos_name = $ele.attr("data-posName");
     	
     	// alert(id_apper+": "+name_apper+": "+pos_code);
     	if(pos_code === "3") {
     		$("#empId1").val(id_apper);
-			$("#empSearch1").val(name_apper+" "+pos_name);
+			$("#empSearch1").val(name_apper+" 대리");
     	} else if (pos_code === "4") {
     		$("#empId2").val(id_apper);
-			$("#empSearch2").val(name_apper+" "+pos_name);
+			$("#empSearch2").val(name_apper+" 과장");
     	} else if (pos_code === "5") {
     		$("#empId3").val(id_apper);
-			$("#empSearch3").val(name_apper+" "+pos_name);
+			$("#empSearch3").val(name_apper+" 차장");
     	} else if (pos_code === "6") {
     		$("#empId4").val(id_apper);
-			$("#empSearch4").val(name_apper+" "+pos_name);
+			$("#empSearch4").val(name_apper+" 부장");
     	}
 	});
    
