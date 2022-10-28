@@ -61,7 +61,7 @@ function sendOk() {
 	let str;
 
 	str = f.pwd.value;
-	if( !/^(?=.*[a-z])(?=.*[!@#$%^*+=-]|.*[0-9]).{4,10}$/i.test(str) ) { 
+	if( !/^(?=.*[a-z])(?=.*[!@#$%^*+=-]|.*[0-9]).{5,10}$/i.test(str) ) { 
 		alert("패스워드를 다시 입력 하세요. ");
 		f.pwd.focus();
 		return;
