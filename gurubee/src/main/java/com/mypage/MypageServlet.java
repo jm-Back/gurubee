@@ -4,16 +4,18 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.login.SessionInfo;
-import com.util.MyServlet;
+import com.util.MyUploadServlet;
 
+@MultipartConfig
 @WebServlet("/mypage/*")
-public class MypageServlet extends MyServlet{
+public class MypageServlet extends MyUploadServlet{
 	public static final long serialVersionUID = 1L;
 
 	@Override
@@ -117,7 +119,7 @@ public class MypageServlet extends MyServlet{
 		
 		String cp = req.getContextPath();
 		if (req.getMethod().equalsIgnoreCase("GET")) {
-			resp.sendRedirect(cp + "/");
+			resp.sendRedirect(cp + "/member/login_ok.do");
 			return;
 		}
 		
@@ -142,11 +144,12 @@ public class MypageServlet extends MyServlet{
 			dto.setTel(req.getParameter("tel"));
 			
 			dao.mypageWriteForm(dto);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		resp.sendRedirect(cp + "/");
+		resp.sendRedirect(cp + "/main.do");
 	}
 
 

@@ -93,7 +93,7 @@ private Connection conn = DBConn.getConnection();
 		
 		try {
 		
-			sql = "UPDATE employee SET pwd=?, reg=?, email=?, phone=?, tel=?, "
+			sql = "UPDATE employee SET pwd=?, reg=?, mail=?, phone=?, tel=?, "
 					+ " ori_filename=?  WHERE id=?";
 			
 			pstmt = conn.prepareStatement(sql);
@@ -103,8 +103,8 @@ private Connection conn = DBConn.getConnection();
 			pstmt.setString(3, dto.getEmail());
 			pstmt.setString(4, dto.getPhone());
 			pstmt.setString(5, dto.getTel());
-			pstmt.setString(7, dto.getOri_filename());
-			pstmt.setString(8, dto.getId());
+			pstmt.setString(6, dto.getOri_filename());
+			pstmt.setString(7, dto.getId());
 			 
 			pstmt.executeUpdate();
 			

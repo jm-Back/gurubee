@@ -40,8 +40,8 @@ $(function(){
         if(tab==="1") { // 개인정보
         	return false; 
         } else if(tab==="2") { // 근태
-        	//url = "${pageContext.request.contextPath}/mypage/myatt.do";
-        	//$(selector).load(url);
+        	url = "${pageContext.request.contextPath}/mypage/myatt.do";
+        	$(selector).load(url);
         } else if(tab==="3") { // 연차
         	//url = "${pageContext.request.contextPath}/mypage/myoff.do";
         	//$(selector).load(url);
@@ -103,28 +103,28 @@ $(function(){
 								<div class="row mb-3" >
 									<label class="col-sm-2 col-form-label" for="name">이름</label>
 									<div class="col-sm-10">
-									<input type="text"  style="width: 50%;" name="name" id="name" class="form-control-plaintext" autocomplete="off">${sessionScope.member.name}
+									<input type="text"  style="width: 50%;" name="name" id="name" class="form-control-plaintext" autocomplete="off">${dto.name}
 				        			</div>
 								</div>
 								
 								<div class="row mb-3">
 									<label class="col-sm-2 col-form-label" for="id">사번</label>
 									<div class="col-sm-10">
-				            		<div class="form-control-plaintext" >${sessionScope.member.id}</div>
+				            		<div class="form-control-plaintext" >${dto.id}</div>
 									</div>
 								</div>
 								
 								<div class="row mb-3">
 									<label class="col-sm-2 col-form-label" for="dep_name">부서</label>
 									<div class="col-sm-10">
-				            		<div class="form-control-plaintext" >${sessionScope.member.dep_name}</div>
+				            		<div class="form-control-plaintext" >${dto.dep_name}</div>
 									</div>
 								</div>
 								
 								<div class="row mb-3">
 									<label class="col-sm-2 col-form-label" for="pos_name">직급</label>
 									<div class="col-sm-10">
-				            		<div class="form-control-plaintext" >${sessionScope.member.pos_name}</div>
+				            		<div class="form-control-plaintext" >${dto.pos_name}</div>
 									</div>
 								</div>
 					</div>
@@ -133,28 +133,28 @@ $(function(){
 				  	 	<div class="row mb-3">
 				        	<label class="col-sm-2 col-form-label" for="reg">주민등록번호</label>
 				        	<div class="col-sm-10">
-							<div class="form-control-plaintext" >${sessionScope.member.reg}</div>
+							<div class="form-control-plaintext" >${dto.reg}</div>
 				        	</div>
 				   		 </div>
 				  	 	 
 				  	 	 <div class="row mb-3">
 				  			<label class="col-sm-2 col-form-label" for="email">이메일 </label>
 				  			<div class="col-sm-10">
-							<div class="form-control-plaintext" >${sessionScope.member.email}</div>
+							<div class="form-control-plaintext" >${dto.email}</div>
 							</div>
 				  	 	 </div>
 				  	 	 
 				  	 	<div class="row mb-3">
 				        <label class="col-sm-2 col-form-label" for="phone">전화번호</label>
 				        <div class="col-sm-10 row">
-				        <div class="form-control-plaintext" >${sessionScope.member.phone}</div>
+				        <div class="form-control-plaintext" >${dto.phone}</div>
 						</div>
 				    </div>
 				  	 	 
 				  	 	 <div class="row mb-3">
 				        <label class="col-sm-2 col-form-label" for="tel">내선번호 </label>
 				       		<div class="col-sm-10">
-				            <div class="form-control-plaintext" >${sessionScope.member.tel}</div>
+				            <div class="form-control-plaintext" >${dto.tel}</div>
 				        	</div>
 				  	 	 </div>
 				  	 	 

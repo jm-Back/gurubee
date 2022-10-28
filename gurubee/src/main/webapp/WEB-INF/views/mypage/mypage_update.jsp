@@ -59,9 +59,9 @@ $(function(){
 function sendOk() {
 	const f = document.myForm;
 	let str;
-	
+
 	str = f.pwd.value;
-	if( !/^(?=.*[a-z])(?=.*[!@#$%^*+=-]|.*[0-9]).{5,10}$/i.test(str) ) { 
+	if( !/^(?=.*[a-z])(?=.*[!@#$%^*+=-]|.*[0-9]).{4,10}$/i.test(str) ) { 
 		alert("패스워드를 다시 입력 하세요. ");
 		f.pwd.focus();
 		return;
@@ -238,8 +238,8 @@ $(function() {
 				  	 	<div class="row mb-3">
 				        	<label class="col-sm-2 col-form-label" for="reg">주민등록번호</label>
 				        	<div class="col-sm-10">
-				            	<input type="text" style="width: 50%;" name="reg" id="reg" class="form-control" value="${dto.reg}" placeholder="주민등록번호 앞자리"> -
-				            	<input type="password" style="width: 50%;" name="reg2" id="reg2" class="form-control" value="${dto.reg2}" placeholder="주민등록번호 뒷자리">
+				            	<input type="text" style="width: 35%;" name="reg" id="reg" class="form-control" value="${dto.reg}" placeholder="주민등록번호 앞자리"> -
+				            	<input type="password" style="width: 35%;" name="reg2" id="reg2" class="form-control" value="${dto.reg2}" placeholder="주민등록번호 뒷자리">
 				           	 	<small class="form-control-plaintext"></small>
 				        	</div>
 				   		 </div>
@@ -271,7 +271,6 @@ $(function() {
 				  	 	 <div class="row mb-3">
 				        <div class="text-center">
 				            <button type="button" name="sendButton" class="btn btn-primary" onclick="sendOk();"> 수정완료 <i class="bi bi-check2"></i></button>
-							<input type="hidden" name="userIdValid" id="userIdValid" value="false">
 				        </div>
 				    </div>
 				  	 	 
