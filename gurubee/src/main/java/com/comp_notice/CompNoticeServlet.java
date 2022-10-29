@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -155,9 +157,30 @@ public class CompNoticeServlet extends MyUploadServlet {
 				list = dao.listBoard(offset, size, condition, keyword);
 			}
 			
+			// 공지글
+			List<CompNoticeDTO> listNotice = null;
+			listNotice = dao.listNotice();
+			for (CompNoticeDTO dto : listNotice) {
+				dto.setRegdate(dto.getRegdate().substring(0, 10));
+			}
+
+			long gap;
+			Date curDate = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
+
+			for (CompNoticeDTO dto : list) { 
+				Date date = sdf.parse(dto.getRegdate());
+				// gap = (curDate.getTime() - date.getTime()) / (1000*60*60*24); // 일자
+				gap = (curDate.getTime() - date.getTime()) / (1000 * 60 * 60); // 시간
+				dto.setGap(gap);
+
+				dto.setRegdate(dto.getRegdate().substring(0, 10));
+			}
+			
 			String query = "";
+			
 			if(keyword.length() != 0) {
-				query = "condition="+condition+"&keyword"+URLEncoder.encode(keyword,"utf-8");
+				query = "condition=" + condition + "&keyword=" + URLEncoder.encode(keyword,"utf-8");
 			}
 			
 			// 페이징
@@ -182,6 +205,7 @@ public class CompNoticeServlet extends MyUploadServlet {
 			req.setAttribute("condition", condition);
 			req.setAttribute("keyword", keyword);
 			
+			req.setAttribute("listNotice", listNotice); // [공지사항]
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -216,6 +240,9 @@ public class CompNoticeServlet extends MyUploadServlet {
 			CompNoticeDTO dto = new CompNoticeDTO();
 			
 			dto.setWriter_id(info.getId());
+			if (req.getParameter("notice") != null) {
+				dto.setNotice(Integer.parseInt(req.getParameter("notice")));
+			}
 			
 			dto.setNotice_title(req.getParameter("notice_title"));
 			dto.setNotice_content(req.getParameter("notice_content"));
@@ -233,7 +260,6 @@ public class CompNoticeServlet extends MyUploadServlet {
 				dto.setOri_filename(originalFilename);
 				
 			}
-			
 			
 			dao.insertcompNotice(dto);
 			
@@ -258,6 +284,8 @@ public class CompNoticeServlet extends MyUploadServlet {
 			long num = Long.parseLong(req.getParameter("num"));
 			String condition = req.getParameter("condition");
 			String keyword = req.getParameter("keyword");
+			
+			
 			
 			// 초기 검색창 셋팅
 			if(condition == null) {

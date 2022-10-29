@@ -26,9 +26,6 @@
 				</c:choose>
 			</td>
 		</tr>
-		<tr>
-			<td colspan='2' valign='top'>내용입니다.</td>
-		</tr>
 			<td colspan="2" valign='top'>${vo.rep_contents}</td>
 		<tr>
 			<td>

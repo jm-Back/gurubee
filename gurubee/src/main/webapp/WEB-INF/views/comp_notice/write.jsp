@@ -87,7 +87,15 @@ function check() {
 								<input type="text" name="notice_title" class="form-control" value="${dto.notice_title}">
 							</td>
 						</tr>
-	        
+	        			
+	        			<tr>
+							<td class="table-light col-sm-2" scope="row">공지여부</td>
+							<td>
+								<input type="checkbox" class="form-check-input" name="notice" id="notice" value="1" ${dto.notice==1 ? "checked='checked' ":"" } >
+								<label class="form-check-label" for="notice"> 공지</label>
+							</td>
+						</tr>
+	        			
 						<tr>
 							<td class="table-light col-sm-2" scope="row">작성자명</td>
 	 						<td>
