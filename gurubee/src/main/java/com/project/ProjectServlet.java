@@ -652,23 +652,31 @@ public class ProjectServlet extends MyServlet{
 		// 프로젝트 챕터 삭제 ajax-json
 		// 프로젝트 지분 변경 필수
 		ProjectDAO dao = new ProjectDAO();
-		
+		int cnt = 0;
 		String state = "false";
-		
+
 		try {
 			
 			String pd_code = req.getParameter("pd_code");
 			String pro_code = req.getParameter("pro_code");
 			
-			dao.deleteProjectDetail(pd_code);
-			
-			//지분 변경
-			int partCount = dao.dataCountDetail(pro_code);
-			dao.updatePart(partCount, pro_code);
-			
-			//삭제시 true
-			state = "true";
-			
+			cnt = dao.dataCountDetail(pro_code);
+			if(2 > cnt) {
+				
+				state = "false";
+				
+			} else {
+				//part 갯수 카운트, 지분 변경
+				dao.deleteProjectDetail(pd_code);
+				
+				int partCount = dao.dataCountDetail(pro_code);
+				dao.updatePart(partCount, pro_code);
+				
+				//삭제시 true
+				state = "true";
+				
+			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

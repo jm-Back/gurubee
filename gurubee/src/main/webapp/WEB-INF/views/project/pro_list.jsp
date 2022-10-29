@@ -28,7 +28,7 @@
 							<p style="color: #404040;">${dto.pro_outline}</p>
 							<div id="here_progress_main">
 							</div>
-							<div class="mt-3"><span class="text1">${dto.pro_type}</span> &nbsp; <span class="text2">[프로젝트 작성자 : ${dto.pro_writer}]</span></div>
+							<div class="mt-3"><span class="text1">${dto.pro_type}</span> &nbsp; <span class="text2">[프로젝트 참여자 수 : ${dto.pj_id}]</span></div>
 						</div>
 					</div>
 				</div>

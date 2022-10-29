@@ -562,7 +562,11 @@ $(function(){
 			if(data.state==="true"){
 				alert("삭제 되었습니다.");
 				window.location.reload();
+			} else if(data.state==="false"){
+				alert("프로젝트 챕터는 1개 이상 존재해야합니다.");
+				window.location.reload();
 			}
+			
 		};
 		
 		ajaxFun(url, "post", query, "json", fn);
