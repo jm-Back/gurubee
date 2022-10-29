@@ -129,7 +129,7 @@ a:link, a:visited {
    <li><a href="${pageContext.request.contextPath}/schedule/mlist.do">일정 리스트(월간)</a></li>
    <li><a href="${pageContext.request.contextPath}/schedule/wlist.do">일정 리스트(주간)</a></li>
    <li><a href="${pageContext.request.contextPath}/schedule/wlist.do">일정 리스트(주간)</a></li>
-   <li><a href="${pageContext.request.contextPath}/schedule/article.do">일정 상세보기</a></li>
+   <li><a href="${pageContext.request.contextPath}/schedule/main.do">일정 상세보기</a></li>
    <li><a href="${pageContext.request.contextPath}/schedule/write.do">일정 등록폼</a></li>
    		<!-- 일정 등록 /write_ok.do -->
    <li><a href="${pageContext.request.contextPath}/schedule/write.do">일정 수정폼</a></li>
