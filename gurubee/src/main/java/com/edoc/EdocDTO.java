@@ -4,6 +4,11 @@ public class EdocDTO {
 	// 결재 문서
 	
 	private String id_write; // 작성자 사번
+	private String name_write;
+	private String dep_write;
+	private String pos_write;
+	private int posCode_write;
+	
 	private int app_num; // seq
 	private String app_doc; // 문서구분
 	private String app_date; // 문서작성일자
@@ -14,15 +19,6 @@ public class EdocDTO {
 	
 	private String result; // 현재 처리결과. 0:대기, 1:승인, -1:반려
 	private String result_name; // 현재 처리 결재자 이름
-	
-	private String id_apper1;
-	private String name_apper1;
-	private String id_apper2;
-	private String name_apper2;
-	private String id_apper3;
-	private String name_apper3;
-	private String id_apper4;
-	private String name_apper4;
 
 	public String getId_write() {
 		return id_write;
@@ -84,4 +80,29 @@ public class EdocDTO {
 	public void setResult_name(String aa) {
 		this.result_name = aa;
 	}
+	public String getName_write() {
+		return name_write;
+	}
+	public void setName_write(String name_write) {
+		this.name_write = name_write;
+	}
+	public String getDep_write() {
+		return dep_write;
+	}
+	public void setDep_write(String dep_write) {
+		this.dep_write = dep_write;
+	}
+	public String getPos_write() {
+		return pos_write;
+	}
+	public void setPos_write(String pos_write) {
+		this.pos_write = pos_write;
+	}
+	public int getPosCode_write() {
+		return posCode_write;
+	}
+	public void setPosCode_write(int posCode_write) {
+		this.posCode_write = posCode_write;
+	}
+	
 }

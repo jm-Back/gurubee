@@ -58,10 +58,13 @@ function ajaxFun(url, method, query, dataType, fn) {
 function sendOk() {
   	const f = document.writeForm;
   	
-	let edoc = f.edocSelect.value.trim(); // 문서구분
+  	let edoc = f.edocSelect.value.trim(); // 문서구분
+	oEditors.getById["ir1"].exec("UPDATE_CONTENTS_FIELD", []);
 	let content = oEditors.getById["ir1"].getIR(); // 문서폼
 	let title = f.title.value.trim(); // 문서제목
 	let id_array = [f.empId1.value, f.empId2.value, f.empId3.value, f.empId4.value];
+	
+	console.log(content);
 	
 	// 결재자 사번 빈 값 없애기 
 	const id_apper_array = id_array.filter(
@@ -92,7 +95,7 @@ function sendOk() {
  	}
  	
  	f.action = "${pageContext.request.contextPath}/edoc/write_ok.do";
-  
+ 
   	f.submit();
 }
 
@@ -103,9 +106,13 @@ function saveOk() {
 	const f = document.writeForm;
 	
 	let edoc = f.edocSelect.value.trim(); // 문서구분
+	oEditors.getById["ir1"].exec("UPDATE_CONTENTS_FIELD", []);
 	let content = oEditors.getById["ir1"].getIR(); // 문서폼
 	let title = f.title.value.trim(); // 문서제목
 	let id_array = [f.empId1.value, f.empId2.value, f.empId3.value, f.empId4.value];
+	
+	
+	console.log(content);
 	
 	// 결재자 사번 빈 값 없애기 
 	const id_apper_array = id_array.filter(

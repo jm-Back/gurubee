@@ -121,6 +121,7 @@ function conditionSubmit() {
 	f.submit();
 }
 
+
 $(function() {
 	/*
 	$("form button[name=btnSearchEdoc]").click(function() {
@@ -176,6 +177,8 @@ $(function() {
 								</div>
 								<div class="col-1 p-1">
 									<button type="button" id="btnContidion" onclick="conditionSubmit();" class="btn btn-success" style="height: 35px;"><i class="bi bi-search"></i></button>	
+									<button type="button" id="btnContidion" onclick="${pageContext.request.contextPath}/edoc/liset_receive.do" class="btn btn-success" style="height: 35px;"><i class="bi bi-arrow-repeat"></i></button>	
+								
 								</div>
 								<input type="hidden" id="page" value=" ">		
 							</form>
@@ -189,7 +192,7 @@ $(function() {
 							<thead class="table-light">
 								<tr style="width: 100%">
 									<td style="width: 5%">No</td>
-									<td style="width: 10%">문서구분</td>
+									<td style="width: 15%">문서구분</td>
 									<td style="width: 10%">작성자</td>
 									<td style="width: 10%">결재상태</td>
 									<td style="width: 10%">마지막결재자</td>
@@ -203,7 +206,7 @@ $(function() {
 								<c:forEach var="dto" items="${list}" varStatus="status">
 									<tr><td>${dto.app_num}</td>
 										<td>${dto.app_doc}</td>
-										<td>작성자이름</td>
+										<td>${dto.name_write}</td>
 										<td>
 											<c:if test="${fn:contains(dto.result, '반려')}">
 												<button class="btn btn-warning" disabled style="border-radius: 20px;">${dto.result}</button>

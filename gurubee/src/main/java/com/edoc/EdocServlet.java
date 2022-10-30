@@ -1,7 +1,9 @@
 package com.edoc;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -10,6 +12,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.json.JSONObject;
 
 import com.login.SessionInfo;
 import com.util.MyServlet;
@@ -55,6 +59,12 @@ public class EdocServlet extends MyServlet {
 			listSend(req, resp);
 		} else if(uri.indexOf("list_receive.do") != -1) {
 			listReceive(req, resp);
+		} else if(uri.indexOf("article.do") != -1) {
+			article(req, resp);
+		} else if(uri.indexOf("update_ok.do") != -1) {
+			// update(req, resp);
+		}  else if(uri.indexOf("result_ok.do") != -1) {
+			insertResult(req, resp);
 		}
 		
 	}
@@ -255,14 +265,15 @@ public class EdocServlet extends MyServlet {
 			
 			// 전체 데이터 갯수
 			int dataCount=0;
-			// 조건 없을 때
-			if(myDate==null && edoc==null) {
-				dataCount = dao.edocCount(info.getId());
-			} else {
+			if(edoc!=null) {
 				edoc = URLDecoder.decode(edoc, "utf-8");
-				myDate = URLDecoder.decode(myDate, "utf-8");
-				dataCount = dao.edocCount(info.getId(), edoc, myDate);
 			}
+			if(myDate!=null) {
+				myDate = URLDecoder.decode(myDate, "utf-8");
+			}
+		
+			dataCount = dao.edocCountReceiver(info.getId(), edoc, myDate);
+			
 			System.out.println(myDate + ", "+edoc);
 			System.out.println(dataCount);
 			
@@ -279,14 +290,10 @@ public class EdocServlet extends MyServlet {
 
 			// 결재문서 리스트 가져오기
 			List<EdocDTO> myEdocList= null;
+			myEdocList = dao.listEApproverReceiver(info.getId(), offset, size, edoc, myDate);
 			
-			if(myDate==null && edoc==null) {
-				myEdocList = dao.listEApproval(info.getId(), offset, size);
-			} else {
-				myEdocList = dao.listEApproval(info.getId(), offset, size, edoc, myDate);
-			}
 			// 페이징 처리
-			String listUrl = cp + "/edoc/list_send.do";
+			String listUrl = cp + "/edoc/list_receive.do";
 			String articleUrl = cp + "/edoc/article.do?page=" + current_page;
 			
 			String paging = util.paging(current_page, total_page, listUrl);
@@ -306,4 +313,87 @@ public class EdocServlet extends MyServlet {
 		String path = "/WEB-INF/views/edoc/list_receive.jsp";
 		forward(req, resp, path);
 	}
+	
+	
+	// 글보기
+	protected void article(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		EdocDAO dao = new EdocDAO();
+		MyUtil util = new MyUtilBootstrap();
+		
+		String cp = req.getContentType();
+		
+		String page = req.getParameter("page");
+		String query = "page=" + page;
+
+
+		try {
+			int app_num = Integer.parseInt(req.getParameter("app_num"));
+			List<EdocEmpDTO> empdto = new ArrayList<>();
+
+			// 문서, 결재자 리스트 가져오기. readEdoc, readEdocEmp
+			EdocDTO dto = dao.readEdoc(app_num);
+			empdto = dao.readEdocApper(app_num);
+			
+			if(dto == null) {
+				resp.sendRedirect(cp+"/edoc/list_send");
+				return;
+			}
+			
+			req.setAttribute("dto", dto);
+			req.setAttribute("empdto", empdto);
+			req.setAttribute("page", page);
+			
+			forward(req, resp, "/WEB-INF/views/edoc/article.jsp");
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		// resp.sendRedirect(cp+"/edoc/list_send");
+		
+	}	
+
+	// 결재하기 - AJAX:JSON
+	protected void insertResult(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		EdocDAO dao = new EdocDAO();
+		
+		String resultMessage = null;
+		String state = "false";
+
+		try {
+			HttpSession session = req.getSession();
+			SessionInfo info = (SessionInfo) session.getAttribute("member");
+			
+			
+			int app_num = Integer.parseInt(req.getParameter("app_num"));
+			int app_result = Integer.parseInt(req.getParameter("app_result"));
+			int app_level = 0;
+			
+			// 나의 결재단계 가져오기
+			app_level = dao.readAppLevel(info.getId(), app_num);
+			System.out.println("나의 결재단계 레벨: " + app_level);
+			// 1vL 결재자
+			if(app_level == 1) {
+				resultMessage = dao.insertEdocMyResult1(app_num, info.getId(), app_result);
+			} else {
+				resultMessage = dao.insertEdocMyResultOver1(app_num, info.getId(), app_result, app_level);
+			}
+			
+			state = "true";
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		JSONObject job = new JSONObject();
+		job.put("state", state);
+		job.put("msg", resultMessage);
+		
+		resp.setContentType("text/html; charset=utf-8");
+		PrintWriter out = resp.getWriter();
+		out.print(job.toString());
+
+	}	
+
+
+
+
 }
