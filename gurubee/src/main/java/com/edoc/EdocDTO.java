@@ -11,8 +11,18 @@ public class EdocDTO {
 	private String doc_form; // 문서폼. CLOB
 	private String title; // 제목
 	private int temp; // 임시 구분. 0:임시, 1:제출
+	
 	private String result; // 현재 처리결과. 0:대기, 1:승인, -1:반려
 	private String result_name; // 현재 처리 결재자 이름
+	
+	private String id_apper1;
+	private String name_apper1;
+	private String id_apper2;
+	private String name_apper2;
+	private String id_apper3;
+	private String name_apper3;
+	private String id_apper4;
+	private String name_apper4;
 
 	public String getId_write() {
 		return id_write;

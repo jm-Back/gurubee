@@ -1,6 +1,7 @@
 package com.edoc;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -54,9 +55,7 @@ public class EdocServlet extends MyServlet {
 			listSend(req, resp);
 		} else if(uri.indexOf("list_receive.do") != -1) {
 			listReceive(req, resp);
-		} else if(uri.indexOf("appResult.do") != -1) {
-			currentAppResult(req, resp);
-		} 
+		}
 		
 	}
 	
@@ -87,8 +86,8 @@ public class EdocServlet extends MyServlet {
 			edocdto.setTitle(req.getParameter("title"));
 			edocdto.setTemp(temp); // temp:임시구분
 			
-			System.out.println(edocdto.getDoc_form());
-			System.out.println(edocdto.getId_write());
+			// System.out.println(edocdto.getDoc_form());
+			// System.out.println(edocdto.getId_write());
 			
 			dao.insertEApproval(edocdto);
 			
@@ -97,7 +96,7 @@ public class EdocServlet extends MyServlet {
 			// 전자결재문서 결재자 등록 - 수신자 아이디 갯수만큼 반복
 			for (int i = 0; i < app_id.length; i++) {
 				if (! (app_id[i] == null || app_id[i].length() == 0)) {
-					System.out.println(app_id[i]);
+					// System.out.println(app_id[i]);
 					EdocEmpDTO empdto = new EdocEmpDTO();
 					empdto.setId_apper(app_id[i]);
 					empdto.setApp_level(i + 1);
@@ -185,8 +184,12 @@ public class EdocServlet extends MyServlet {
 			if(myDate==null && edoc==null) {
 				dataCount = dao.edocCount(info.getId());
 			} else {
-				// dataCount = dao.edocCount(info.getId(), myDate, edoc);
+				edoc = URLDecoder.decode(edoc, "utf-8");
+				myDate = URLDecoder.decode(myDate, "utf-8");
+				dataCount = dao.edocCount(info.getId(), edoc, myDate);
 			}
+			System.out.println(myDate + ", "+edoc);
+			System.out.println(dataCount);
 			
 			// 전체 페이지 수
 			int size = 5;
@@ -200,8 +203,13 @@ public class EdocServlet extends MyServlet {
 			if(offset < 0) offset = 0;
 
 			// 결재문서 리스트 가져오기
-			List<EdocDTO> myEdocList = dao.listEApproval(info.getId(), offset, size);
-	
+			List<EdocDTO> myEdocList= null;
+			
+			if(myDate==null && edoc==null) {
+				myEdocList = dao.listEApproval(info.getId(), offset, size);
+			} else {
+				myEdocList = dao.listEApproval(info.getId(), offset, size, edoc, myDate);
+			}
 			// 페이징 처리
 			String listUrl = cp + "/edoc/list_send.do";
 			String articleUrl = cp + "/edoc/article.do?page=" + current_page;
@@ -223,42 +231,78 @@ public class EdocServlet extends MyServlet {
 		forward(req, resp, "/WEB-INF/views/edoc/list_send.jsp");
 	}
 	
-	// 문서의 처리결과 가져오기
-	protected void currentAppResult(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// 문서의 처ꈰ결과 가져오기. AJAX:JSON
+	
+	// 결재문서 수신함 리스트 
+	protected void listReceive(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		EdocDAO dao = new EdocDAO();
+		MyUtil util = new MyUtilBootstrap();
+		String cp = req.getContextPath();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
 		
 		try {
-			/*
-			int app_num = Integer.parseInt(req.getParameter("app_num"));
+			String page = req.getParameter("page");
 			
-			String[] num_array = req.getParameterValues("app_num");
-					
-			for(int i=0; i<num_array.length; i++){
-				String result = dao.resultApprover(Integer.parseInt(num_array[i]));
-				
-				System.out.println(num_array[i] + "번 문서 처리결과:" +result);
-			}			
+			int current_page = 1;
+			if(page != null) {
+				current_page = Integer.parseInt(page);
+			}
 			
+			// 날짜 myDate, 문서구분 edocSelect
+			String myDate = req.getParameter("myDate");
+			String edoc = req.getParameter("edocSelect");
 			
-			JSONObject job = new JSONObject();
-			job.put("result", result);
+			// 전체 데이터 갯수
+			int dataCount=0;
+			// 조건 없을 때
+			if(myDate==null && edoc==null) {
+				dataCount = dao.edocCount(info.getId());
+			} else {
+				edoc = URLDecoder.decode(edoc, "utf-8");
+				myDate = URLDecoder.decode(myDate, "utf-8");
+				dataCount = dao.edocCount(info.getId(), edoc, myDate);
+			}
+			System.out.println(myDate + ", "+edoc);
+			System.out.println(dataCount);
 			
-			resp.setContentType("text/html; charset=utf-8");
-			PrintWriter out = resp.getWriter();
-			out.print(job.toString());
+			// 전체 페이지 수
+			int size = 5;
+			int total_page = util.pageCount(dataCount, size);
+			if(current_page > total_page) {
+				current_page = total_page;
+			}
 			
-			return;
-			*/
+			// 게시물 가져오기
+			int offset = (current_page - 1) * size;
+			if(offset < 0) offset = 0;
+
+			// 결재문서 리스트 가져오기
+			List<EdocDTO> myEdocList= null;
+			
+			if(myDate==null && edoc==null) {
+				myEdocList = dao.listEApproval(info.getId(), offset, size);
+			} else {
+				myEdocList = dao.listEApproval(info.getId(), offset, size, edoc, myDate);
+			}
+			// 페이징 처리
+			String listUrl = cp + "/edoc/list_send.do";
+			String articleUrl = cp + "/edoc/article.do?page=" + current_page;
+			
+			String paging = util.paging(current_page, total_page, listUrl);
+	
+			req.setAttribute("list", myEdocList);
+			req.setAttribute("page", current_page);
+			req.setAttribute("total_page", total_page);
+			req.setAttribute("dataCount", dataCount);
+			req.setAttribute("size", size);
+			req.setAttribute("articleUrl", articleUrl);
+			req.setAttribute("paging", paging);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		resp.sendError(400);
-	}
-	
-	// 결재문서 수신함 리스트 
-	protected void listReceive(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
 		String path = "/WEB-INF/views/edoc/list_receive.jsp";
 		forward(req, resp, path);
 	}

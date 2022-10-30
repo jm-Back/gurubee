@@ -165,7 +165,7 @@ $(function() {
 								</div>
 								<div class="col-2 p-1" style="width: 200px;">
 									<select id="edocSelect" name="edocSelect" class="form-select">
-										<option selected>문서구분</option>
+										<option selected value="">문서구분</option>
 										<option value="휴가신청서" data-edoc="휴가신청서">휴가신청서</option>
 										<option value="접근권한신청서" data-edoc="접근권한신청서">DB접근권한신청서</option>
 										<option value="구매요청의뢰서" data-edoc="구매요청의뢰서">구매요청의뢰서</option>
