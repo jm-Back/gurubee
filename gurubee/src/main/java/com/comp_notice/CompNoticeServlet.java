@@ -2,8 +2,11 @@ package com.comp_notice;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
+
+import org.json.JSONObject;
 
 import com.login.SessionInfo;
 import com.util.FileManager;
@@ -68,7 +73,25 @@ public class CompNoticeServlet extends MyUploadServlet {
 			updateSubmit(req, resp);
 		} else if(uri.indexOf("deleteFile.do") != -1) {
 			deleteFile(req, resp);
-		}
+		} else if(uri.indexOf("delete.do") != -1) {
+			delete(req, resp);
+		} else if(uri.indexOf("download.do") != -1) {
+			download(req, resp);
+		} else if(uri.indexOf("insertReply.do") != -1) {
+			insertReply(req, resp);
+		} else if(uri.indexOf("listReply.do") != -1) {
+			listReply(req, resp);
+		} else if(uri.indexOf("deleteReply.do") != -1) {
+			deleteReply(req, resp);
+		} else if(uri.indexOf("insertReplyAnswer.do") != -1) {
+			insertReplyAnswer(req, resp);
+		} else if(uri.indexOf("listReplyAnswer.do") != -1) {
+			listReplyAnswer(req, resp);
+		} else if(uri.indexOf("deleteReplyAnswer.do") != -1) {
+			deleteReplyAnswer(req, resp);
+		} else if(uri.indexOf("countReplyAnswer.do") != -1) {
+			countReplyAnswer(req, resp);
+		} 
 		
 	}
 	
@@ -134,9 +157,30 @@ public class CompNoticeServlet extends MyUploadServlet {
 				list = dao.listBoard(offset, size, condition, keyword);
 			}
 			
+			// 공지글
+			List<CompNoticeDTO> listNotice = null;
+			listNotice = dao.listNotice();
+			for (CompNoticeDTO dto : listNotice) {
+				dto.setRegdate(dto.getRegdate().substring(0, 10));
+			}
+
+			long gap;
+			Date curDate = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
+
+			for (CompNoticeDTO dto : list) { 
+				Date date = sdf.parse(dto.getRegdate());
+				// gap = (curDate.getTime() - date.getTime()) / (1000*60*60*24); // 일자
+				gap = (curDate.getTime() - date.getTime()) / (1000 * 60 * 60); // 시간
+				dto.setGap(gap);
+
+				dto.setRegdate(dto.getRegdate().substring(0, 10));
+			}
+			
 			String query = "";
+			
 			if(keyword.length() != 0) {
-				query = "condition="+condition+"&keyword"+URLEncoder.encode(keyword,"utf-8");
+				query = "condition=" + condition + "&keyword=" + URLEncoder.encode(keyword,"utf-8");
 			}
 			
 			// 페이징
@@ -161,6 +205,7 @@ public class CompNoticeServlet extends MyUploadServlet {
 			req.setAttribute("condition", condition);
 			req.setAttribute("keyword", keyword);
 			
+			req.setAttribute("listNotice", listNotice); // [공지사항]
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -195,6 +240,9 @@ public class CompNoticeServlet extends MyUploadServlet {
 			CompNoticeDTO dto = new CompNoticeDTO();
 			
 			dto.setWriter_id(info.getId());
+			if (req.getParameter("notice") != null) {
+				dto.setNotice(Integer.parseInt(req.getParameter("notice")));
+			}
 			
 			dto.setNotice_title(req.getParameter("notice_title"));
 			dto.setNotice_content(req.getParameter("notice_content"));
@@ -212,7 +260,6 @@ public class CompNoticeServlet extends MyUploadServlet {
 				dto.setOri_filename(originalFilename);
 				
 			}
-			
 			
 			dao.insertcompNotice(dto);
 			
@@ -237,6 +284,8 @@ public class CompNoticeServlet extends MyUploadServlet {
 			long num = Long.parseLong(req.getParameter("num"));
 			String condition = req.getParameter("condition");
 			String keyword = req.getParameter("keyword");
+			
+			
 			
 			// 초기 검색창 셋팅
 			if(condition == null) {
@@ -447,7 +496,298 @@ public class CompNoticeServlet extends MyUploadServlet {
 	// 게시글 삭제
 	protected void delete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
+		CompNoticeDAO dao = new CompNoticeDAO();
 		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		String cp = req.getContextPath();
+		
+		String page = req.getParameter("page");
+		String query = "page=" + page;
+		
+		try {
+			
+			long num = Long.parseLong(req.getParameter("num"));
+			
+			String condition = req.getParameter("condition");
+			String keyword = req.getParameter("keyword");
+			
+			// 검색을 통한 게시물 접근이 아닐때
+			if(condition == null) {
+				condition = "all";
+				keyword = "";
+			}
+			
+			// 검색을 통해 게시물 접근시
+			keyword = URLDecoder.decode(keyword, "utf-8");
+			
+			if(keyword.length() != 0) {
+				query += "condition=" + condition + "keyword=" + keyword;
+			}
+			
+			CompNoticeDTO dto = dao.readBoard(num);
+			
+			if(dto == null) {
+				resp.sendRedirect(cp + "/comp_notice/list.do?" + query);
+				return;
+			}
+			
+			if(! info.getId().equals(dto.getWriter_id()) && ! info.getId().equals("admin")) {
+				resp.sendRedirect(cp + "/comp_notice/list.do?" + query);
+				return;
+			}
+			
+			// 로컬에 저장된 파일 삭제
+			if(dto.getSave_filename() != null && dto.getSave_filename().length() != 0) {
+				FileManager.doFiledelete(pathname, dto.getSave_filename());
+			}
+			
+			dao.deleteBoard(num, info.getId());
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		resp.sendRedirect(cp + "/comp_notice/list.do" + query);
+		
+	}
+	
+	// 파일 다운로드
+	protected void download(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		CompNoticeDAO dao = new CompNoticeDAO();
+		
+		boolean b = false;
+		
+		try {
+			
+			long num = Long.parseLong(req.getParameter("num"));
+			
+			CompNoticeDTO dto = dao.readBoard(num);
+			
+			if(dto != null) {
+				
+				b = FileManager.doFiledownload(dto.getSave_filename(),
+						dto.getOri_filename(), pathname, resp);
+				
+			}
+			
+			if(! b) {
+				// 브라우저에게 utf-8을 사용할거라는 메시지를 전달
+				resp.setContentType("text/html; charset=utf-8");
+				// PrintWriter : byte를 문자열 형태로 변환
+				// .getWriter  : 
+				PrintWriter out = resp.getWriter();
+				out.print("<script>alert('파일다운로드가 실패했습니다. 다시 시도해 주세요!'); history.back();</script>");
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	// 댓글 등록 : AJAX - JSON
+	protected void insertReply(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		CompNoticeDAO dao = new CompNoticeDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		String state = "false";
+		
+		try {
+			
+			ReplyDTO dto = new ReplyDTO();
+			
+			dto.setNotice_num(Long.parseLong(req.getParameter("num")));
+			dto.setReply_id(info.getId());
+			dto.setRep_contents(req.getParameter("content"));
+			dto.setAnswer(Long.parseLong(req.getParameter("answer")));
+			
+			dao.insertReply(dto);
+			
+			state = "true";
+			
+			// INSERT, UPDATE, DELETE는 리다이렉트 필수
+			// forward 사용시 req에 데이터 저장되어 있어 중복 입력 발생
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		// JsonObject는 객체(주로 String)을 
+		// Json객체로 바꿔주거나 Json객체를 새로 만드는 역할
+		JSONObject job = new JSONObject();
+		job.put("state", state);
+		
+		resp.setContentType("text/html;charset=utf-8");
+		PrintWriter out = resp.getWriter();
+		out.print(job.toString());
+		
+		
+	}
+	
+	// 댓글 리스트 - AJAX : Text
+	protected void listReply(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		CompNoticeDAO dao = new CompNoticeDAO();
+		MyUtil util = new MyUtilBootstrap();
+		
+		try {
+			
+			long num = Long.parseLong(req.getParameter("num"));
+			
+			String pageNo = req.getParameter("pageNo");
+			
+			// 초기 페이지 1
+			int current_page = 1;
+			
+			//  페이지 번호가 있을때
+			if(pageNo != null) {
+				current_page = Integer.parseInt(pageNo);
+			}
+			
+			// 한 화면에 보일 게시물 수 
+			int size = 5;
+			int total_page = 0;
+			int replyCount = 0 ;
+			
+			replyCount = dao.dataCountReply(num);
+			total_page = util.pageCount(replyCount, size);
+			
+			if(current_page > total_page) {
+				current_page = total_page;
+			}
+			
+			int offset = (current_page-1) * size;
+			if(offset < 0) offset = 0;
+			
+			List<ReplyDTO> listReply = dao.listReply(num, offset, size);
+			
+			// 엔터를 <br>로 
+			for(ReplyDTO dto : listReply) { // replaceAll : 정규식 사용 가능
+				dto.setRep_contents(dto.getRep_contents().replaceAll("\n", "<br>"));
+			}
+			
+			// 페이징 : javascript 함수 호출
+			// listPage : 페이지번호를 클릭할 때 호출 할 자바스크립트 함수명
+			String paging = util.pagingMethod(current_page, total_page, "listPage");
+ 			
+			req.setAttribute("listReply", listReply);   // 댓글 목록
+			req.setAttribute("pageNo", current_page);   // 현재 댓글 페이지
+			req.setAttribute("replyCount", replyCount); // 댓글 갯수
+			req.setAttribute("total_page", total_page); // 댓글 페이지 갯수
+			req.setAttribute("paging", paging);
+			
+			forward(req, resp, "/WEB-INF/views/comp_notice/listReply.jsp");
+			return;
+			
+		} catch (Exception e) {
+			
+		}
+		
+		// 에러가 발생하면 에러 코드를 전송
+		resp.sendError(400);
+		
+		
+	}
+	
+	// 댓글 삭제 - AJAX : JSON
+	protected void deleteReply(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		CompNoticeDAO dao = new CompNoticeDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		String state = "false";
+		
+		try {
+			
+			long replyNum = Long.parseLong(req.getParameter("replyNum"));
+			
+			dao.deleteReply(replyNum, info.getId());
+			
+			state = "true";
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		JSONObject job = new JSONObject();
+		job.put("state", state);
+		
+		// charset : 해당 HTML 문서의 문자 인코딩 방식을 명시
+		resp.setContentType("text/html;charset=utf-8");
+		
+		PrintWriter out = resp.getWriter();
+		out.print(job.toString());
+		
+	}
+	
+	// 댓글의 답글 등록 - AJAX : JSON
+	protected void insertReplyAnswer(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		insertReply(req, resp);
+	}
+	
+	// 댓글의 답글 리스트 - AJAX : Text
+	protected void listReplyAnswer(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		CompNoticeDAO dao = new CompNoticeDAO();
+		
+		try {
+			
+			long answer = Long.parseLong(req.getParameter("answer"));
+			
+			List<ReplyDTO> listAnswer = dao.listReplyAnswer(answer);
+			
+			for(ReplyDTO dto : listAnswer) {
+				dto.setRep_contents(dto.getRep_contents().replaceAll("\n", "<br>"));
+			}
+			
+			req.setAttribute("listAnswer", listAnswer);
+			
+			forward(req, resp, "/WEB-INF/views/comp_notice/listReplyAnswer.jsp");
+			return;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		resp.sendError(400);
+		
+	}
+	
+	// 댓글의 답글 삭제 - AJAX : JSON
+	protected void deleteReplyAnswer(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		deleteReply(req, resp);
+	}
+	
+	// 댓글의 답글 개수 - AJAX : JSON
+	protected void countReplyAnswer(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		CompNoticeDAO dao = new CompNoticeDAO();
+		int count = 0;
+		
+		try {
+			
+			long answer = Long.parseLong(req.getParameter("answer"));
+			
+			count = dao.dataCountReplyAnswer(answer);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		JSONObject job = new JSONObject();
+		job.put("count", count);
+		
+		resp.setContentType("text/html;charset=utf-8");
+		PrintWriter out = resp.getWriter();
+		out.print(job.toString());
 		
 	}
 

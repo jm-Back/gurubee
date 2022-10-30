@@ -8,12 +8,12 @@
 		<div class='answer-article-header'>
 			<div class='answer-left'>└</div>
 			<div class='answer-right'>
-				<div style='float: left;'><span class='bold'>${vo.writer_name}</span></div>
+				<div style='float: left;'><span class='bold'>${vo.reply_name}</span></div>
 				<div style='float: right;'>
-					<span>${vo.reg_date}</span> |
+					<span>${vo.rep_regdate}</span> |
 					
 					<c:choose>
-						<c:when test="${vo.writer_id==sessionScope.member.id || sessionScope.member.id == 'admin' }">
+						<c:when test="${vo.reply_id==sessionScope.member.id || sessionScope.member.id == 'admin' }">
 							<span class='deleteReplyAnswer' data-replyNum='${vo.replyNum}' data-answer='${vo.answer}'>삭제</span>
 						</c:when>
 						<c:otherwise>
@@ -24,7 +24,7 @@
 			</div>
 		</div>
 		<div class='answer-article-body'>
-			${vo.content}
+			${vo.rep_contents}
 		</div>
 	</div>
 </c:forEach>

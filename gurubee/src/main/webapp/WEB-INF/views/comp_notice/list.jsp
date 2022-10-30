@@ -9,7 +9,6 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">
-
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
 
 <style type="text/css">
@@ -18,6 +17,81 @@
 	max-width: 800px;
 	min-height: 800px;
 	margin-top: 70px;
+}
+
+.notice {
+	--bs-bg-opacity: 1;
+    background-color: #00d1b3;
+    --bs-badge-padding-x: 0.65em;
+    --bs-badge-padding-y: 0.35em;
+    --bs-badge-font-size: 0.75em;
+    --bs-badge-font-weight: 700;
+    --bs-badge-color: #fff;
+    --bs-badge-border-radius: 0.375rem;
+    display: inline-block;
+    padding: var(--bs-badge-padding-y) var(--bs-badge-padding-x);
+    font-size: var(--bs-badge-font-size);
+    font-weight: var(--bs-badge-font-weight);
+    line-height: 1;
+    color: var(--bs-badge-color);
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: var(--bs-badge-border-radius);
+
+}
+
+#new {
+	width: 18px;
+}
+
+.body-title h3 {
+	border-bottom: 3px solid #00d1b3;
+	color : #00d1b3;
+}
+
+.btn {
+	background-color: #00d1b3;
+	color: white;
+}
+
+.btn:hover {
+	background-color: #00d1b3;
+	color: white;
+	font-weight: bold;
+}
+
+.table-light {
+	background-color: #00d1b3;
+	color: white;
+}
+
+.form-select {
+	background-color: #00d1b3;
+	color: white;
+}
+
+.active>.page-link, .page-link.active {
+	z-index: 3;
+    color: var(--bs-pagination-active-color);
+    background-color: #00d1b3;
+    border-color: #00d1b3;
+    height: 40px;
+}
+
+.page-link {
+	position: relative;
+    display: block;
+    padding: var(--bs-pagination-padding-y) var(--bs-pagination-padding-x);
+    font-size: var(--bs-pagination-font-size);
+    border: var(--bs-pagination-border-width) solid var(--bs-pagination-border-color);
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    color: #00d1b3;
+    height: 40px;
+}
+
+.bm {
+	margin-top: 4px;
 }
 
 </style>
@@ -65,19 +139,36 @@ function searchList() {
 					</thead>
 					
 					<tbody>
+						<c:forEach var="dto" items="${listNotice}">
+								<tr>	
+									<td><span class="notice">공지</span></td>
+									<td class="left">
+										<a href="${articleUrl}&num=${dto.num}" class="text-reset" style="font-weight: bold">${dto.notice_title}</a>
+									</td>
+									<td>${dto.writer_name}</td>
+									<td>${dto.regdate}</td>
+									<td>${dto.views}</td>
+									<td>
+										<c:if test="${not empty dto.save_filename}"><!-- bi bi-file-arrow-down -->
+											<a href="${pageContext.request.contextPath}/comp_notice/download.do?num=${dto.num}" class="text-reset"><i class="bi bi-box2-heart"></i></a>
+										</c:if>
+									</td>
+								</tr>
+							</c:forEach>
+					
 						<c:forEach var="dto" items="${list}" varStatus="status">
 							<tr>
-								<td>${dto.num}</td>
-								<!-- <td>${dataCount - (page-1) * size - status.index}</td> -->
+								<td>${dataCount - (page-1) * size - status.index}</td>
 								<td class="left">
 									<a href="${articleUrl}&num=${dto.num}" class="text-reset">${dto.notice_title}</a>
+									<c:if test="${dto.gap<3}"><img id="new" src="${pageContext.request.contextPath}/resources/images/new1.gif"></c:if>
 								</td>
 								<td>${dto.writer_name}</td>
 								<td>${dto.regdate}</td>
 								<td>${dto.views}</td>
 								<td>
 									<c:if test="${not empty dto.save_filename}">
-										<a href="${pageContext.request.contextPath}/comp_notice/download.do?num=${dto.num}" class="text-reset"><i class="bi bi-file-arrow-down"></i></a>
+										<a href="${pageContext.request.contextPath}/comp_notice/download.do?num=${dto.num}" class="text-reset"><i class="bi bi-box2-heart"></i></a>
 									</c:if>
 								</td>
 							</tr>
@@ -91,7 +182,7 @@ function searchList() {
 				
 				<div class="row board-list-footer">
 					<div class="col">
-						<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/comp_notice/list.do';">새로고침</button>
+						<button type="button" class="btn btn-light bm" onclick="location.href='${pageContext.request.contextPath}/comp_notice/list.do';">새로고침</button>
 					</div>
 					<div class="col-6 text-center">
 						<form class="row" name="searchForm" action="${pageContext.request.contextPath}/comp_notice/list.do" method="post">
@@ -113,7 +204,7 @@ function searchList() {
 						</form>
 					</div>
 					<div class="col text-end">
-						<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/comp_notice/write.do';">글올리기</button>
+						<button type="button" class="btn btn-light bm" onclick="location.href='${pageContext.request.contextPath}/comp_notice/write.do';">글올리기</button>
 					</div>
 				</div>
 			</div>

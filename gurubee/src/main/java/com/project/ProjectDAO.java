@@ -189,20 +189,21 @@ public class ProjectDAO {
 				conn.setAutoCommit(false);
 				
 				//프로젝트 등록
-				sql = "INSERT INTO Project(pro_code, id, pro_name, pro_clear, pro_type, pro_master, pro_outline, "
+				sql = "INSERT INTO Project(pro_code, id, pro_writer, pro_name, pro_clear, pro_type, pro_master, pro_outline, "
 						+ " pro_content, pro_sdate, pro_edate ) "
-						+ " VALUES(pro_seq.NEXTVAL, ?, ?, '진행중', ?, ?, ?, ?, ?, ? ) ";
+						+ " VALUES(pro_seq.NEXTVAL, ?, ?, ?, '진행중', ?, ?, ?, ?, ?, ? ) ";
 			
 				pstmt = conn.prepareStatement(sql);
 				
 				pstmt.setString(1, dto.getId_p()); //작성자 사번
-				pstmt.setString(2, dto.getPro_name()); //프로젝트 이름
-				pstmt.setString(3, dto.getPro_type());
-				pstmt.setString(4, dto.getPro_master()); //총괄자
-				pstmt.setString(5, dto.getPro_outline());
-				pstmt.setString(6, dto.getPro_content());
-				pstmt.setString(7, dto.getPro_sdate());
-				pstmt.setString(8, dto.getPro_edate());
+				pstmt.setString(2, dto.getId_p()); //작성자 사번
+				pstmt.setString(3, dto.getPro_name()); //프로젝트 이름
+				pstmt.setString(4, dto.getPro_type());
+				pstmt.setString(5, dto.getPro_master()); //총괄자
+				pstmt.setString(6, dto.getPro_outline());
+				pstmt.setString(7, dto.getPro_content());
+				pstmt.setString(8, dto.getPro_sdate());
+				pstmt.setString(9, dto.getPro_edate());
 				
 				pstmt.executeUpdate();
 				
@@ -293,7 +294,7 @@ public class ProjectDAO {
 		}
 		
 		
-		//1. 내 프로젝트 갯수 모두 가져오기
+		//1. 내 프로젝트 갯수 모두 가져오기! *list
 		public int dataCount(ProjectDTO dto) {
 			int result = 0;
 			PreparedStatement pstmt = null;
@@ -303,12 +304,19 @@ public class ProjectDAO {
 			try {
 				
 				//내 사번으로 참여자 중인 프로젝트 갯수
-				sql = "SELECT COUNT(*) FROM Project_join "
-						+ " WHERE id = ? ";
+				sql = "SELECT COUNT(pro_code) pro_code FROM "
+						+ "(SELECT DISTINCT A.pro_code "
+						+ "		FROM Employee E "
+						+ "		JOIN project A ON A.pro_master = E.id "
+						+ "		JOIN project_detail B ON A.pro_code = B.pro_code "
+						+ "		JOIN project_join C ON A.pro_code = C.pro_code "
+						+ "		WHERE C.id = ? OR A.pro_master = ? "
+						+ "	ORDER BY A.pro_sdate ASC )  ";
 				
 				pstmt = conn.prepareStatement(sql);
 				
 				pstmt.setString(1, dto.getPj_id());
+				pstmt.setString(2, dto.getPj_id());
 				
 				rs = pstmt.executeQuery();
 				
@@ -349,12 +357,12 @@ public class ProjectDAO {
 				
 				//내 사번으로 연관된 프로젝트 list
 				sql = " SELECT DISTINCT E.ori_filename, E.name, A.pro_code, A.id id_p, A.pro_name, A.pro_clear, A.pro_type, A.pro_master, A.pro_outline, A.pro_content, A.pro_sdate, A.pro_edate "
-						+ "	, B.pd_part "
+						+ " , COUNT(C.id) pj_count "
 						+ "	FROM Employee E "
 						+ " JOIN project A ON A.pro_master = E.id "
-						+ "	JOIN project_detail B ON A.pro_code = B.pro_code "
 						+ "	JOIN project_join C ON A.pro_code = C.pro_code "
-						+ "	WHERE C.id = ? OR A.pro_master = ? "
+						+ "	WHERE (C.id = ? OR A.pro_master = ?) "
+						+ " group by E.ori_filename, E.name, A.pro_code, A.id, A.pro_name, A.pro_clear, A.pro_type, A.pro_master, A.pro_outline, A.pro_content, A.pro_sdate, A.pro_edate"
 						+ "	ORDER BY A.pro_sdate ASC ";
 				
 				pstmt = conn.prepareStatement(sql);
@@ -379,8 +387,8 @@ public class ProjectDAO {
 					dto2.setPro_content(rs.getString("pro_content"));
 					dto2.setPro_sdate(rs.getDate("pro_sdate").toString());
 					dto2.setPro_edate(rs.getDate("pro_edate").toString());
-					dto2.setPd_part(rs.getInt("pd_part"));
-					
+					dto2.setPj_id(rs.getString("pj_count"));
+
 					list.add(dto2);
 				}
 				
@@ -1261,6 +1269,8 @@ public class ProjectDAO {
 			return result;
 		}
 		
+		//프로젝트별 지분...
+		
 		
 		
 		
@@ -1364,8 +1374,72 @@ public class ProjectDAO {
 			
 		}
 		
-	
-		
+		//filterProject
+		// ** 내가 참여자 or 마스터인 프로젝트 리스트 + 필터
+		public List<ProjectDTO> filterProject(ProjectDTO dto, String pro_type){
+			List<ProjectDTO> list = new ArrayList<>();
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql;
+			
+			try {
+				
+				//내 사번으로 연관된 프로젝트 list
+				sql = " SELECT DISTINCT E.ori_filename, E.name, A.pro_code, A.id id_p, A.pro_name, A.pro_clear, A.pro_type, A.pro_master, A.pro_outline, A.pro_content, A.pro_sdate, A.pro_edate "
+						+ "	FROM Employee E "
+						+ " JOIN project A ON A.pro_master = E.id "
+						+ "	JOIN project_join C ON A.pro_code = C.pro_code "
+						+ "	WHERE (C.id = ? OR A.pro_master = ?) AND A.pro_type = ? "
+						+ "	ORDER BY A.pro_sdate ASC ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, dto.getPj_id());
+				pstmt.setString(2, dto.getPj_id());
+				pstmt.setString(3, pro_type);
+
+				rs = pstmt.executeQuery();
+				
+				while(rs.next()) {
+					ProjectDTO dto2 = new ProjectDTO();
+					
+					dto2.setPro_profile(rs.getString("ori_filename"));
+					dto2.setName_p(rs.getString("name"));
+					dto2.setPro_code(rs.getString("pro_code"));
+					dto2.setId_p(rs.getString("id_p")); //작성한사람의 사번
+					dto2.setPro_name(rs.getString("pro_name"));
+					dto2.setPro_clear(rs.getString("pro_clear"));
+					dto2.setPro_type(rs.getString("pro_type"));
+					dto2.setPro_master(rs.getString("pro_master"));
+					dto2.setPro_outline(rs.getString("pro_outline"));
+					dto2.setPro_content(rs.getString("pro_content"));
+					dto2.setPro_sdate(rs.getDate("pro_sdate").toString());
+					dto2.setPro_edate(rs.getDate("pro_edate").toString());
+					
+					list.add(dto2);
+				}
+				
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if(rs != null) {
+					try {
+						rs.close();
+					} catch (Exception e2) {
+					}
+				}
+				
+				if(pstmt !=null) {
+					try {
+						pstmt.close();
+					} catch (Exception e2) {
+					}
+				}
+			}
+
+			return list;
+		}
 	
 		
 		

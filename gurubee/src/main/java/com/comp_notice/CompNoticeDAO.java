@@ -20,14 +20,15 @@ public class CompNoticeDAO {
 			
 			conn.setAutoCommit(false);
 			
-			sql = " INSERT INTO noticeAll(notice_num, notice_title, notice_content, views, regdate, id) "
-					+ " VALUES(NOTICEALL_SEQ.NEXTVAL, ?,?,0,SYSDATE,?) ";
+			sql = " INSERT INTO noticeAll(notice_num, notice_title, notice_content, views, regdate, id, notice) "
+					+ " VALUES(NOTICEALL_SEQ.NEXTVAL, ?,?,0,SYSDATE,?,?) ";
 			
 			pstmt = conn.prepareStatement(sql);
 			
 			pstmt.setString(1, dto.getNotice_title());
 			pstmt.setString(2, dto.getNotice_content());
 			pstmt.setString(3, dto.getWriter_id());
+			pstmt.setInt(4, dto.getNotice());
 			
 			
 			pstmt.executeUpdate();
@@ -182,7 +183,7 @@ public class CompNoticeDAO {
 		try {
 			
 			sql = " SELECT n.notice_num, name, notice_title, views, nf.save_filename, "
-					+ " TO_CHAR(regdate, 'YYYY-MM-DD') regdate "
+					+ " regdate "
 					+ " FROM noticeAll n "
 					+ " JOIN employee e ON n.id = e.id "
 					+ " JOIN noticeAllFile nf ON n.notice_num = nf.notice_num "
@@ -634,6 +635,19 @@ public class CompNoticeDAO {
 			
 			conn.setAutoCommit(false);
 			
+			sql = " DELETE FROM noticeAllFile "
+					+ " WHERE notice_num = ? ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+			
+			
+			pstmt.executeUpdate();
+			
+			pstmt.close();
+			pstmt = null;
+			
 			sql = " DELETE FROM noticeAll "
 					+ " WHERE notice_num = ? AND id = ? ";
 			
@@ -641,18 +655,6 @@ public class CompNoticeDAO {
 			
 			pstmt.setLong(1, num);
 			pstmt.setString(2, writer_id);
-			
-			pstmt.executeUpdate();
-			
-			pstmt.close();
-			pstmt = null;
-			
-			sql = " DELETE FROM noticeAllFile "
-					+ " WHERE notice_num = ? ";
-			
-			pstmt = conn.prepareStatement(sql);
-			
-			pstmt.setLong(1, num);
 			
 			pstmt.executeUpdate();
 			
@@ -721,7 +723,7 @@ public class CompNoticeDAO {
 		try {
 			
 			sql = " SELECT NVL(COUNT(*), 0) FROM noticeAllReply "
-					+ " WHERE num = ? AND answer = 0 ";
+					+ " WHERE notice_num = ? AND answer = 0 ";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -778,13 +780,13 @@ public class CompNoticeDAO {
 					+ " JOIN employee e ON nr.id = e.id "
 					+ " LEFT OUTER JOIN ( "
 					+ " 	SELECT answer, COUNT(*) answerCount "
-					+ " 	FROM noticeAllReply "
+					+ " 	FROM noticeAllReply nr "
 					+ " 	WHERE answer != 0 "
 					+ " 	GROUP BY answer "
 					+ " ) a ON nr.replyNum = a.answer "
-					+ " WHERE num = ? AND nr.answer = 0 "
+					+ " WHERE notice_num = ? AND nr.answer = 0 "
 					+ " ORDER BY nr.replyNum DESC "
-					+ " OFFSET ? FETCH FIRST ? ROWS ONLY ";
+					+ " OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -798,7 +800,7 @@ public class CompNoticeDAO {
 				
 				ReplyDTO dto = new ReplyDTO();
 				
-				dto.setReply_num(rs.getLong("replyNum"));
+				dto.setReplyNum(rs.getLong("replyNum"));
 				dto.setReply_id(rs.getString("id"));
 				dto.setReply_name(rs.getString("name"));
 				dto.setNotice_num(rs.getLong("notice_num"));
@@ -921,11 +923,11 @@ public class CompNoticeDAO {
 		try {
 			// answer가 0일 경우 : 댓글
 			//	    0이 아닐 경우 : 대댓글
-			sql = " SELECT replyNum, notice_num, id, name, content, reg_date, answer "
+			sql = " SELECT replyNum, notice_num, nr.id, name, content, reg_date, answer "
 					+ " FROM noticeAllReply nr "
 					+ " JOIN employee e ON nr.id = e.id "
 					+ " WHERE answer = ? "
-					+ " ORDER BY replyNum DESC ";
+					+ " ORDER BY replyNum ASC ";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -937,7 +939,7 @@ public class CompNoticeDAO {
 				
 				ReplyDTO dto = new ReplyDTO();
 				
-				dto.setReply_num(rs.getLong("replyNum"));
+				dto.setReplyNum(rs.getLong("replyNum"));
 				dto.setNotice_num(rs.getLong("notice_num"));
 				dto.setReply_id(rs.getString("id"));
 				dto.setReply_name(rs.getString("name"));
@@ -1021,6 +1023,58 @@ public class CompNoticeDAO {
 		
 		return result;
 	}
+	
+	// 공지글
+		public List<CompNoticeDTO> listNotice() {
+			List<CompNoticeDTO> list = new ArrayList<CompNoticeDTO>();
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			StringBuilder sb = new StringBuilder();
+
+			try { 
+				sb.append(" SELECT notice_num, n.id, name, notice_title, ");
+				sb.append("       views, TO_CHAR(regdate, 'YYYY-MM-DD') regdate ");
+				sb.append(" FROM noticeAll n ");
+				sb.append(" JOIN employee e ON n.id=e.id ");
+				sb.append(" WHERE notice=1  ");
+				sb.append(" ORDER BY notice_num DESC ");
+
+				pstmt = conn.prepareStatement(sb.toString());
+
+				rs = pstmt.executeQuery();
+
+				while (rs.next()) {
+					CompNoticeDTO dto = new CompNoticeDTO();
+
+					dto.setNum(rs.getLong("notice_num"));
+					dto.setWriter_id(rs.getString("id"));
+					dto.setWriter_name(rs.getString("name"));
+					dto.setNotice_title(rs.getString("notice_title"));
+					dto.setViews(rs.getInt("views"));
+					dto.setRegdate(rs.getString("regdate"));
+
+					list.add(dto);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				if (rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException e) {
+					}
+				}
+
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException e) {
+					}
+				}
+			}
+
+			return list;
+		}
 	
 	
 }

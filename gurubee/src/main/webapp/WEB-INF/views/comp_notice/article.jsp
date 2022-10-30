@@ -70,7 +70,7 @@ function ajaxFun(url, method, query, dataType, fn) {
 				return false;
 			}
 			// responseText : 서버에 요청하여 응답받은 데이터를 문자열로 반환
-			console.log(jqxHR.responseText);
+			console.log(jqXHR.responseText);
 		}
 	});
 }
@@ -83,6 +83,7 @@ $(function() {
 function listPage(page) {
 	let url = "${pageContext.request.contextPath}/comp_notice/listReply.do";
 	let query = "num=${dto.num}&pageNo="+page;
+	
 	let selector = "#listReply";
 	
 	const fn = function(data) {
@@ -114,7 +115,7 @@ $(function(){
 			if(data.state === "true") {
 				listPage(1);
 			} else {
-				alert("댓글 등록이 실패 했습니다.")
+				alert("댓글 등록이 실패 했습니다.");
 			}
 		};
 		
@@ -198,7 +199,7 @@ $(function(){
 			
 			let state = data.state;
 			
-			let(state === "true") {
+			if(state === "true") {
 				listReplyAnswer(replyNum);
 				countReplyAnswer(replyNum);
 			}
@@ -235,7 +236,28 @@ $(function(){
 
 // 댓글별 답글 삭제
 $(function(){
-	
+	$("body").on("click", ".deleteReplyAnswer", function(){
+		
+		if(! confirm("답글을 삭제 하시겠습니까 ?")) {
+			return false;
+		}
+		
+		let replyNum = $(this).attr("data-replyNum");
+		let answer = $(this).attr("data-answer");
+		
+		let url = "${pageContext.request.contextPath}/comp_notice/deleteReplyAnswer.do";
+		let query = "replyNum=" + replyNum;
+		
+		const fn = function(data) {
+			
+			listReplyAnswer(answer);
+			countReplyAnswer(answer);
+			
+		}
+		
+		ajaxFun(url, "post", query, "json", fn);
+		
+	});
 });
 
 </script>

@@ -11,7 +11,21 @@ public class CompNoticeDTO {
 	private String save_filename; // 저장파일 이름
 	private String ori_filename;  // 원본파일 이름
 	
+	private int notice; // 1일 경우 공지
+	private long gap;   // 시간에 따른 new 표시
 	
+	public int getNotice() {
+		return notice;
+	}
+	public void setNotice(int notice) {
+		this.notice = notice;
+	}
+	public long getGap() {
+		return gap;
+	}
+	public void setGap(long gap) {
+		this.gap = gap;
+	}
 	public String getWriter_id() {
 		return writer_id;
 	}

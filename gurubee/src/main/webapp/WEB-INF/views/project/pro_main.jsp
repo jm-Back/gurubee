@@ -41,10 +41,14 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 	background-color: #01d6b7;
 	opacity: 80%;
 	width: 300px;
-	height: 100px;
+	height: 80px;
 	border: none;
 
 };
+
+.btn_projectAdd:hover {
+	opacity: 100%;
+}
 
 .card {
 	border: none;
@@ -55,6 +59,7 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 	font-weight: 300;
 	font-size: 13px;
 };
+
 
 .p_photo {
     width: 50px;
@@ -122,7 +127,8 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 	font-size: 19px;
 	font-weight: 600;
 	background: #ffd980;
-	margin-left: 20px;
+	margin-left: 35px;
+
 }
 
 .profile__small {
@@ -138,10 +144,154 @@ h6 {
 	font-weight: 600;
 }
 
+.btn__list {
+	margin-right: 8px;
+	margin-top: 20px;
+	border-radius: 12px;
+	padding: 5px 10px;
+	text-align: center;
+	font-size: 19px;
+	border: 1px solid lightgray;
+
+}
+
+
+.location__btn {
+	float: right;
+}
+
+.main__board {
+	background-color: #f7f7f7;
+	
+}
 
 </style>
 
 <script type="text/javascript">
+
+function ajaxFun(url, method, query, dataType, fn) {
+	$.ajax({
+		type:method,
+		url:url,
+		data:query,
+		dataType:dataType,
+		success:function(data){
+			fn(data);
+		},
+		beforeSend:function(jqXHR){
+			//ajax 라고 서버한테 한 번 던져주는거다.
+			//내가 만든 서버 ajax 란 이름으로 보냄
+			//바디보다 헤더가 더 먼저 서버로 가기 때문에, 헤더에 ajax 보내고
+			//서블릿에서 보낸것에서 if return 해본다.
+			jqXHR.setRequestHeader("AJAX", true);
+			
+		},
+		error:function(jqXHR){
+			if(jqXHR.status === 403) {
+				login();
+				return false;
+			}else if(jqXHR.status === 400){
+				alert("요청 처리가 실패했습니다.");
+				return false;
+			}
+			console.log(jqXHR.responseText);
+		}
+	});
+}
+
+
+$(function(){
+	listPage(1);
+});
+
+function listPage(page){
+	let url = "${pageContext.request.contextPath}/project/list_pro.do";
+
+	let query = "pageNo="+page;
+	let selector = "#here_pro_list";
+	
+	const fn = function(data){
+		 $(selector).html(data);
+		 progressCount();
+		 
+	};
+	
+	ajaxFun(url, "get", query, "html", fn);
+	
+}
+
+//프로그래스바 정보
+function progressCount() {
+	let pro_code = $("#here_progress").attr("data-pro_code");
+	console.log(pro_code);
+	
+	let url = "${pageContext.request.contextPath}/project/progress_main.do";
+	let query = "pro_code="+pro_code;
+	
+	const fn = function(data){
+		let selector = "#here_progress_main";
+		$(selector).html(data);
+		
+	};
+	
+	ajaxFun(url, "get", query, "html", fn);
+	
+}
+
+$(function(){
+	$("#dept").click(function(){
+		let pro_type = $(this).val();
+
+		let url = "${pageContext.request.contextPath}/project/list__filter.do";
+		let query = "pro_type="+pro_type;
+		let selector = "#here_pro_list";
+		
+		const fn = function(data){
+			$(selector).html(data);
+		};
+		
+		ajaxFun(url, "get", query, "html", fn);
+
+		
+	});
+});
+
+$(function(){
+	$("#per").click(function(){
+		let pro_type = $(this).val();
+
+		let url = "${pageContext.request.contextPath}/project/list__filter.do";
+		let query = "pro_type="+pro_type;
+		let selector = "#here_pro_list";
+		
+		const fn = function(data){
+			$(selector).html(data);
+		};
+		
+		ajaxFun(url, "get", query, "html", fn);
+
+		
+	});
+});
+
+$(function(){
+	$("#together").click(function(){
+		let pro_type = $(this).val();
+
+		let url = "${pageContext.request.contextPath}/project/list__filter.do";
+		let query = "pro_type="+pro_type;
+		let selector = "#here_pro_list";
+		
+		const fn = function(data){
+			$(selector).html(data);
+		};
+		
+		ajaxFun(url, "get", query, "html", fn);
+
+		
+	});
+});
+
 
 
 </script>
@@ -149,7 +299,6 @@ h6 {
 
 </head>
 <body>
-
 	<main>
 		<!-- 메인 화면 -->
 		<div class="container py-4">
@@ -158,55 +307,34 @@ h6 {
 				<jsp:include page="/WEB-INF/views/layout/sidebar.jsp" />
 			</header>
 		</div>
-			
-			
+	
 		<!-- 프로젝트 메인 등록, 내용 -->
 <div class="container" >	
 	<form name="projectAdd" method="post">
-		<div class="">
+		<div class="location__btn">
 			<button type="button" class="btn_projectAdd shadow p-1 rounded " onclick="location.href='${pageContext.request.contextPath}/project/write.do'"><i class="fa-solid fa-plus"></i> 새 프로젝트</button>
 		</div>
 	</form>
 </div>
+
+<form  name="projectList" method="post">
+<div class="container">
+	<div >
+		<span>
+			<input type="radio"  class="btn-check" name="pro_type" id="all" onclick="location.href='${pageContext.request.contextPath}/project/list.do';" value="all__list"  required>
+	            <label class="btn btn__list  shadow-sm " for="all"> 전체 프로젝트 </label>
+			<input type="radio"  class="btn-check" name="pro_type" id="dept" value="부서 프로젝트"  required>
+	            <label class="btn btn__list  shadow-sm" for="dept"> 부서 프로젝트 </label>
+			<input type="radio"  class="btn-check" name="pro_type" id="per"  value="개인 프로젝트"  required>
+	            <label class="btn btn__list  shadow-sm" for="per"> 개인 프로젝트 </label>
+			<input type="radio"  class="btn-check" name="pro_type" id="together"  value="협업 프로젝트" required>
+	            <label class="btn btn__list  shadow-sm" for="together"> 협업 프로젝트 </label>
+		</span>
+	</div>
+</div>
 	
-<form action="${pageContext.request.contextPath}/project/list.do" name="projectList" method="post">
-	<div class="container mt-5 mb-3 pt-3 pb-3" style="background-color: #f7f7f7;">
-		<div class="row">
-		<c:forEach var="dto" items="${list}" varStatus="status">
-			<div class="col-md-4 ">
-				<div onclick="location.href='${pageContext.request.contextPath}/project/article.do?pro_code=${dto.pro_code}&pd_code=${dto.pd_code}&id_p=${dto.id_p}'" class="card p-3 mb-4 pointer shadow p-1 rounded">
-					<div class="d-flex justify-content-between">
-						<div class="d-flex flex-row align-items-center">
-							<div class="p_photo"></div>
-								<div><img class="profile__small" src="${pageContext.request.contextPath}/resources/images/${dto.pro_profile}"></div>
-							<div class="side__place" style="justify-content: ;">
-								<div class="ms-2 p-details">
-									<input type="hidden" value="${dto.pro_code}"> 
-									<input type="hidden" value="${dto.pd_code}">
-									<input type="hidden" value="${dto.id_p}" >
-									<h6 class="mb-0 font__bold">${dto.name_p}</h6> <span>${dto.pro_sdate} ~ ${dto.pro_edate}</span>
-									<div class="clear__state">${dto.pro_clear}</div>
-								</div>
-								
-							</div>
-						</div>
-						
-					</div>
-					<div class="mt-5">
-						<h3 class="heading">${dto.pro_name}</h3>
-						<div class="mt-3">
-							<p style="color: #404040;">${dto.pro_outline}</p>
-							<div class="progress progress__design">
-								<div class="progress-bar progress__color " role="progressbar" style="width: ${project_ing}%" ></div>
-							</div>
-							<div class="mt-3"><span class="text1">${dto.pro_type}</span>  <span class="text2">[참여자목록]</span></div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</c:forEach>
-		
-		</div>
+	<!-- 리스트 body -->
+	<div class="container mt-5 mb-3 pt-4 pb-3 main__board" id="here_pro_list">
 	</div>	
 </form>
 

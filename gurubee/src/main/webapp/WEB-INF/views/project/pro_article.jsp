@@ -121,6 +121,18 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 	font-weight: 600;
 }
 
+.clear__state__end {
+	margin-right: 35px;
+	padding: 3px 18px;
+	display: block;
+	border: 3px solid  #ccff99 ;
+	outline: none;
+	background: #ccff99;
+	border-radius: 10px;
+	font-size: 17px;
+	font-weight: 600;
+}
+
 .project_title {
 	font-size: 20px;
 	font-weight: 600;
@@ -550,7 +562,11 @@ $(function(){
 			if(data.state==="true"){
 				alert("삭제 되었습니다.");
 				window.location.reload();
+			} else if(data.state==="false"){
+				alert("프로젝트 챕터는 1개 이상 존재해야합니다.");
+				window.location.reload();
 			}
+			
 		};
 		
 		ajaxFun(url, "post", query, "json", fn);
@@ -680,7 +696,7 @@ $(function(){
 			<div class="p-3 mb-4 project__detail__design shadow p-1 rounded">
 				<div class="d-flex justify-content-between">
 					<div class="project_title">${dto.pro_type}</div>
-					<div class="clear__state shadow-sm">${dto.pro_clear}</div>
+					<div class="${project_ing > 97 ? 'clear__state__end' : 'clear__state'}  shadow-sm">${project_ing > 97 ? '완료' : '진행중'}</div>
 				</div>
 				<div class="d-flex pt-3 pb-2 justify-content-between">
 					<div >${dto.pro_outline}</div>
