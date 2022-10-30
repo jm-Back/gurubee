@@ -144,11 +144,9 @@ a:link, a:visited {
    <li><a href="${pageContext.request.contextPath}/employee/write.do">신입사원 정보등록폼</a></li>
    		<!-- 신입사원 정보등록  완료 /write_ok.do -->
    <li><a href="${pageContext.request.contextPath}/employee/update.do">인사이동 (수정)</a></li>
-   <li><a href="${pageContext.request.contextPath}/employee/write.do">연봉정보등록폼</a></li>
-   		<!-- 연봉정보 등록 /write_ok.do -->
-   <li><a href="${pageContext.request.contextPath}/employee/update.do">연봉정보 수정</a></li>
-		<!-- 연봉정보수정 완료 /update_ok.do -->
-   <li><a href="${pageContext.request.contextPath}/employee/list.do">연봉정보 리스트</a></li>
+   <li><a href="${pageContext.request.contextPath}/salary/sal_write.do">연봉정보등록폼</a></li>
+   <li><a href="${pageContext.request.contextPath}/salary/sal_update.do">연봉정보 수정</a></li>
+   <li><a href="${pageContext.request.contextPath}/salary/sal_list.do">연봉정보 리스트</a></li>
 </ul>   
 
 <ul>
