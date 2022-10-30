@@ -67,7 +67,6 @@ public class EdocServlet extends MyServlet {
 	
 	// 결재문서 등록 폼
 	protected void writeSubmit(HttpServletRequest req, HttpServletResponse resp, int temp) throws ServletException, IOException {
-		// temp:임시구분
 		EdocDAO dao = new EdocDAO();
 		HttpSession session = req.getSession();
 		SessionInfo info = (SessionInfo) session.getAttribute("member");
@@ -86,7 +85,7 @@ public class EdocServlet extends MyServlet {
 			edocdto.setApp_doc(req.getParameter("edocSelect"));
 			edocdto.setDoc_form(req.getParameter("content"));
 			edocdto.setTitle(req.getParameter("title"));
-			edocdto.setTemp(temp);
+			edocdto.setTemp(temp); // temp:임시구분
 			
 			System.out.println(edocdto.getDoc_form());
 			System.out.println(edocdto.getId_write());
@@ -159,7 +158,7 @@ public class EdocServlet extends MyServlet {
 		resp.sendError(400);
 	}
 
-	// 결재문서 발신함 리스트 
+	// 결재문서 발신함 리스트
 	protected void listSend(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		EdocDAO dao = new EdocDAO();
 		MyUtil util = new MyUtilBootstrap();
@@ -183,7 +182,7 @@ public class EdocServlet extends MyServlet {
 			// 전체 데이터 갯수
 			int dataCount=0;
 			// 조건 없을 때
-			if(myDate.equals(null) && edoc.equals(null)) {
+			if(myDate==null && edoc==null) {
 				dataCount = dao.edocCount(info.getId());
 			} else {
 				// dataCount = dao.edocCount(info.getId(), myDate, edoc);

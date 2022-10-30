@@ -149,7 +149,7 @@ $(function(){
     $(".empSearch").on("click", function() {
     	let pos_code = $(this).attr("data-posCode");
     	
-    	let url = "${pageContext.request.contextPath}/edoc/write_searchEmp.do"
+    	let url = "${pageContext.request.contextPath}/edoc/write_searchEmp.do";
     	let query = "pos_code="+encodeURIComponent(pos_code);
     	
     	const fn = function(empList) {

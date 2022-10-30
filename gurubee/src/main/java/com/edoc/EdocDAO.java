@@ -5,10 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import com.util.DBConn;
 
@@ -41,6 +38,7 @@ public class EdocDAO {
 				try {
 					pstmt.close();
 				} catch (Exception e2) {
+					e2.printStackTrace();
 				}
 			}
 		}
@@ -93,6 +91,7 @@ public class EdocDAO {
 				try {
 					pstmt.close();
 				} catch (Exception e2) {
+					e2.printStackTrace();
 				}
 			}
 		}
@@ -281,7 +280,6 @@ public class EdocDAO {
 				}
 			}
 		}
-		
 		return formdto;
 	}
 	
@@ -299,7 +297,6 @@ public class EdocDAO {
 				+ " WHERE (temp=1 OR temp=-1) AND (id IN ?) "
 				+ " ORDER BY app_date DESC ";
 			*/
-			
 			sql = "select al.app_num, al.app_doc, TO_CHAR(al.app_date,'YYYY-MM-DD')app_date, al.id, "
 					+ "	al.title, resultList, apperList, al.temp "
 					+ " FROM E_APPROVAL al "
@@ -314,7 +311,7 @@ public class EdocDAO {
 					+ "    ) er "
 					+ "    ON er.app_num = al.app_num "
 					+ " WHERE (temp=1 OR temp=-1) AND al.id = ? "
-					+ " ORDER BY al.app_num DESC "
+//					+ " ORDER BY al.app_num DESC "
 					+ " OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ";
 			
 			pstmt = conn.prepareStatement(sql);
@@ -327,11 +324,11 @@ public class EdocDAO {
 			
 			while(rs.next()) {
 				EdocDTO edocdto = new EdocDTO();
+				String[] rr, aa;
 				
 				edocdto.setApp_num(rs.getInt("app_num"));
 				edocdto.setApp_doc(rs.getString("app_doc"));
 				
-				String[] rr, aa;
 				rr = rs.getString("resultList").split(",");
 				aa = rs.getString("apperList").split(",");
 				
@@ -346,8 +343,8 @@ public class EdocDAO {
 						edocdto.setResult((Arrays.asList(rr).indexOf("0")+1)+"차대기");
 						edocdto.setResult_name(aa[Arrays.asList(rr).indexOf("0")]);
 					}
-					
 				}
+				
 				System.out.println(edocdto.getApp_num() + ": " +edocdto.getResult() + ", " + edocdto.getResult_name());
 				
 				edocdto.setTitle(rs.getString("title"));
