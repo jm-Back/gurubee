@@ -118,7 +118,7 @@ function searchList() {
 	<div class="container">
 		<div class="body-container">
 			<div class="body-title">
-				<h3>회사 공지사항</h3>
+				<h3>${dep_name}&nbsp;공지사항</h3>
 			</div>
 			<div class="body-main">
 				<div class="row board-list-header">
@@ -145,12 +145,12 @@ function searchList() {
 									<td class="left">
 										<a href="${articleUrl}&num=${dto.num}" class="text-reset" style="font-weight: bold">${dto.notice_title}</a>
 									</td>
-									<td>${dto.writer_name}</td>
+									<td>${dto.writer_name}&nbsp;${dto.pos_name}</td>
 									<td>${dto.regdate}</td>
 									<td>${dto.views}</td>
 									<td>
 										<c:if test="${not empty dto.save_filename}"><!-- bi bi-file-arrow-down -->
-											<a href="${pageContext.request.contextPath}/comp_notice/download.do?num=${dto.num}" class="text-reset"><i class="bi bi-box2-heart"></i></a>
+											<a href="${pageContext.request.contextPath}/dep_notice/download.do?num=${dto.num}" class="text-reset"><i class="bi bi-box2-heart"></i></a>
 										</c:if>
 									</td>
 								</tr>
@@ -163,12 +163,12 @@ function searchList() {
 									<a href="${articleUrl}&num=${dto.num}" class="text-reset">${dto.notice_title}</a>
 									<c:if test="${dto.gap<3}"><img id="new" src="${pageContext.request.contextPath}/resources/images/new1.gif"></c:if>
 								</td>
-								<td>${dto.writer_name}</td>
+								<td>${dto.writer_name}&nbsp;${dto.pos_name}</td>
 								<td>${dto.regdate}</td>
 								<td>${dto.views}</td>
 								<td>
 									<c:if test="${not empty dto.save_filename}">
-										<a href="${pageContext.request.contextPath}/comp_notice/download.do?num=${dto.num}" class="text-reset"><i class="bi bi-box2-heart"></i></a>
+										<a href="${pageContext.request.contextPath}/dep_notice/download.do?num=${dto.num}" class="text-reset"><i class="bi bi-box2-heart"></i></a>
 									</c:if>
 								</td>
 							</tr>
@@ -182,14 +182,14 @@ function searchList() {
 				
 				<div class="row board-list-footer">
 					<div class="col">
-						<button type="button" class="btn btn-light bm" onclick="location.href='${pageContext.request.contextPath}/comp_notice/list.do';">새로고침</button>
+						<button type="button" class="btn btn-light bm" onclick="location.href='${pageContext.request.contextPath}/dep_notice/list.do';">새로고침</button>
 					</div>
 					<div class="col-6 text-center">
-						<form class="row" name="searchForm" action="${pageContext.request.contextPath}/comp_notice/list.do" method="post">
+						<form class="row" name="searchForm" action="${pageContext.request.contextPath}/dep_notice/list.do" method="post">
 							<div class="col-auto p-1">
 								<select name="condition" class="form-select">
 									<option value="all" ${condition=="all"?"selected='selected'":""}>제목+내용</option>
-									<option value="name" ${condition=="name"?"selected='selected'":""}>작성부서</option>
+									<option value="name" ${condition=="name"?"selected='selected'":""}>작성자</option>
 									<option value="reg_date" ${condition=="reg_date"?"selected='selected'":""}>등록일</option>
 									<option value="notice_title" ${condition=="notice_title"?"selected='selected'":""}>제목</option>
 									<option value="notice_content" ${condition=="notice_content"?"selected='selected'":""}>내용</option>
@@ -204,7 +204,7 @@ function searchList() {
 						</form>
 					</div>
 					<div class="col text-end">
-						<button type="button" class="btn btn-light bm" onclick="location.href='${pageContext.request.contextPath}/comp_notice/write.do';">글올리기</button>
+						<button type="button" class="btn btn-light bm" onclick="location.href='${pageContext.request.contextPath}/dep_notice/write.do';">글올리기</button>
 					</div>
 				</div>
 			</div>

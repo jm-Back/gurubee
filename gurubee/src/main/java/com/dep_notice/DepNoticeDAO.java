@@ -1,4 +1,4 @@
-package com.comp_notice;
+package com.dep_notice;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,10 +9,10 @@ import java.util.List;
 
 import com.util.DBConn;
 
-public class CompNoticeDAO {
+public class DepNoticeDAO {
 	private Connection conn = DBConn.getConnection();
 	
-	public void insertcompNotice(CompNoticeDTO dto) throws SQLException {
+	public void insertcompNotice(DepNoticeDTO dto) throws SQLException {
 		PreparedStatement pstmt = null;
 		String sql;
 		
@@ -20,8 +20,8 @@ public class CompNoticeDAO {
 			
 			conn.setAutoCommit(false);
 			
-			sql = " INSERT INTO noticeAll(notice_num, notice_title, notice_content, views, regdate, id, notice) "
-					+ " VALUES(NOTICEALL_SEQ.NEXTVAL, ?,?,0,SYSDATE,?,?) ";
+			sql = " INSERT INTO noticeDept(notice_num, notice_title, notice_content, views, regdate, id, notice, dep_name, pos_name) "
+					+ " VALUES(NOTICEDept_SEQ.NEXTVAL, ?,?,0,SYSDATE,?,?,?,?) ";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -29,6 +29,8 @@ public class CompNoticeDAO {
 			pstmt.setString(2, dto.getNotice_content());
 			pstmt.setString(3, dto.getWriter_id());
 			pstmt.setInt(4, dto.getNotice());
+			pstmt.setString(5, dto.getDep_name());
+			pstmt.setString(6, dto.getPos_name());
 			
 			
 			pstmt.executeUpdate();
@@ -36,8 +38,8 @@ public class CompNoticeDAO {
 			pstmt.close();
 			pstmt = null;
 			
-			sql = " INSERT INTO noticeAllFile(file_num,save_filename,ori_filename,notice_num) "
-					+ " VALUES(NOTICEALLFILE_SEQ.NEXTVAL,?,?,NOTICEALL_SEQ.CURRVAL) ";
+			sql = " INSERT INTO noticeDeptFile(file_num,save_filename,ori_filename,notice_num) "
+					+ " VALUES(NOTICEDeptFILE_SEQ.NEXTVAL,?,?,NOTICEDept_SEQ.CURRVAL) ";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -77,7 +79,7 @@ public class CompNoticeDAO {
 		
 		try {
 			
-			sql = "SELECT COUNT(*) FROM noticeAll ";
+			sql = "SELECT COUNT(*) FROM noticeDept ";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -120,7 +122,7 @@ public class CompNoticeDAO {
 		
 		try {
 			// 기본. 사원 테이블에서 이름 가져오기 위해 조인
-			sql = " SELECT COUNT(*) FROM noticeAll n "
+			sql = " SELECT COUNT(*) FROM noticeDept n "
 					+ " JOIN employee e ON n.id = e.id ";
 			
 			// 제목+내용
@@ -174,8 +176,8 @@ public class CompNoticeDAO {
 	}
 	
 	// 리스트 출력
-	public List<CompNoticeDTO> listBoard(int offset, int size) {
-		List<CompNoticeDTO> list = new ArrayList<>();
+	public List<DepNoticeDTO> listBoard(int offset, int size, String dep_name) {
+		List<DepNoticeDTO> list = new ArrayList<>();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String sql;
@@ -183,10 +185,11 @@ public class CompNoticeDAO {
 		try {
 			
 			sql = " SELECT n.notice_num, name, notice_title, views, nf.save_filename, "
-					+ " regdate "
-					+ " FROM noticeAll n "
+					+ " regdate, dep_name, pos_name "
+					+ " FROM noticeDept n "
 					+ " JOIN employee e ON n.id = e.id "
-					+ " JOIN noticeAllFile nf ON n.notice_num = nf.notice_num "
+					+ " JOIN noticeDeptFile nf ON n.notice_num = nf.notice_num "
+					+ " WHERE n.dep_name = ? "
 					+ " ORDER BY notice_num DESC "
 					+ " OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ";
 					// OFFSET : 건너뛸 데이터 갯수
@@ -194,13 +197,14 @@ public class CompNoticeDAO {
 			
 			pstmt = conn.prepareStatement(sql);
 			
-			pstmt.setInt(1, offset);
-			pstmt.setInt(2, size);
+			pstmt.setString(1, dep_name);
+			pstmt.setInt(2, offset);
+			pstmt.setInt(3, size);
 			
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
-				CompNoticeDTO dto = new CompNoticeDTO();
+				DepNoticeDTO dto = new DepNoticeDTO();
 				// 리스트에 표기할 것들 DB에서 빼오기
 				dto.setNum(rs.getLong("notice_num"));
 				dto.setWriter_name(rs.getString("name"));
@@ -208,6 +212,8 @@ public class CompNoticeDAO {
 				dto.setViews(rs.getInt("views"));
 				dto.setRegdate(rs.getString("regdate"));
 				dto.setSave_filename(rs.getString("save_filename"));
+				dto.setDep_name(rs.getString("dep_name"));
+				dto.setPos_name(rs.getString("pos_name"));
 				
 				list.add(dto);
 				
@@ -236,8 +242,8 @@ public class CompNoticeDAO {
 		return list;
 	}
 	
-	public List<CompNoticeDTO> listBoard(int offset, int size, String condition, String keyword) {
-		List<CompNoticeDTO> list = new ArrayList<>();
+	public List<DepNoticeDTO> listBoard(int offset, int size, String condition, String keyword, String dep_name) {
+		List<DepNoticeDTO> list = new ArrayList<>();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String sql;
@@ -245,10 +251,11 @@ public class CompNoticeDAO {
 		try {
 			
 			sql = " SELECT n.notice_num, e.name, n.notice_title, n.views, nf.save_filename, "
-					+ " regdate "
-					+ " FROM noticeAll n "
+					+ " regdate, dep_name, pos_name "
+					+ " FROM noticeDept n "
 					+ " JOIN employee e ON n.id = e.id "
-					+ " JOIN noticeAllFile nf ON n.notice_num = nf.notice_num ";
+					+ " JOIN noticeDeptFile nf ON n.notice_num = nf.notice_num "
+					+ " WHERE n.dep_name = ? ";
 			if(condition.equals("all")) {
 				sql += " WHERE INSTR(notice_title,?) >= 1 OR INSTR(notice_content,?) >= 1 ";
 			} else if(condition.equals("reg_date")) {
@@ -263,20 +270,22 @@ public class CompNoticeDAO {
 			pstmt = conn.prepareStatement(sql);
 			
 			if(condition.equals("all")) {
-				pstmt.setString(1, keyword);
+				pstmt.setString(1, dep_name);
+				pstmt.setString(2, keyword);
+				pstmt.setString(3, keyword);
+				pstmt.setInt(4, offset);
+				pstmt.setInt(5, size);
+			} else {
+				pstmt.setString(1, dep_name);
 				pstmt.setString(2, keyword);
 				pstmt.setInt(3, offset);
 				pstmt.setInt(4, size);
-			} else {
-				pstmt.setString(1, keyword);
-				pstmt.setInt(2, offset);
-				pstmt.setInt(3, size);
 			}
 			
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
-				CompNoticeDTO dto = new CompNoticeDTO();
+				DepNoticeDTO dto = new DepNoticeDTO();
 				
 				dto.setNum(rs.getLong("notice_num"));
 				dto.setNotice_title(rs.getString("notice_title"));
@@ -284,6 +293,8 @@ public class CompNoticeDAO {
 				dto.setRegdate(rs.getString("regdate"));
 				dto.setWriter_name(rs.getString("name"));
 				dto.setSave_filename(rs.getString("save_filename"));
+				dto.setDep_name(rs.getString("dep_name"));
+				dto.setPos_name(rs.getString("pos_name"));
 				
 				list.add(dto);
 			}
@@ -314,8 +325,8 @@ public class CompNoticeDAO {
 	}
 	
 	// 공지사항 클릭시 내용 출력
-	public CompNoticeDTO readBoard(long notice_num) {
-		CompNoticeDTO dto = null;
+	public DepNoticeDTO readBoard(long notice_num) {
+		DepNoticeDTO dto = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String sql;
@@ -323,9 +334,9 @@ public class CompNoticeDAO {
 		try {
 			
 			sql = " SELECT n.notice_num, notice_title, notice_content, "
-					+ " nf.save_filename, nf.ori_filename, views, regdate, name, n.id "
-					+ " FROM noticeAll n "
-					+ " JOIN noticeAllFile nf ON n.notice_num = nf.notice_num "
+					+ " nf.save_filename, nf.ori_filename, views, regdate, name, n.id, dep_name, pos_name "
+					+ " FROM noticeDept n "
+					+ " JOIN noticeDeptFile nf ON n.notice_num = nf.notice_num "
 					+ " JOIN employee e ON n.id = e.id "
 					+ " WHERE n.notice_num = ? ";
 			
@@ -336,7 +347,7 @@ public class CompNoticeDAO {
 			rs = pstmt.executeQuery();
 			
 			if(rs.next()) {
-				dto = new CompNoticeDTO();
+				dto = new DepNoticeDTO();
 				
 				dto.setNum(rs.getLong("notice_num"));
 				dto.setNotice_title(rs.getString("notice_title"));
@@ -348,6 +359,9 @@ public class CompNoticeDAO {
 				
 				dto.setWriter_name(rs.getString("name"));
 				dto.setWriter_id(rs.getString("id"));
+				
+				dto.setDep_name(rs.getString("dep_name"));
+				dto.setPos_name(rs.getString("pos_name"));
 				
 			}
 			
@@ -381,7 +395,7 @@ public class CompNoticeDAO {
 		
 		try {
 			
-			sql = " UPDATE noticeAll SET views=views+1 WHERE notice_num = ? ";
+			sql = " UPDATE noticeDept SET views=views+1 WHERE notice_num = ? ";
 
 			pstmt = conn.prepareStatement(sql);
 			
@@ -404,8 +418,8 @@ public class CompNoticeDAO {
 	}
 	
 	// 이전 글
-	public CompNoticeDTO preReadBoard(long num, String condition, String keyword) {
-		CompNoticeDTO dto = null;
+	public DepNoticeDTO preReadBoard(long num, String condition, String keyword) {
+		DepNoticeDTO dto = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		StringBuilder sb = new StringBuilder();
@@ -415,7 +429,7 @@ public class CompNoticeDAO {
 			if(keyword != null && keyword.length() != 0) {
 				// 이름 검색하기 위해 조인 사용
 				sb.append(" SELECT notice_num, notice_title ");
-				sb.append(" FROM noticeAll n ");
+				sb.append(" FROM noticeDept n ");
 				sb.append(" JOIN employee e ON n.id = e.id ");
 				sb.append(" WHERE ( notice_num > ? ) ");
 				
@@ -443,7 +457,7 @@ public class CompNoticeDAO {
 			} else {
 				
 				sb.append(" SELECT notice_num, notice_title ");
-				sb.append(" FROM noticeAll ");
+				sb.append(" FROM noticeDept ");
 				sb.append(" WHERE notice_num > ? ");
 				sb.append(" ORDER BY notice_num ASC ");
 				sb.append(" FETCH FIRST 1 ROWS ONLY ");
@@ -458,7 +472,7 @@ public class CompNoticeDAO {
 			
 			if(rs.next()) {
 				
-				dto = new CompNoticeDTO();
+				dto = new DepNoticeDTO();
 				
 				dto.setNum(rs.getLong("notice_num"));
 				dto.setNotice_title(rs.getString("notice_title"));
@@ -490,8 +504,8 @@ public class CompNoticeDAO {
 	}
 	
 	// 다음 글
-	public CompNoticeDTO nextReadBoard(long num, String condition, String keyword) {
-		CompNoticeDTO dto = null;
+	public DepNoticeDTO nextReadBoard(long num, String condition, String keyword) {
+		DepNoticeDTO dto = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		StringBuilder sb = new StringBuilder();
@@ -501,7 +515,7 @@ public class CompNoticeDAO {
 			if(keyword != null && keyword.length() != 0) {
 				
 				sb.append(" SELECT notice_num, notice_title "); 
-				sb.append(" FROM noticeAll n ");
+				sb.append(" FROM noticeDept n ");
 				sb.append(" JOIN employee e ON n.id = e.id ");
 				sb.append(" WHERE ( notice_num < ? ) ");
 				
@@ -529,7 +543,7 @@ public class CompNoticeDAO {
 			} else {
 				
 				sb.append(" SELECT notice_num, notice_title ");
-				sb.append(" FROM noticeAll ");
+				sb.append(" FROM noticeDept ");
 				sb.append(" WHERE notice_num < ? ");
 				sb.append(" ORDER BY notice_num DESC ");
 				sb.append(" FETCH FIRST 1 ROWS ONLY ");
@@ -543,7 +557,7 @@ public class CompNoticeDAO {
 			rs = pstmt.executeQuery();
 			
 			if(rs.next()) {
-				dto = new CompNoticeDTO();
+				dto = new DepNoticeDTO();
 				
 				dto.setNum(rs.getLong("notice_num"));
 				dto.setNotice_title(rs.getString("notice_title"));
@@ -573,7 +587,7 @@ public class CompNoticeDAO {
 		return dto;
 	}
 	
-	public void updateBoard(CompNoticeDTO dto) throws SQLException {
+	public void updateBoard(DepNoticeDTO dto) throws SQLException {
 		PreparedStatement pstmt = null;
 		String sql;
 		
@@ -581,7 +595,7 @@ public class CompNoticeDAO {
 			
 			conn.setAutoCommit(false);
 			
-			sql = " UPDATE noticeAll SET notice_title = ?, notice_content = ? "
+			sql = " UPDATE noticeDept SET notice_title = ?, notice_content = ? "
 					+ " WHERE notice_num = ? AND id = ? ";
 			
 			pstmt = conn.prepareStatement(sql);
@@ -595,7 +609,7 @@ public class CompNoticeDAO {
 			pstmt.close();
 			pstmt = null;
 			
-			sql = " UPDATE noticeAllFile SET save_filename = ?, ori_filename = ? "
+			sql = " UPDATE noticeDeptFile SET save_filename = ?, ori_filename = ? "
 					+ " WHERE notice_num = ? ";
 			
 			pstmt = conn.prepareStatement(sql);
@@ -636,7 +650,7 @@ public class CompNoticeDAO {
 			
 			conn.setAutoCommit(false);
 			
-			sql = " DELETE FROM noticeAllFile "
+			sql = " DELETE FROM noticeDeptFile "
 					+ " WHERE notice_num = ? ";
 			
 			pstmt = conn.prepareStatement(sql);
@@ -649,7 +663,7 @@ public class CompNoticeDAO {
 			pstmt.close();
 			pstmt = null;
 			
-			sql = " DELETE FROM noticeAll "
+			sql = " DELETE FROM noticeDept "
 					+ " WHERE notice_num = ? AND id = ? ";
 			
 			pstmt = conn.prepareStatement(sql);
@@ -688,7 +702,7 @@ public class CompNoticeDAO {
 		
 		try {
 			
-			sql = " INSERT INTO noticeAllReply VALUES(noticeAllReply_SEQ.NEXTVAL, ?,?,?,SYSDATE,?) ";
+			sql = " INSERT INTO noticeDeptReply VALUES(noticeDeptReply_SEQ.NEXTVAL, ?,?,?,SYSDATE,?) ";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -723,7 +737,7 @@ public class CompNoticeDAO {
 		
 		try {
 			
-			sql = " SELECT NVL(COUNT(*), 0) FROM noticeAllReply "
+			sql = " SELECT NVL(COUNT(*), 0) FROM noticeDeptReply "
 					+ " WHERE notice_num = ? AND answer = 0 ";
 			
 			pstmt = conn.prepareStatement(sql);
@@ -776,12 +790,12 @@ public class CompNoticeDAO {
 				(댓글에 대댓글은 있을 수도 있고 없을 수도 있다, 그러므로 nr 테이블 기준으로 LEFT OUTER JOIN을 한다.)
 			*/
 			sql = " SELECT nr.replyNum, nr.id, name, notice_num, content, nr.reg_date, "
-					+ " NVL(answerCount, 0) answerCount "
-					+ " FROM noticeAllReply nr "
+					+ " NVL(answerCount, 0) answerCount, pos_name "
+					+ " FROM noticeDeptReply nr "
 					+ " JOIN employee e ON nr.id = e.id "
 					+ " LEFT OUTER JOIN ( "
 					+ " 	SELECT answer, COUNT(*) answerCount "
-					+ " 	FROM noticeAllReply nr "
+					+ " 	FROM noticeDeptReply nr "
 					+ " 	WHERE answer != 0 "
 					+ " 	GROUP BY answer "
 					+ " ) a ON nr.replyNum = a.answer "
@@ -808,6 +822,7 @@ public class CompNoticeDAO {
 				dto.setRep_contents(rs.getString("content"));
 				dto.setRep_regdate(rs.getString("reg_date"));
 				dto.setAnswerCount(rs.getInt("answerCount"));
+				dto.setPos_name(rs.getString("pos_name"));
 				
 				list.add(dto);
 				
@@ -851,7 +866,7 @@ public class CompNoticeDAO {
 			if(id.equals("admin")) {
 				
 				// 관리자가 쓴 댓글인지 확인
-				sql = " SELECT replyNum FROM noticeAllReply WHERE replyNum = ? AND id = ? ";
+				sql = " SELECT replyNum FROM noticeDeptReply WHERE replyNum = ? AND id = ? ";
 				
 				pstmt = conn.prepareStatement(sql);
 				
@@ -885,9 +900,9 @@ public class CompNoticeDAO {
 					CONNECT BY PRIOR 자식 컬럼 = 부모 컬럼 : 부모 → 자식 순방향 전개
 					CONNECT BY PRIOR 부모 컬럼 = 자식 컬럼 : 자식 → 부모 역방향 전개
 			 */
-			sql = " DELETE FROM noticeAllReply "
+			sql = " DELETE FROM noticeDeptReply "
 					+ " WHERE replyNum IN "
-					+ " ( SELECT replyNum FROM noticeAllReply START WITH replyNum = ? "
+					+ " ( SELECT replyNum FROM noticeDeptReply START WITH replyNum = ? "
 					+ " 	CONNECT BY PRIOR replyNum = answer ) ";
 			
 			pstmt = conn.prepareStatement(sql);
@@ -924,8 +939,8 @@ public class CompNoticeDAO {
 		try {
 			// answer가 0일 경우 : 댓글
 			//	    0이 아닐 경우 : 대댓글
-			sql = " SELECT replyNum, notice_num, nr.id, name, content, reg_date, answer "
-					+ " FROM noticeAllReply nr "
+			sql = " SELECT replyNum, notice_num, nr.id, name, content, reg_date, answer, pos_name "
+					+ " FROM noticeDeptReply nr "
 					+ " JOIN employee e ON nr.id = e.id "
 					+ " WHERE answer = ? "
 					+ " ORDER BY replyNum ASC ";
@@ -947,6 +962,7 @@ public class CompNoticeDAO {
 				dto.setRep_contents(rs.getString("content"));
 				dto.setRep_regdate(rs.getString("reg_date"));
 				dto.setAnswer(rs.getLong("answer"));
+				dto.setPos_name(rs.getString("pos_name"));
 				
 				list.add(dto);
 				
@@ -985,7 +1001,7 @@ public class CompNoticeDAO {
 		
 		try {
 			
-			sql = " SELECT NVL(COUNT(*), 0) FROM noticeAllReply "
+			sql = " SELECT NVL(COUNT(*), 0) FROM noticeDeptReply "
 					+ " WHERE answer = ? ";
 			
 			pstmt = conn.prepareStatement(sql);
@@ -1026,26 +1042,28 @@ public class CompNoticeDAO {
 	}
 	
 	// 공지글
-		public List<CompNoticeDTO> listNotice() {
-			List<CompNoticeDTO> list = new ArrayList<CompNoticeDTO>();
+		public List<DepNoticeDTO> listNotice(String dep_name) {
+			List<DepNoticeDTO> list = new ArrayList<DepNoticeDTO>();
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			StringBuilder sb = new StringBuilder();
 
 			try { 
 				sb.append(" SELECT notice_num, n.id, name, notice_title, ");
-				sb.append("       views, TO_CHAR(regdate, 'YYYY-MM-DD') regdate ");
-				sb.append(" FROM noticeAll n ");
+				sb.append("       views, TO_CHAR(regdate, 'YYYY-MM-DD') regdate, pos_name, save_filename ");
+				sb.append(" FROM noticeDept n ");
 				sb.append(" JOIN employee e ON n.id=e.id ");
-				sb.append(" WHERE notice=1  ");
+				sb.append(" WHERE notice=1 AND n.dep_name = ? ");
 				sb.append(" ORDER BY notice_num DESC ");
 
 				pstmt = conn.prepareStatement(sb.toString());
 
+				pstmt.setString(1, dep_name);
+				
 				rs = pstmt.executeQuery();
 
 				while (rs.next()) {
-					CompNoticeDTO dto = new CompNoticeDTO();
+					DepNoticeDTO dto = new DepNoticeDTO();
 
 					dto.setNum(rs.getLong("notice_num"));
 					dto.setWriter_id(rs.getString("id"));
@@ -1053,6 +1071,8 @@ public class CompNoticeDAO {
 					dto.setNotice_title(rs.getString("notice_title"));
 					dto.setViews(rs.getInt("views"));
 					dto.setRegdate(rs.getString("regdate"));
+					dto.setPos_name(rs.getString("pos_name"));
+					dto.setSave_filename(rs.getString("save_filename"));
 
 					list.add(dto);
 				}
