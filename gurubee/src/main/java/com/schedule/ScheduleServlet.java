@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Calendar;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -36,14 +37,21 @@ public class ScheduleServlet extends MyServlet {
 		String uri = req.getRequestURI();
 		if(uri.indexOf("main.do")!= -1) {
 			scheduleMain(req, resp);
-		} else if(uri.indexOf("month.do")!= -1) {
+		} else if(uri.indexOf("month_list.do")!= -1) {
 			month(req, resp);
 		} else if(uri.indexOf("insert.do")!= -1) {
 			insert(req, resp);
+		} else if(uri.indexOf("detail.do")!= -1) {
+			detail(req, resp);
+		} else if(uri.indexOf("delete.do")!= -1) {
+			delete(req, resp);
+		} else if(uri.indexOf("update.do")!= -1) {
+			update(req, resp);
 		}
 		
 		
 	}
+
 
 	private void scheduleMain(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 캘린더 메인
@@ -145,7 +153,7 @@ public class ScheduleServlet extends MyServlet {
 					
 					if((dto.getSch_repeat()==0 && (sd8 == cn8 || sd8 <= cn8 && ed8 >= cn8 ))
 							|| (dto.getSch_repeat()==1 && sd4 == cn4)) {
-						days[0][i - 1] += "<span class='scheduleSubject' data-date='" + s + "' data-num='" + dto.getSch_num()
+						days[0][i - 1] += "<span class='scheduleSubject' style='background-color: "+dto.getSc_color() + ";' data-date='" + s + "' data-num='" + dto.getSch_num()
 								+ "' >" + dto.getSch_name() + "</span>";
 						cnt++;
 					} else if((dto.getSch_repeat()==0 && (sd8 > cn8 && ed8 < cn8)) || (dto.getSch_repeat()==1 && sd4 > cn4 )) {
@@ -192,7 +200,7 @@ public class ScheduleServlet extends MyServlet {
 						
 						if ((dto.getSch_repeat() == 0 && (sd8 == cn8 || sd8 <= cn8 && ed8 >= cn8))
 								|| (dto.getSch_repeat() == 1 && sd4 == cn4)) {
-							days[row][i] += "<span class='scheduleSubject' data-date='" + s + "' data-num='" + dto.getSch_num()
+							days[row][i] += "<span class='scheduleSubject' style='background-color: "+dto.getSc_color() + ";' data-date='" + s + "' data-num='" + dto.getSch_num()
 									+ "' >" + dto.getSch_name() + "</span>";
 							cnt++;
 						} else if ((dto.getSch_repeat() == 0 && (sd8 > cn8 && ed8 < cn8))
@@ -238,7 +246,7 @@ public class ScheduleServlet extends MyServlet {
 						
 						if ((dto.getSch_repeat() == 0 && (sd8 == cn8 || sd8 <= cn8 && ed8 >= cn8))
 								|| (dto.getSch_repeat() == 1 && sd4 == cn4)) {
-							days[row][i] += "<span class='scheduleSubject' data-date='" + s + "' data-num='" + dto.getSch_num()
+							days[row][i] += "<span class='scheduleSubject' style='background-color: "+dto.getSc_color() + ";' data-date='" + s + "' data-num='" + dto.getSch_num()
 									+ "' >" + dto.getSch_name() + "</span>";
 							cnt++;
 						} else if ((dto.getSch_repeat() == 0 && (sd8 > cn8 && ed8 < cn8))
@@ -281,14 +289,16 @@ public class ScheduleServlet extends MyServlet {
 		try {
 			ScheduleDTO dto = new ScheduleDTO();
 			
+			
 			dto.setSch_id(info.getId());
 			dto.setSc_code(req.getParameter("sc_code"));
 			dto.setSch_name(req.getParameter("sch_name"));
 			dto.setSch_content(req.getParameter("sch_content"));
-			dto.setSch_sdate(req.getParameter("sch_sdate"));
-			dto.setSch_edate(req.getParameter("sch_edate"));
-			dto.setSch_stime(req.getParameter("sch_stime"));
-			dto.setSch_etime(req.getParameter("sch_etime"));
+			dto.setSch_sdate(req.getParameter("sch_sdate").replaceAll("-", ""));
+			dto.setSch_edate(req.getParameter("sch_edate").replaceAll("-", ""));
+			dto.setSch_stime(req.getParameter("sch_stime").replaceAll(":", ""));
+			dto.setSch_etime(req.getParameter("sch_etime").replaceAll(":", ""));
+			
 			
 			if(req.getParameter("allDay")!= null) {
 				dto.setSch_stime("");
@@ -299,9 +309,9 @@ public class ScheduleServlet extends MyServlet {
 				dto.setSch_edate("");
 			}
 			
-			dto.setSch_repeat(Integer.parseInt(req.getParameter("repeat")));
-			if(req.getParameter("repeat_c").length()!=0) {
-				dto.setSch_repeat_c(Integer.parseInt(req.getParameter("repeat_c")));
+			dto.setSch_repeat(Integer.parseInt(req.getParameter("sch_repeat")));
+			if(req.getParameter("sch_repeat_c").length()!=0) {
+				dto.setSch_repeat_c(Integer.parseInt(req.getParameter("sch_repeat_c")));
 				
 				dto.setSch_edate("");
 				dto.setSch_stime("");
@@ -325,6 +335,178 @@ public class ScheduleServlet extends MyServlet {
 		
 		
 	}
+	
+	
+	private void detail(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// 일정 상세 보기
+		ScheduleDAO dao = new ScheduleDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		
+		try {
+			
+			String date = req.getParameter("date");
+			String snum = req.getParameter("num");
+			
+			Calendar cal = Calendar.getInstance();
+			
+			// 오늘
+			String today = String.format("%04d%02d%02d", 
+					cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DATE));
+			if (date == null || ! Pattern.matches("^\\d{8}$", date)) {
+				date = today;
+			}
+			
+			//일정 출력할 년,월,일
+			int year = Integer.parseInt(date.substring(0, 4));
+			int month = Integer.parseInt(date.substring(4, 6));
+			int day = Integer.parseInt(date.substring(6));
+			
+			cal.set(year, month-1, day);
+			year = cal.get(Calendar.YEAR);
+			month = cal.get(Calendar.MONTH) +1;
+			day = cal.get(Calendar.DATE);
+			
+			cal.set(year, month-1, 1);
+			
+			//당일 전체일정 리스트 가져오기
+			date = String.format("%04d%02d%02d", year, month, day);
+			List<ScheduleDTO> list = dao.listDay(date, info.getId());
+			
+			
+			String num = null;
+			ScheduleDTO dto = null;
+			if(snum!=null) {
+				num = snum;
+				dto = dao.read(num);
+			}
+			
+
+			if(dto ==null && list.size() > 0) {
+				dto = dao.read(list.get(0).getSch_num());
+			}
+			
+			
+			req.setAttribute("year", year);
+			req.setAttribute("month", month);
+			req.setAttribute("day", day);
+			req.setAttribute("date", date);
+			
+			req.setAttribute("today", today);
+			req.setAttribute("dto", dto);
+			req.setAttribute("list", list);
+			
+			forward(req, resp, "/WEB-INF/views/schedule/day.jsp");
+			
+			return;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		resp.sendError(400);
+		
+	}
+	
+	private void delete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		// 삭제하기
+		ScheduleDAO dao = new ScheduleDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+
+		String state = "false";
+		
+		try {
+			String sch_num = req.getParameter("num");
+			
+			dao.delete(sch_num, info.getId());
+			state = "true";
+
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		JSONObject job = new JSONObject();
+		job.put("state", state);
+		
+		resp.setContentType("text/html;charset=utf-8");
+		PrintWriter out = resp.getWriter();
+		out.print(job.toString());
+	
+		
+	}
+	
+	private void update(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		// 업데이트
+		
+		ScheduleDAO dao = new ScheduleDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		
+		String state = "false";
+		try {
+			
+			ScheduleDTO dto = new ScheduleDTO();
+			
+			dto.setSch_id(info.getId());
+			dto.setSch_num(req.getParameter("sch_num"));
+			dto.setSch_name(req.getParameter("sch_name"));
+			dto.setSc_code(req.getParameter("sc_code"));
+			dto.setSch_content(req.getParameter("sch_content"));
+			dto.setSch_sdate(req.getParameter("sch_sdate").replaceAll("-", ""));
+			dto.setSch_edate(req.getParameter("sch_edate").replaceAll("-", ""));
+			dto.setSch_stime(req.getParameter("sch_stime").replaceAll(":", ""));
+			dto.setSch_etime(req.getParameter("sch_etime").replaceAll(":", ""));
+			
+			if(req.getParameter("allDay")!=null) {
+				dto.setSch_stime("");
+				dto.setSch_etime("");
+			}
+			
+			if(dto.getSch_stime().length()==0 && dto.getSch_etime().length()==0 && dto.getSch_sdate().equals(dto.getSch_edate())) {
+				dto.setSch_edate("");
+			}
+			
+			dto.setSch_repeat(Integer.parseInt(req.getParameter("sch_repeat")));
+			if(req.getParameter("sch_repeat_c").length()!=0) {
+				dto.setSch_repeat_c(Integer.parseInt(req.getParameter("sch_repeat_c")));
+				
+				dto.setSch_edate("");
+				dto.setSch_stime("");
+				dto.setSch_etime("");
+			}	
+			dao.update(dto);
+			state = "true";
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		JSONObject job = new JSONObject();
+		job.put("state", state);
+
+		resp.setContentType("text/html;charset=utf-8");
+		PrintWriter out = resp.getWriter();
+		out.print(job.toString());
+		
+
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

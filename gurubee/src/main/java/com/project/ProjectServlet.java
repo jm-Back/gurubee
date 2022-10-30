@@ -71,9 +71,7 @@ public class ProjectServlet extends MyServlet{
 			detailUpdateForm(req, resp);
 		} else if(uri.indexOf("listDetail_clear.do") != -1) { //챕터 완료처리~
 			detailClear(req, resp);
-		} else if(uri.indexOf("progress_main.do") != -1) { //메인 챕터 - 프로그래스
-			progressCount(req, resp);
-		} else if(uri.indexOf("list__filter.do") != -1) { //메인 챕터 - 프로그래스
+		} else if(uri.indexOf("list__filter.do") != -1) { //메인 챕터 - 필터
 			filter(req, resp);
 		} 
 		
@@ -137,33 +135,6 @@ public class ProjectServlet extends MyServlet{
 		}
 		
 	}
-
-
-
-	private void progressCount(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		// 메인 폼 - 프로그래스바 
-		ProjectDAO dao = new ProjectDAO();
-		int progressCount = 0;
-		
-		try {
-			
-			String pro_code = req.getParameter("pro_code");
-			progressCount = dao.partAll(pro_code);
-
-			req.setAttribute("progressCount", progressCount);
-			
-			forward(req, resp, "/WEB-INF/views/project/pro_progress.jsp");
-			
-			return;
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}	
-		
-		resp.sendError(400);
-		
-	}
-
 
 
 	private void projectMain(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

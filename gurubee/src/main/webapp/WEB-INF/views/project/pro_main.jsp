@@ -131,6 +131,20 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 
 }
 
+
+.clear__state__wan {
+	padding: 2px 14px;
+	display: inline-block;
+	border: 3px solid  #ccff99 ;
+	outline: none;
+	border-radius: 10px;
+	font-size: 19px;
+	font-weight: 600;
+	background: #ccff99;
+	margin-left: 35px;
+}
+
+
 .profile__small {
 	height: 60px;
 	width: 60px;
@@ -212,7 +226,6 @@ function listPage(page){
 	
 	const fn = function(data){
 		 $(selector).html(data);
-		 progressCount();
 		 
 	};
 	
@@ -220,23 +233,6 @@ function listPage(page){
 	
 }
 
-//프로그래스바 정보
-function progressCount() {
-	let pro_code = $("#here_progress").attr("data-pro_code");
-	console.log(pro_code);
-	
-	let url = "${pageContext.request.contextPath}/project/progress_main.do";
-	let query = "pro_code="+pro_code;
-	
-	const fn = function(data){
-		let selector = "#here_progress_main";
-		$(selector).html(data);
-		
-	};
-	
-	ajaxFun(url, "get", query, "html", fn);
-	
-}
 
 $(function(){
 	$("#dept").click(function(){
