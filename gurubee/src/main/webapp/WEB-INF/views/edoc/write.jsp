@@ -151,6 +151,7 @@ $(function(){
 	// 작성일자
 	$('input[name=date]').attr('value', year+"-"+month+"-"+day);
 	
+	$('select[name=edocSelect]').val('${dto.app_doc}').prop("selected",true);
 	
 	// 사원검색 모달 
     $(".empSearch").on("click", function() {
@@ -383,8 +384,13 @@ function clickEmpSearch(object) {
 				<c:if test="${mode=='update'}">
 					<input type="hidden" name="app_num" value="${dto.app_num }">
 					<input type="hidden" name="page" value="${page}">
+					<input type="hidden" name="temp" value="-1">
 				</c:if>
-				
+				<c:if test="${mode!='update'}">
+					<input type="hidden" name="app_num" value="${dto.app_num }">
+					<input type="hidden" name="page" value="${page}">
+					<input type="hidden" name="temp" value="1">
+				</c:if>
 			</form>
 		</div>
 	

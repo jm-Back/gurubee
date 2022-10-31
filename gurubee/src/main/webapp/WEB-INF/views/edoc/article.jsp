@@ -257,11 +257,19 @@ $(function(){
 				<div style="text-align: right;">
 					<c:choose>
 						<c:when test="${dto.id_write == sessionScope.member.id}">
-							<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/edoc/update.do?app_num=${dto.app_num}&page=${page}';">문서수정</button>	
+							<c:choose>
+								<c:when test="${dto.temp == 0}"> 
+									<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/edoc/temp.do?app_num=${dto.app_num}';">임시문서등록</button>		
+								</c:when>
+								<c:otherwise>
+									<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/edoc/update.do?app_num=${dto.app_num}&page=${page}';">문서수정</button>	
+								</c:otherwise>
+							</c:choose>
 						</c:when>
 						<c:otherwise>
 							<button type="button" class="btn btn-light" disabled="disabled">수정</button>
 						</c:otherwise>
+						
 					</c:choose>
 					
 					<c:if test="${dto.id_write != sessionScope.member.id}">
@@ -282,6 +290,7 @@ $(function(){
 				</div>
 				<input type="hidden" name="app_num" value="${dto.app_num }">
 				<input type="hidden" name="page" value="${page}">
+				<input type="hidden" name="temp" value="${dto.temp}">
 			</form>
 		</div>
 	

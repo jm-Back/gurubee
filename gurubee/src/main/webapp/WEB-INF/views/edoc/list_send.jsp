@@ -243,7 +243,9 @@ $(function() {
 						<div style="float: right;">
 							<a href="${pageContext.request.contextPath}/edoc/write.do">
 							<button type="button" id="btnWriteEdoc" class="btn btn-success" style="height: 35px;">문서작성</button></a>
-							<button type="button" id="btnTempEdoc" class="btn btn-success" style="height: 35px;">임시보관함</button>
+							
+							<a href="${pageContext.request.contextPath}/edoc/list_temp.do?page=${page}">
+							<button type="button" id="btnTempEdoc" class="btn btn-success" style="height: 35px;">임시보관함</button></a>
 						</div>
 						
 					</form>

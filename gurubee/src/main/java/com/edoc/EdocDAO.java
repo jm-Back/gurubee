@@ -198,6 +198,107 @@ public class EdocDAO {
 		return r;
 	} 
 	
+	
+	public int edocCountTemp(String writeId) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			sql = "SELECT COUNT(*) FROM E_APPROVAL "
+				+ " WHERE id IN ? AND temp = 0 ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, writeId);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				result = rs.getInt(1);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e2) {
+				}
+			}
+			
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+				}
+			}
+		}
+		
+		return result;
+	} 
+
+	public int edocCountTemp(String writeId, String edoc, String myDate) {
+		int r = 0;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			
+			sql = "SELECT COUNT(*) FROM E_APPROVAL "
+					+ " WHERE id IN ? AND temp = 0 ";
+
+			if(myDate.length()==0 && edoc.length()!=0) {
+				sql += " AND app_doc = ? ";
+			} else if(myDate.length()!=0 && edoc.length()==0) {
+				sql += " AND TO_CHAR(app_date,'YYYY-MM-DD') = ? ";
+			} else if (myDate.length()!=0 && edoc.length()!=0) {
+				sql += " AND app_doc=? AND TO_CHAR(app_date,'YYYY-MM-DD') = ?";
+			}
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, writeId);
+			
+			if(myDate.length()==0 && edoc.length()!=0) {
+				pstmt.setString(2, edoc);
+			} else if(myDate.length()!=0 && edoc.length()==0) {
+				pstmt.setString(2, myDate);
+			} else if (myDate.length()!=0 && edoc.length()!=0) {
+				pstmt.setString(2, edoc);
+				pstmt.setString(3, myDate);
+			}
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				r = rs.getInt(1);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e2) {
+				}
+			}
+			
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+				}
+			}
+		}
+		
+		return r;
+	} 
+	
 	// 특정 직급의 모든 부서 사원 리스트 가져오기
 	public List<EdocEmpDTO> posEmpList(int pos_code) {
 		List<EdocEmpDTO> list = new ArrayList<>();
@@ -346,7 +447,9 @@ public class EdocDAO {
 				
 				edocdto.setApp_num(rs.getInt("app_num"));
 				edocdto.setApp_doc(rs.getString("app_doc"));
-				
+				if(rs.getString("resultList").length()==0) {
+					break;
+				}
 				rr = rs.getString("resultList").split(",");
 				aa = rs.getString("apperList").split(",");
 				
@@ -394,7 +497,7 @@ public class EdocDAO {
 	}
 	
 	// 결재문서 발신함 리스트 (조건O)
-		public List<EdocDTO> listEApproval(String writeId, int offset, int size, String edoc, String myDate) {
+	public List<EdocDTO> listEApproval(String writeId, int offset, int size, String edoc, String myDate) {
 			List<EdocDTO> list = new ArrayList<>();
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
@@ -505,7 +608,145 @@ public class EdocDAO {
 			return list;
 		}
 	
-	
+	// 결재문서 임시보관함 리스트 (조건X)
+	public List<EdocDTO> listEApprovalTemp(String writeId, int offset, int size) {
+			List<EdocDTO> list = new ArrayList<>();
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql;
+			
+			try {
+				sql = "select al.app_num, al.app_doc, TO_CHAR(al.app_date,'YYYY-MM-DD')app_date, al.id, "
+						+ "	al.title, al.temp "
+						+ " FROM E_APPROVAL al "
+						+ " WHERE temp=0 AND al.id = ? "
+						+ " ORDER BY al.app_num DESC "
+						+ " OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, writeId);
+				pstmt.setInt(2, offset);
+				pstmt.setInt(3, size);
+				
+				rs = pstmt.executeQuery();
+				
+				while(rs.next()) {
+					EdocDTO edocdto = new EdocDTO();
+					
+					edocdto.setApp_num(rs.getInt("app_num"));
+					edocdto.setApp_doc(rs.getString("app_doc"));
+					
+					edocdto.setTitle(rs.getString("title"));
+					edocdto.setApp_date(rs.getString("app_date"));
+					edocdto.setTemp(rs.getInt("temp"));
+					
+					list.add(edocdto);
+				}
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if( rs != null) {
+					try {
+						rs.close();
+					} catch (Exception e2) {
+					}
+				}
+				if(pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (Exception e2) {
+					}
+				}
+			}
+
+			return list;
+		}
+		
+	// 결재문서 임시보관함 리스트 (조건O)
+	public List<EdocDTO> listEApprovalTemp(String writeId, int offset, int size, String edoc, String myDate) {
+				List<EdocDTO> list = new ArrayList<>();
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String sql;
+				
+				try {
+					
+					sql = "select al.app_num, al.app_doc, TO_CHAR(al.app_date,'YYYY-MM-DD')app_date, al.id, "
+							+ "	al.title, resultList, apperList, al.temp "
+							+ " FROM E_APPROVAL al "
+							+ " WHERE temp=0 AND al.id = ? ";
+							
+					if(myDate.length()==0 && edoc.length()!=0) {
+						sql += " AND app_doc = ? ";
+					} else if(myDate.length()!=0 && edoc.length()==0) {
+						sql += " AND TO_CHAR(app_date,'YYYY-MM-DD') = ? ";
+					} else if (myDate.length()!=0 && edoc.length()!=0) {
+						sql += " AND app_doc=? AND TO_CHAR(app_date,'YYYY-MM-DD')=? ";
+					}
+
+					sql += " ORDER BY al.app_num DESC "
+							+ " OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ";
+					
+					pstmt = conn.prepareStatement(sql);
+					
+					pstmt.setString(1, writeId);
+
+					if(myDate.length()==0 && edoc.length()!=0) {
+						pstmt.setString(2, edoc);
+						pstmt.setInt(3, offset);
+						pstmt.setInt(4, size);
+					} else if(myDate.length()!=0 && edoc.length()==0) {
+						pstmt.setString(2, myDate);
+						pstmt.setInt(3, offset);
+						pstmt.setInt(4, size);
+					} else if (myDate.length()!=0 && edoc.length()!=0) {
+						pstmt.setString(2, edoc);
+						pstmt.setString(3, myDate);
+						pstmt.setInt(4, offset);
+						pstmt.setInt(5, size);
+					} else {
+						pstmt.setInt(2, offset);
+						pstmt.setInt(3, size);
+					}
+					
+					rs = pstmt.executeQuery();
+					
+					while(rs.next()) {
+						EdocDTO edocdto = new EdocDTO();
+						
+						edocdto.setApp_num(rs.getInt("app_num"));
+						edocdto.setApp_doc(rs.getString("app_doc"));
+						
+						edocdto.setTitle(rs.getString("title"));
+						edocdto.setApp_date(rs.getString("app_date"));
+						edocdto.setTemp(rs.getInt("temp"));
+						
+						list.add(edocdto);
+					}
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				} finally {
+					if( rs != null) {
+						try {
+							rs.close();
+						} catch (Exception e2) {
+						}
+					}
+					if(pstmt != null) {
+						try {
+							pstmt.close();
+						} catch (Exception e2) {
+						}
+					}
+				}
+
+				return list;
+			}
+		
+		
 	// 수신자 문서 리스트 
 	public List<EdocDTO> listEApproverReceiver(String appID, int offset, int size, String edoc, String myDate) {
 		List<EdocDTO> list = new ArrayList<>();
@@ -621,7 +862,7 @@ public class EdocDAO {
 
 		return list;
 	}
-	
+
 	
 	// 수신자 문서 개수 카운트
 	public int edocCountReceiver(String apperId, String edoc, String myDate) {
@@ -728,6 +969,7 @@ public class EdocDAO {
 				edocdto.setApp_date(rs.getString("app_date"));
 				edocdto.setDoc_form(rs.getString("doc_form"));
 				edocdto.setTitle(rs.getString("title"));
+				edocdto.setTemp(rs.getInt("temp"));
 			}
 			
 			
@@ -1127,6 +1369,88 @@ public class EdocDAO {
 	}
 	
 	
+	// 임시저장한 문서 작성 
+	public void updateTempEdoc(EdocDTO edocdto) {
+		PreparedStatement pstmt = null;
+		String sql;
+
+		try {
+			sql = "UPDATE E_APPROVAL SET app_doc=?, app_date=SYSDATE, " 
+				+ " doc_form=?, title=?, temp=1 "
+				+ " WHERE app_num=?";
+
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setString(1, edocdto.getApp_doc());
+			pstmt.setString(2, edocdto.getDoc_form());
+			pstmt.setString(3, edocdto.getTitle());
+			pstmt.setInt(4, edocdto.getApp_num());
+
+			pstmt.executeUpdate();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	// 결재자 삭제
+	public void deleteTempApper(int app_num) {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			sql = "DELETE FROM E_APPROVER WHERE app_num=?";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, app_num);
+			
+			pstmt.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	// 임시저장 문서의 결재자 등록
+	public void insertTempEdocApper(EdocEmpDTO empdto) {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			sql = "INSERT INTO E_APPROVER(apper_num, app_num, id, app_result, memo, app_level, app_date) "
+				+ " VALUES(APPVER_SEQ.NEXTVAL, ?, ?, ?, ?, ?, SYSDATE)";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, empdto.getApp_num());
+			pstmt.setString(2, empdto.getId_apper());
+			pstmt.setInt(3, 0); // 대기
+			pstmt.setString(4, empdto.getMemo());
+			pstmt.setInt(5, empdto.getApp_level());
+			
+			pstmt.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+			}
+		}
+	}
 	
 	
 }

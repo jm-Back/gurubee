@@ -136,7 +136,7 @@ function conditionSubmit() {
 						<div class="col-12 text-center">
 							<form class="row" id="conditionForm" name="conditionForm" method="post" enctype="multipart/form-data">
 								<div class="col-1 p-1">
-									<input type="text" class="form-control" id="myDate" name="myDate" val="" placeholder="날짜">
+									<input type="text" class="form-control" id="myDate" name="myDate" value="" placeholder="날짜">
 								</div>
 								<div class="col-2 p-1" style="width: 200px;">
 									<select id="edocSelect" name="edocSelect" class="form-select">
@@ -220,7 +220,6 @@ function conditionSubmit() {
 						<div style="float: right;">
 							<a href="${pageContext.request.contextPath}/edoc/write.do">
 							<button type="button" id="btnWriteEdoc" class="btn btn-success" style="height: 35px;">문서작성</button></a>
-							<button type="button" id="btnTempEdoc" class="btn btn-success" style="height: 35px;">임시보관함</button>
 						</div>
 						
 					</form>
