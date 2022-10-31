@@ -501,6 +501,7 @@ $(function(){
 	
 	$("#add__detail__submit").click(function(){
 		//pro_code와 내용 등등 다 넘기기
+			
 		let pro_code = $("input[name=pro_code]").val();
 		
 		let pd_subject = $("input[name=pd_subject]").val();
@@ -508,6 +509,7 @@ $(function(){
 		let pd_sdate = $("input[name=pd_sdate]").val();
 		let pd_edate = $("input[name=pd_edate]").val();
 		
+
 		let url = "${pageContext.request.contextPath}/project/listDetail_insert.do";
 		let query = "pro_code="+pro_code;
 		query += "&pd_subject="+pd_subject;
@@ -534,15 +536,96 @@ $(function(){
 	
 });
 
-//프로젝트 수정 -> 해당 프로젝트 jsp 정보 (update 로 변경, readonly 풀림)
+//프로젝트 챕터 수정 -> 해당 프로젝트 정보 (update 로 변경, 모달로 변경)
 $(function(){
 	$("body").on("click", ".update__detail", function(){
+		$("#detail__add").modal("show");
 		
-		let url = "${pageContext.request.contextPath}/project/listDetail_update.do";
+		let pd_subject = $("#form-pd_subject").val();
+		let pd_content = $(".detail__content__textarea").val();
+		let pd_sdate = $("#form-pd_sdate").val();
+		let pd_edate = $("#form-pd_edate").val();
 		
+		let pd_code = $("#form-pd_code").val();
+		
+		$("input[name=pd_subject]").val(pd_subject);
+		$(".pd_content").val(pd_content);
+		$("input[name=pd_sdate]").val(pd_sdate);
+		$("input[name=pd_edate]").val(pd_edate);
+		
+		$("#detail__addLabel2").html("챕터 수정하기");
+		$("#guide").html("수정할 내용을 입력하세요!");
+		
+		$("#add__detail__submit").html(" 수정 완료 ");
+		$("#add__detail__submit").attr("data-mode", "update");
+		$("#add__detail__cancle").html(" 수정 취소 ");
+		
+		
+		//버튼 클릭
+		$("#add__detail__submit").click(function(){
+			let url = "${pageContext.request.contextPath}/project/listDetail_update.do";
+			let query = "pd_code="+pd_code;
+			query += "&pd_subject="+pd_subject;
+			query += "&pd_content="+pd_content;
+			query += "&pd_sdate="+pd_sdate;
+			query += "&pd_edate="+pd_edate;
+			
+			
+			const fn = function(data){
+				if(data.state === "true"){
+					$("#detail__add").modal("hide");
+					window.location.reload();
+					listPage(1);
+					
+				} else {
+					alert("프로젝트 챕터 수정이 실패했습니다.")
+
+				}
+			};
+			
+			ajaxFun(url, "post", query, "json", fn);
+			
+			
+		});
 	});
 	
 });
+
+function check(){
+	if(! $("input[name=pd_subject]").val() ){
+		$("input[name=pd_subject]").focus();
+		return false;
+	};
+	
+	if(! $(".pd_content").val() ){
+		$(".pd_content").focus();
+		return false;
+	};
+	
+	if(! $("input[name=pd_sdate]").val() ){
+		$("input[name=pd_sdate]").focus();
+		return false;
+	};
+	
+	
+	if(! $("input[name=pd_edate]").val() ){
+		$("input[name=pd_edate]").focus();
+		return false;
+	};
+	
+	if($("input[name=pd_edate]").val() ){
+		let s1 = $("input[name=pd_sdate]").val().replace("-", "");
+		let s2 = $("input[name=pd_edate]").val().replace("-", "");
+		if(s1 > s2){
+			$("input[name=pd_edate]").focus();
+			return false;
+		}
+	}
+	
+	return true;
+
+};
+
 
 
 //프로젝트 챕터 삭제
@@ -779,6 +862,7 @@ $(function(){
 		</div>
 	</div>
 	
+	
 	<!--  상세 프로젝트 챕터 추가하기 -->
 	<div id="here_detail_list"></div>
 </div>
@@ -822,7 +906,7 @@ $(function(){
 </div>
 
 
-	<!-- 프로젝트 상세 추가 모달창 -->
+	<!-- 프로젝트 챕터 모달 -->
 <form id="add__detail__form" method="post">
 <div class="modal fade modal__size" id="detail__add" tabindex="-1" 
 		data-bs-backdrop="static" data-bs-keyboard="false"
@@ -834,7 +918,7 @@ $(function(){
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
-        		<p>새로운 프로젝트 챕터를 추가하세요!<p>
+        		<p id="guide">새로운 프로젝트 챕터를 추가하세요!<p>
 						<table class="table form-table">
 							<tr>
 							    <td><span>프로젝트 챕터명</span></td>
@@ -851,7 +935,7 @@ $(function(){
 						</table>		
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary btnClose">닫기</button>
+				<button id="add__detail__cancle" type="button" class="btn btn-secondary btnClose">닫기</button>
 				<button id="add__detail__submit" type="button" class="btn btn-primary">등록하기</button>
 			</div>
 		</div>
