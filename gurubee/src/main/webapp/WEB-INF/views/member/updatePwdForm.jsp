@@ -22,6 +22,10 @@ body{
 	font-family: 'Varela Round', sans-serif;
 }
 
+.jb-box { width: 100%; height: 100%; overflow: hidden;margin: 0; position: relative; }
+
+video { width: 100%; height:100vh; }
+
 #myModal {
   position: fixed;
   top: 50%;
@@ -50,7 +54,7 @@ body{
 .modal-login h4 {
 	color: #636363;
 	text-align: center;
-	font-size: 23px;
+	font-size: 20px;
 	margin-top: 0;
 	font-weight: bold;
 }
@@ -150,6 +154,10 @@ i {
 	border: none;
 }
 
+img {
+	width: 150px;
+}
+
 
 
 </style>
@@ -158,57 +166,66 @@ i {
 	$(document).ready(function() {
 		$("#myModal").modal("show");
 	});
+	
+	function check(){
+		const f = document.passwordForm;
+		
+		let regExp = /^[A-Za-z0-9]{6,10}$/;
+		
+		if(! regExp.test(f.password.value.trim())) {
+			f.password.focus();
+			alert("비밀번호는 6 ~ 10자의 영어, 숫자입니다.")
+			return false;
+		}
+		
+		if(f.password.value !== f.password2.value) {
+			alert("새 비밀번호와 비밀번호 확인이 일치하지 않습니다.")
+			return false;
+		}
+		
+		f.action="${pageContext.request.contextPath}/member/password_ok.do";
+		f.submit();
+		
+		return true;
+	}
 </script>
 
 </head>
 <body>
 
+<div class="jb-box">
+  <video muted autoplay loop>
+    <source src="${pageContext.request.contextPath}/resources/videos/video1.mp4" type="video/mp4">
+  </video>
 
-<!-- Modal HTML -->
-<div id="myModal" class="modal fade">
-	<div class="modal-dialog modal-login">
-		<div class="modal-content">
-			<div class="modal-header">				
-				<h4 class="modal-title">Authentication</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	<!-- Modal HTML -->
+	<div id="myModal" class="modal fade" data-backdrop="static">
+		<div class="modal-dialog modal-login">
+			<div class="modal-content">
+				<div class="modal-header">				
+					<h4 class="modal-title"><img src="${pageContext.request.contextPath}/resources/images/logo_main.png" class="img" width="200px;" alt=""></h4>
+				</div>
+				<div class="modal-header">				
+					<h4 class="modal-title">초기 비밀번호 변경</h4>
+				</div>
+				<div class="modal-body">
+					<form name="passwordForm" method="post">
+						<div class="form-group">
+							<div class="input-group">
+								<input type="text" class="form-control" name="password" placeholder="새 비밀번호" required="required">
+							</div>
+							<div class="input-group">
+								<input type="text" class="form-control" name="password2" placeholder="비밀번호 확인" required="required">
+							</div>
+						</div>
+						<div class="form-group">
+							<button type="button" class="btn btn-primary btn-block btn-lg" onclick="check();">비밀번호 변경</button>
+						</div>
+						
+					</form>
+				</div>
+				<div class="modal-footer"> 인사부  ☎ 1004 </div>
 			</div>
-			<div class="modal-body">
-				<form action="/examples/actions/confirmation.php" method="post">
-					<div class="form-group">
-						<div class="input-group">
-							<span class="input-group-addon"><i class="fa fa-user" style="margin-bottom: 3px;"></i></span>
-						</div>
-						<div class="input-group">
-							<input type="text" class="form-control" name="EmpNum" placeholder="Employee number" required="required">
-						</div>
-						<div class="input-group">
-							<input type="text" class="form-control" name="name" placeholder="name" required="required">
-						</div>
-						<div class="input-group">
-							<input type="text" class="form-control" name="birthDay" placeholder="birthDay" required="required">
-						</div>
-						<div class="input-group">
-							<input type="text" class="form-control" name="phoneNum" placeholder="Phone number" required="required">
-						</div>
-					</div>
-					<div>
-						<span class="input-group-addon" style="margin-left: 2px;"><i class="fa fa-lock"></i></span>
-					</div>
-					<div class="form-group">
-						<div class="input-group">
-							<input type="text" class="form-control" name="password" placeholder="Password" required="required">
-						</div>
-						<div class="input-group">
-							<input type="text" class="form-control" name="password" placeholder="Password Confirm" required="required">
-						</div>
-					</div>
-					<div class="form-group">
-						<button type="submit" class="btn btn-primary btn-block btn-lg">Change password</button>
-					</div>
-					
-				</form>
-			</div>
-			<div class="modal-footer"> 인사부  ☎ 1004 </div>
 		</div>
 	</div>
 </div>     

@@ -32,6 +32,8 @@ public class LoginServlet extends MyServlet {
 			String path = "/WEB-INF/views/member/sitemap.jsp";
 			forward(req, resp, path);
 			return;
+		} else if(uri.indexOf("password_ok.do") != -1) {
+			passwordChange(req, resp);
 		}
 	}
 
@@ -76,13 +78,17 @@ public class LoginServlet extends MyServlet {
 			
 			String birth = info.getReg().substring(0, 6);
 			if (info.getPwd().equals(birth)) { // 초기 패스워드
-				// dao.updateMember(userId, userPwd);
-				// resp.sendRedirect(cp + "/member/updatePwdForm.do");
+				
+		         session.setMaxInactiveInterval(120 * 60);
+
+		         session.setAttribute("member", info);
+				
 				String path = "/WEB-INF/views/member/updatePwdForm.jsp";
 				forward(req, resp, path);
 				return;
-			}
-
+			} 
+			
+			// 초기 비밀번호를 이전에 완료하고 로그인 성공한 직원들
 			
 			// 유지시간: 120분
 	         session.setMaxInactiveInterval(120 * 60);
@@ -121,5 +127,30 @@ public class LoginServlet extends MyServlet {
 	 * 
 	 * forward(req, resp, "/WEB-INF/views/main/main.jsp"); }
 	 */
-
+	
+	
+	private void passwordChange(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		LoginDAO dao = new LoginDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		String cp = req.getContextPath();
+		
+		String password = req.getParameter("password");
+		
+		try {
+			
+			dao.updateMember(info.getId(), password);
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		resp.sendRedirect(cp + "/main.do");
+		
+	}
 }

@@ -3,6 +3,7 @@ package com.login;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import com.util.DBConn;
 
@@ -123,12 +124,12 @@ public class LoginDAO {
 		return dto;
 	}
 	
-	public void updateMember(String id, String pwd) {
+	public void updateMember(String id, String pwd) throws SQLException {
 		PreparedStatement pstmt = null;
 		String sql;
 		
 		try {
-			sql = "UPDATE employee pwd=? WHERE id=?";
+			sql = "UPDATE employee SET pwd=? WHERE id=?";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -140,6 +141,7 @@ public class LoginDAO {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
+			throw e;
 		} finally {
 			
 			if(pstmt != null) {
