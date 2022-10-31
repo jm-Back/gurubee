@@ -14,6 +14,9 @@
 						<img class="profile__project__detail" src="${pageContext.request.contextPath}/resources/images/${me.pro_profile}">
 						<span class="font__project__detail">&nbsp;&nbsp; ${deo.pd_subject}</span>
 						<input type="hidden" value="${deo.pd_writer}" name="pd_writer">
+						<input type="hidden" value="${deo.pd_subject}" name="pd_subject" id="form-pd_subject">
+						<input type="hidden" value="${deo.pd_code}" name="pd_code" id="form-pd_code">
+						
 						<i class="fa-solid fa-circle-check edit__icon clear__detail ${deo.pd_ing > 0 ? 'change__color' : ''}" data-pd_code="${deo.pd_code}"></i>
 						<i class="fa-regular fa-pen-to-square edit__icon" data-bs-toggle="dropdown" aria-expanded="false"></i>
 						<ul class="dropdown-menu">
@@ -30,8 +33,8 @@
 						프로젝트 챕터 진행기간 
 					</div>
 					<input type="hidden" value="${deo.pd_code}" name="pd_code">
-					<input type="date" class="col-md-3 pb-3 mt-3 detail__content" value="${deo.pd_sdate}" name="pd_sdate" readonly="readonly">
-					<input type="date" class="col-md-3 pb-3 mt-3 detail__content" value="${deo.pd_edate}" name="pd_edate" readonly="readonly">
+					<input type="date" class="col-md-3 pb-3 mt-3 detail__content" value="${deo.pd_sdate}" name="pd_sdate" readonly="readonly" id="form-pd_sdate">
+					<input type="date" class="col-md-3 pb-3 mt-3 detail__content" value="${deo.pd_edate}" name="pd_edate" readonly="readonly" id="form-pd_edate">
 				</div>
 				<div class="row">
 					<div class="col-md-2 pb-3 detail__title" >

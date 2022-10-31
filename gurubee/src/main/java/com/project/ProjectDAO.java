@@ -927,6 +927,54 @@ public class ProjectDAO {
 			}
 		}
 		
+		public int CountEmployee(String pro_code) throws SQLException {
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql;
+			int result = 0;
+			
+			try {
+				
+				sql = " SELECT COUNT(*) FROM project_join "
+						+ " WHERE pro_code = ? ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, pro_code);
+				
+				rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					result = rs.getInt(1);
+				}
+				
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw e;
+				
+			} finally {
+				if(pstmt!=null) {
+					try {
+						pstmt.close();
+					} catch (Exception e2) {
+					}
+				}
+				
+				if(rs!=null) {
+					try {
+						rs.close();
+					} catch (Exception e2) {
+					}
+				}
+			}
+			
+			return result;
+		}
+		
+		
+		
+		
 		//프로젝트 참여자 중복 검사
 		public int checkEmployee(String pro_code, String pj_id) throws SQLException {
 			PreparedStatement pstmt = null;

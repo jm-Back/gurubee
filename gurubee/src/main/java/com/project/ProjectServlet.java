@@ -452,10 +452,16 @@ public class ProjectServlet extends MyServlet{
 			String pj_id = req.getParameter("pj_id");
 			String pro_code = req.getParameter("pro_code");
 			
-			dao.deleteEmployeeList(pj_id, pro_code);
+			int result = dao.CountEmployee(pro_code);
 			
-			//삭제 되면 true
-			state = "true";
+			if(result < 2) {
+				state = "false";
+			} else {
+				dao.deleteEmployeeList(pj_id, pro_code);
+				//삭제 되면 true
+				state = "true";
+			}
+
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -546,7 +552,6 @@ public class ProjectServlet extends MyServlet{
 			for(ProjectDTO dto : list_detail) {
 				dto.setPd_content(util.htmlSymbols(dto.getPd_content()));
 			}
-			
 			
 			String paging = util.pagingMethod(current_page, total_page, "listPage");
 			
