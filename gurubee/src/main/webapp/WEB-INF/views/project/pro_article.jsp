@@ -475,8 +475,9 @@ $(function(){
 		const fn = function(data){
 			if(data.state === "true"){
 				window.location.reload();
-			} else {
-				alert("삭제가 실패했습니다.")
+			} else if(data.state === "false"){
+				alert("프로젝트 참여자는 1명 이상 존재해야합니다.")
+				window.location.reload();
 			}
 		};
 		

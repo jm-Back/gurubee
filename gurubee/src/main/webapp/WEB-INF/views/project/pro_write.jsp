@@ -185,9 +185,58 @@ function itemAllMove(pos) {
 }
 
 
-//프로젝트 등록
+//프로젝트 등록 및 유효성 검사
 function sendOk(){
 	const f = document.projectForm;
+	
+	if(! $("input[type='radio']").val() ) {
+		$("input[type='radio']").focus();
+		return false;
+	}
+	
+	if(! $("input[name='pro_sdate']").val() ) {
+		$("input[name='pro_sdate']").focus();
+		return false;
+	}
+	
+	if(! $("input[name='pro_edate']").val() ) {
+		$("input[name='pro_edate']").focus();
+		return false;
+	}
+	
+	if($("input[name='pro_edate']").val() ) {
+		let s1 = $("input[name='pro_sdate']").val().replace("-", "");
+		let s2 = $("input[name='pro_edate']").val().replace("-", "");
+		if(s1 > s2){
+			$("input[name='pro_edate']").focus();
+			alert("프로젝트 종료일이 시작일보다 빠를 수 없습니다.");
+			return false;
+		}
+	}
+	
+	
+	if(! $("input[name='pro_name']").val() ) {
+		$("input[name='pro_name']").focus();
+		alert("프로젝트명은 필수입니다.");
+		return false;
+	}
+	
+	if(! $("input[name='pro_outline']").val() ) {
+		$("input[name='pro_outline']").focus();
+		alert("프로젝트 개요는 필수입니다.");
+		return false;
+	}
+	
+	if(! $("#pro_content").val() ) {
+		$("#pro_content").focus();
+		alert("프로젝트 내용은 필수입니다.");
+		return false;
+	}
+	
+	if(! $("input[name=pj_id]").val() ){
+		alert("참여자는 한 명이상 선택하세요.")
+		return false;
+	}
 	
 	f.action = "${pageContext.request.contextPath}/project/${mode}_ok.do";
     f.submit();
@@ -397,7 +446,7 @@ function sendOk(){
 								<input class="form-control shadow-sm" type="text" name="pro_outline" placeholder="프로젝트 개요" value="${dto.pro_outline }">
 							</div>
 							<div class="col-md-12">
-								<textarea class="form-control shadow-sm" name="pro_content" placeholder="프로젝트 내용" style="height: 120px;" >${dto.pro_content}</textarea>
+								<textarea class="form-control shadow-sm" id="pro_content" name="pro_content" placeholder="프로젝트 내용" style="height: 120px;" >${dto.pro_content}</textarea>
 							</div>
 							<h3></h3>
 						<div class="row">

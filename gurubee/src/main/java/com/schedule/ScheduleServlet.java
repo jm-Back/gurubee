@@ -48,10 +48,7 @@ public class ScheduleServlet extends MyServlet {
 		} else if(uri.indexOf("update.do")!= -1) {
 			update(req, resp);
 		}
-		
-		
 	}
-
 
 	private void scheduleMain(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 캘린더 메인
@@ -453,7 +450,7 @@ public class ScheduleServlet extends MyServlet {
 			ScheduleDTO dto = new ScheduleDTO();
 			
 			dto.setSch_id(info.getId());
-			dto.setSch_num(req.getParameter("sch_num"));
+			dto.setSch_num(req.getParameter("num"));
 			dto.setSch_name(req.getParameter("sch_name"));
 			dto.setSc_code(req.getParameter("sc_code"));
 			dto.setSch_content(req.getParameter("sch_content"));
@@ -461,6 +458,8 @@ public class ScheduleServlet extends MyServlet {
 			dto.setSch_edate(req.getParameter("sch_edate").replaceAll("-", ""));
 			dto.setSch_stime(req.getParameter("sch_stime").replaceAll(":", ""));
 			dto.setSch_etime(req.getParameter("sch_etime").replaceAll(":", ""));
+			
+			System.out.println(dto.getSch_edate());
 			
 			if(req.getParameter("allDay")!=null) {
 				dto.setSch_stime("");

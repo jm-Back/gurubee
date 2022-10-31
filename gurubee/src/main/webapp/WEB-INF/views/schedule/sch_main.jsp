@@ -270,6 +270,7 @@ $(function(){
 		let date = $(this).attr("data-date");
 		let num = $(this).attr("data-num");
 		
+		let sch_num = $(".container__list input[name=sch_num]").val();
 		let sch_name = $(".container__list input[name=sch_name]").val();
 		let sc_code = $(".container__list input[name=sc_code]").val();
 		let allDay = $(".container__list input[name=allDay]").val();
@@ -282,7 +283,7 @@ $(function(){
 		let sch_repeat_c = $(".container__list input[name=sch_repeat_c]").val();
 		let sch_content = $(".container__list input[name=sch_content]").val();
 		
-		$("#form-num").val(num);
+		$("#form-num").val(sch_num);
 		$("#form-subject").val(sch_name);
 		$("#form-color").val(sc_code);
 		if(allDay === "1") {
@@ -338,6 +339,7 @@ $(function(){
 		
 		let mode = $("#btnScheduleSendOk").attr("data-mode");
 		let query = $("form[name=scheduleForm]").serialize();
+		check();
 		let url = "${pageContext.request.contextPath}/schedule/"+mode+".do";
 		
 		const fn = function(data){
@@ -370,6 +372,7 @@ $(function(){
 			
 		};
 		
+		alert(query);
 		ajaxFun(url, "post", query, "json", fn);	
 		
 	});
@@ -499,8 +502,9 @@ $(function(){
 		
 		const fn = function(data){
 			if(data.state === "true"){
-				let url = "${pageContext.request.contextPath}/schedule/main.do";
+				let url = "${pageContext.request.contextPath}/schedule/month_list.do";
 				let query = "date="+date+"&num="+sch_num;
+				window.location.reload();
 				schedule(url, query, "#nav-1");
 			}
 		};
