@@ -4,8 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.login.SessionInfo;
 import com.util.DBConn;
@@ -123,12 +121,11 @@ private Connection conn = DBConn.getConnection();
 	}
 	
 	// myatt 정보 불러오기
-	public List<MypageDTO> myattForm(String id) {
-		List<MypageDTO> list = new ArrayList<MypageDTO>();
+	public MypageDTO myattForm(String id) {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		SessionInfo dto = null;
-		MypageDTO ddto = null;
+		MypageDTO mdto = null;
 		String sql;
 		
 		try {
@@ -149,13 +146,13 @@ private Connection conn = DBConn.getConnection();
 				
 				dto.setId(rs.getString("id"));
 				
-				ddto = new MypageDTO();
+				mdto = new MypageDTO();
 				
 				
-				ddto.setAtt_id(rs.getInt("att_id"));
-				ddto.setAtt_start(rs.getInt("att_start"));
-				ddto.setAtt_end(rs.getInt("att_end"));
-				ddto.setAtt_ing(rs.getString("att_ing"));
+				mdto.setAtt_id(rs.getInt("att_id"));
+				mdto.setAtt_start(rs.getInt("att_start"));
+				mdto.setAtt_end(rs.getInt("att_end"));
+				mdto.setAtt_ing(rs.getString("att_ing"));
 				
 			}
 			
@@ -178,11 +175,101 @@ private Connection conn = DBConn.getConnection();
 			
 		}
 		
-		return list;
+		return mdto;
 	}
 	
+	//myatt_list 작성
+		public void myattListForm(UserDTO dto) throws SQLException {
+			PreparedStatement pstmt = null;
+			String sql;
+			
+			try {
+			
+				sql = "UPDATE employee SET id=?, reg=?, mail=?, phone=?, tel=?, "
+						+ " ori_filename=?  WHERE id=?";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, dto.getPwd());
+				pstmt.setString(2, dto.getReg());
+				pstmt.setString(3, dto.getEmail());
+				pstmt.setString(4, dto.getPhone());
+				pstmt.setString(5, dto.getTel());
+				pstmt.setString(6, dto.getOri_filename());
+				pstmt.setString(7, dto.getId());
+				 
+				pstmt.executeUpdate();
+				
+			
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw e;
+			} finally {
+				if(pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException e2) {
+					}
+				}
+			}
+		}
 	
-	
-	
+	// myoff 정보 불러오기
+	public MypageDTO myoffForm(String id) {
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		SessionInfo dto = null;
+		MypageDTO mdto = null;
+		String sql;
+			
+		try {
+			sql = " SELECT A.id, off_num, off_type, off_start, off_end, "
+					+ " off_reason, memo, use_num, division, div_off, off_use, rem_off"
+					+ " FROM ( "
+					+ " SELECT A.id "
+					+ " FROM Employee A "
+					+ " JOIN Dayoff ON off_num = off_num, division = division, div_off = div_off, off_use= off_use, rem_off = rem_off"
+					+ "	JOIN DayoffUse ON use_num = use_num, off_type= off_type, "
+					+ "	off_start = off_start, off_end = off_end, off_reason = off_ reason)";
+				
+			pstmt = conn.prepareStatement(sql);
+				
+			pstmt.setString(1, id);
+				
+			rs = pstmt.executeQuery();
+				
+			if(rs.next()) {
+				dto = new SessionInfo();
+					
+				dto.setId(rs.getString("id"));
+					
+				mdto = new MypageDTO();
+					
+				
+				
+				}
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if(rs != null) {
+					try {
+						rs.close();
+					} catch (Exception e2) {
+					}
+				}
+				
+				if(pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (Exception e2) {
+					}
+				}
+				
+			}
+			
+			return mdto;
+		}
+		
 }
 

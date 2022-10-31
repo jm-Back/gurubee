@@ -40,11 +40,11 @@ $(function(){
         if(tab==="1") { // 개인정보
         	return false; 
         } else if(tab==="2") { // 근태
-        	//url = "${pageContext.request.contextPath}/mypage/myatt.do";
-        	//$(selector).load(url);
+        	url = "${pageContext.request.contextPath}/mypage/myatt.do";
+        	$(selector).load(url);
         } else if(tab==="3") { // 연차
-        	//url = "${pageContext.request.contextPath}/mypage/myoff.do";
-        	//$(selector).load(url);
+        	url = "${pageContext.request.contextPath}/mypage/myoff.do";
+        	$(selector).load(url);
         } else if(tab==="4") {	// 급여
         	//url = "${pageContext.request.contextPath}/mypage/mypay.do";
         	//$(selector).load(url);
@@ -60,13 +60,21 @@ function sendOk() {
 	const f = document.myForm;
 	let str;
 
+	 str = f.pwd.value;
+	    if( !str ) {
+	        alert("패스워드를 입력하세요. ");
+	        f.pwd.focus();
+	        return;
+	    }
+	/*
 	str = f.pwd.value;
-	if( !/^(?=.*[a-z])(?=.*[!@#$%^*+=-]|.*[0-9]).{5,10}$/i.test(str) ) { 
+	if( !/^(?=.*[a-z])(?=.*[!@#$%^*+=-]|.*[0-9]).{4,10}$/i.test(str) ) { 
 		alert("패스워드를 다시 입력 하세요. ");
 		f.pwd.focus();
 		return;
 	}
-
+	*/
+	
 	if( str !== f.pwd2.value ) {
         alert("패스워드가 일치하지 않습니다. ");
         f.pwd.focus();
@@ -187,6 +195,7 @@ $(function() {
 				   			<label class="col-sm-2 col-form-label" >프로필사진</label>
 				   			<div class="img-viewer"></div>
 							<input type="file" name="selectFile" accept="image/*" class="form-control" style="display: none;">
+							<input type="hidden" name="ori_filename" value="${dto.ori_filename}">
 				   		</div>
 				   	</div>
   						<div style="margin-bottom: 0px;">

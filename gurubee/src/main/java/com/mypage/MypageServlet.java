@@ -1,7 +1,9 @@
 package com.mypage;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.util.Calendar;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -9,8 +11,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 
 import com.login.SessionInfo;
+import com.util.FileManager;
 import com.util.MyUploadServlet;
 
 @MultipartConfig
@@ -18,6 +22,8 @@ import com.util.MyUploadServlet;
 public class MypageServlet extends MyUploadServlet{
 	public static final long serialVersionUID = 1L;
 
+	private String pathname;
+	
 	@Override
 	protected void execute(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		req.setCharacterEncoding("utf-8");
@@ -30,6 +36,10 @@ public class MypageServlet extends MyUploadServlet{
 			resp.sendRedirect(cp+"/member/login.do");
 			return;
 		}
+		
+		// 이미지를 저장할 경로(pathname)
+		String root = session.getServletContext().getRealPath("/");
+		pathname = root + "uploads" + File.separator + "profile";
 		
 		String uri = req.getRequestURI();
 		if(uri.indexOf("mypage.do") != - 1) {
@@ -129,7 +139,8 @@ public class MypageServlet extends MyUploadServlet{
 			
 			UserDTO dto = new UserDTO();
 			
-			dto.setOri_filename(req.getParameter("ori_filename"));
+			String imageFilename = req.getParameter("ori_filename");
+			dto.setOri_filename(imageFilename);
 			
 			dto.setId(info.getId());
 			dto.setPwd(req.getParameter("pwd"));
@@ -142,6 +153,16 @@ public class MypageServlet extends MyUploadServlet{
 			dto.setEmail(req.getParameter("email"));
 			dto.setPhone(req.getParameter("phone"));
 			dto.setTel(req.getParameter("tel"));
+			
+			Part p = req.getPart("selectFile");
+			Map<String, String> map = doFileUpload(p, pathname);
+			if (map != null) { // 이미지 파일을 업로드 한 경우
+				String filename = map.get("saveFilename");
+				// 기존 이미지 파일 지우기
+				FileManager.doFiledelete(pathname, imageFilename);
+				dto.setOri_filename(filename);
+			}
+			
 			
 			dao.mypageWriteForm(dto);
 			
@@ -161,7 +182,7 @@ public class MypageServlet extends MyUploadServlet{
 		MypageDAO dao = new MypageDAO();
 		
 		UserDTO dto = dao.selectemployee(info.getId());
-		List<MypageDTO> listMyAtt = dao.myattForm(info.getId());
+		MypageDTO listMyAtt = dao.myattForm(info.getId());
 		
 		req.setAttribute("dto", dto);
 		req.setAttribute("listMyAtt", listMyAtt);
@@ -187,6 +208,15 @@ public class MypageServlet extends MyUploadServlet{
 	
 	private void myoffForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
 		// 연차관리
+		Calendar cal = Calendar.getInstance();
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH) + 1; // 0 ~ 11
+		int date = cal.get(Calendar.DATE);
+		
+		String today = String.format("%04d%02d%02d", year, month, date);
+		
+		req.setAttribute("today", today);
+		forward(req, resp, "/WEB-INF/views/mypage/myoff.jsp");
 	}
 	
 	private void myoffuseForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
