@@ -87,7 +87,83 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 	color: #F28011;
 }
 
+.title {
+	font-size: 24px;
+	display: inline-block;
+	padding-left: 15px;
+}
 
+.size__ {
+	width: 400px;
+	background-color: #01d6b7;
+	color: #fff;	
+	border-radius: 10px;
+}
+
+.container__2 {
+	border: 1px solid #eee;
+	border-radius: 10px;
+	width: 100%;
+	padding-top: 30px;
+	padding-bottom: 30px;
+	padding-left: 10px;
+}
+
+.list__title {
+	display: inline-block;
+	text-align: center;
+	font-size: 19px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	font-weight: 600;
+	border-right: 1px solid #eee;
+
+}
+
+
+.container__list {
+	margin-left:15px;
+	
+}
+
+.center_item {
+	margin-top: 7px;
+	text-align: center;
+	height: 40px;
+	border: 1px solid #eee;
+	border-radius: 5px;
+	font-size: 16px;
+}
+
+.list__item {
+	width:  60px;
+	margin-left: 27px;
+}
+
+.list__item2 {
+	width: 200px;
+	margin-right: 8px;
+}
+
+.list__item3 {
+	margin-right: 2px;
+}
+
+.list__item6 {
+	font-size: 20px;
+}
+
+.fa-trash:hover {
+	cursor: pointer;
+	opacity: 70%;
+	color: red;
+}
+
+.fa-pencil:hover {
+	cursor: pointer;
+	opacity: 70%;
+	color: blue;
+}
 
 
 </style>
@@ -121,7 +197,7 @@ function ajaxFun(url, method, query, dataType, fn) {
 
 $(function(){
     // 실행과 동시에 처음 탭에 출력
-    let url = "${pageContext.request.contextPath}/schedule/month.do";
+    let url = "${pageContext.request.contextPath}/schedule/month_list.do";
     let query = "";
     
     schedule(url, query, "#nav-1");
@@ -133,6 +209,7 @@ function schedule(url, query, selector) {
 		$(selector).html(data);
 		today();
 	};
+	
 	ajaxFun(url, "get", query, "html", fn);	
 }
 
@@ -150,7 +227,7 @@ function today() {
 
 //월별 - 월을 변경하는 경우
 function changeMonth(year, month) {
-	let url = "${pageContext.request.contextPath}/schedule/month.do";
+	let url = "${pageContext.request.contextPath}/schedule/month_list.do";
 	let query = "year="+year+"&month="+month;
 	
 	schedule(url, query, "#nav-1");
@@ -187,9 +264,70 @@ $(function(){
 	
 });
 
+//수정 버튼
 $(function(){
-	$("#myDialogModal").modal("show");
+	$("body").on("click", ".fa-pencil", function(){
+		let date = $(this).attr("data-date");
+		let num = $(this).attr("data-num");
+		
+		let sch_name = $(".container__list input[name=sch_name]").val();
+		let sc_code = $(".container__list input[name=sc_code]").val();
+		let allDay = $(".container__list input[name=allDay]").val();
+		let sch_stime = $(".container__list input[name=sch_stime]").val();
+		let sch_sdate = $(".container__list input[name=sch_sdate]").val();
+		let sch_edate = $(".container__list input[name=sch_edate]").val();
+		if(! sch_edate ) sch_edate = sch_sdate;
+		let sch_etime = $(".container__list input[name=sch_etime]").val();
+		let sch_repeat = $(".container__list input[name=sch_repeat]").val();
+		let sch_repeat_c = $(".container__list input[name=sch_repeat_c]").val();
+		let sch_content = $(".container__list input[name=sch_content]").val();
+		
+		$("#form-num").val(num);
+		$("#form-subject").val(sch_name);
+		$("#form-color").val(sc_code);
+		if(allDay === "1") {
+			$("#form-allDay").prop("checked", true);
+		} else {
+			$("#form-allDay").prop("checked", false);
+		}
+		$("#form-sday").val(sch_sdate);
+		$("#form-stime").val(sch_stime);
+		$("#form-eday").val(sch_edate);
+		$("#form-etime").val(sch_etime);
+		if(sch_stime) {
+			$("#form-stime").show();
+			$("#form-etime").show()
+		} else {
+			$("#form-stime").hide();
+			$("#form-etime").hide()
+		}	
+		
+		$("#form-repeat").val(sch_repeat);
+		$("#form-repeat_cycle").val(sch_repeat_c);
+		if(sch_repeat === "1") {
+			$("#form-repeat_cycle").show();
+			$("#form-eday").closest("tr").hide();
+		} else {
+			$("#form-repeat_cycle").val("");
+			$("#form-repeat_cycle").hide();
+			$("#form-eday").closest("tr").show();
+		}
+		
+		$("#form-memo").val(sch_content);
+		
+		$("#myDialogModalLabel").html("일정 수정하기");
+		$("#btnScheduleSendOk").attr("data-mode", "update");
+		$("#btnScheduleSendOk").attr("data-num", num);
+		$("#btnScheduleSendOk").attr("data-date", date);
+		
+		$("#btnScheduleSendOk").html(" 수정 완료 ");
+		$("#btnScheduleSendCancel").html(" 수정 취소 ");
+		
+		$("#myDialogModal").modal("show");
+		
+	});
 });
+
 
 //등록 완료 버튼
 $(function(){
@@ -212,23 +350,30 @@ $(function(){
 					if(m.substr(0,1) ==="0" ) {
 						m = m.substr(1,1);
 					}
-					
-					let url = "${pageContext.request.contextPath}/schedule/month.do";
+					let url = "${pageContext.request.contextPath}/schedule/month_list.do";
 					let query = "year="+y+"&month="+m;
 					schedule(url, query, "#nav-1");
 					
-				}	
+				}else if(mode==="update"){
+					let num = $("#btnScheduleSendOk").attr("data-num");
+					let date = $("#btnScheduleSendOk").attr("data-date");
+					
+					let url = "${pageContext.request.contextPath}/schedule/month_list.do";
+					let query = "date="+date+"&num="+num;
+					
+					schedule(url, query, "#nav-1");
+					
+				}
 			}
-		}
+			
+			$("#myDialogModal").modal("hide");
+			
+		};
 		
-		$("#myDialogModal").modal("hide");
+		ajaxFun(url, "post", query, "json", fn);	
 		
 	});
-	
-	ajaxFun(url, "post", query, "json", fn);	
-	
 });
-
 
 /// 모달 취소
 $(function(){
@@ -320,6 +465,51 @@ function check() {
 	return true;
 }
 
+//월별 - 스케쥴 제목을 클릭한 경우
+$(function(){
+	$("body").on("click", ".scheduleSubject", function(){
+		let date = $(this).attr("data-date");
+		let num = $(this).attr("data-num");
+		
+		let url = "${pageContext.request.contextPath}/schedule/detail.do"
+		let query = "date="+date+"&num="+num;
+		let selector = "#here";
+		
+		const fn = function(data){
+			$(selector).html(data);
+		};
+		
+		ajaxFun(url, "get", query, "html", fn);
+		
+	});
+});
+
+//삭제 버튼
+$(function(){
+	$("body").on("click", ".fa-trash", function(){
+		if(! confirm("일정을 삭제 하시겠습니까 ? ")) {
+			return false;
+		}
+		
+		let date = $(this).attr("data-date");
+		let sch_num = $(this).attr("data-num");
+		let url = "${pageContext.request.contextPath}/schedule/delete.do";
+
+		let query = "num="+sch_num;
+		
+		const fn = function(data){
+			if(data.state === "true"){
+				let url = "${pageContext.request.contextPath}/schedule/main.do";
+				let query = "date="+date+"&num="+sch_num;
+				schedule(url, query, "#nav-1");
+			}
+		};
+		
+		ajaxFun(url, "post", query, "json", fn);
+
+	});
+});
+
 
 </script>
 
@@ -355,7 +545,7 @@ function check() {
 	
 	
 	
-<!-- Modal -->
+<!--등록 Modal -->
 <div class="modal fade" id="myDialogModal"
 		data-bs-backdrop="static" data-bs-keyboard="false" 
 		tabindex="-1" aria-labelledby="imyDialogModalLabel" aria-hidden="true">
@@ -381,7 +571,7 @@ function check() {
 						<tr>
 							<td class="col-2">일정분류</td>
 							<td>
-								<select name="color" id="form-color" class="form-select">
+								<select name="sc_code" id="form-color" class="form-select">
 									<option value="100">회사 일정</option>
 									<option value="200">부서 일정</option>
 									<option value="300">개인 일정</option>
@@ -438,13 +628,13 @@ function check() {
 							<td>
 								<div class="row">
 									<div class="col col-sm-4 pe-1">
-										<select name="repeat" id="form-repeat" class="form-select">
+										<select name="sch_repeat" id="form-repeat" class="form-select">
 											<option value="0">반복안함</option>
 											<option value="1">년반복</option>
 										</select>
 									</div>
 									<div class="col col-sm-3">
-										<input type="text" name="repeat_c" id="form-repeat_cycle" class="form-control">
+										<input type="text" name="sch_repeat_c" id="form-repeat_cycle" class="form-control">
 									</div>
 								</div>
 							</td>
@@ -471,16 +661,17 @@ function check() {
 		</div>
 	</div>
 </div>	
-	
-	
-	<div>
-		<jsp:include page="/WEB-INF/views/schedule/day.jsp" />
-	</div>
-	
+
+
+
+<div id="here">
+</div>
+
 
 	</main>
 	<footer>
 		<jsp:include page="/WEB-INF/views/layout/footer.jsp" />
+		<jsp:include page="/WEB-INF/views/layout/staticFooter.jsp"/>
 	</footer>
 
 </body>

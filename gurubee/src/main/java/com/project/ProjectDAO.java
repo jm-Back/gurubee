@@ -357,19 +357,21 @@ public class ProjectDAO {
 				
 				//내 사번으로 연관된 프로젝트 list
 				sql = " SELECT DISTINCT E.ori_filename, E.name, A.pro_code, A.id id_p, A.pro_name, A.pro_clear, A.pro_type, A.pro_master, A.pro_outline, A.pro_content, A.pro_sdate, A.pro_edate "
-						+ " , COUNT(C.id) pj_count "
-						+ "	FROM Employee E "
-						+ " JOIN project A ON A.pro_master = E.id "
-						+ "	JOIN project_join C ON A.pro_code = C.pro_code "
-						+ "	WHERE (C.id = ? OR A.pro_master = ?) "
-						+ " group by E.ori_filename, E.name, A.pro_code, A.id, A.pro_name, A.pro_clear, A.pro_type, A.pro_master, A.pro_outline, A.pro_content, A.pro_sdate, A.pro_edate"
-						+ "	ORDER BY A.pro_sdate ASC ";
+						+ " , count(C.id) pj_count, NVL(pp, 0) pp, NVL(cc,0) cc "
+						+ "FROM Employee E  "
+						+ "JOIN project A ON A.pro_master = E.id  "
+						+ "JOIN project_join C ON A.pro_code = C.pro_code  "
+						+ "left join (select sum(pd_part) as pp,count(*) as cc , pro_code from project_detail where pd_ing > 0 group by pro_code) B on A.pro_code = B.pro_code "
+						+ "WHERE (C.id = ?  OR A.pro_master = ?  OR A.id = ? ) "
+						+ "group by E.ori_filename, E.name, A.pro_code, A.id, A.pro_name, A.pro_clear, A.pro_type, A.pro_master, A.pro_outline, A.pro_content, A.pro_sdate, A.pro_edate, pp, cc "
+						+ "ORDER BY A.pro_sdate ASC  ";
 				
 				pstmt = conn.prepareStatement(sql);
 				
 				pstmt.setString(1, dto.getPj_id());
 				pstmt.setString(2, dto.getPj_id());
-
+				pstmt.setString(3, dto.getPj_id());
+				
 				rs = pstmt.executeQuery();
 				
 				while(rs.next()) {
@@ -388,6 +390,8 @@ public class ProjectDAO {
 					dto2.setPro_sdate(rs.getDate("pro_sdate").toString());
 					dto2.setPro_edate(rs.getDate("pro_edate").toString());
 					dto2.setPj_id(rs.getString("pj_count"));
+					dto2.setPd_part(rs.getInt("pp"));
+					dto2.setPd_ing(rs.getInt("cc"));
 
 					list.add(dto2);
 				}
@@ -432,14 +436,15 @@ public class ProjectDAO {
 						+ " JOIN project A ON A.pro_master = E.id "
 						+ " JOIN project_detail B ON A.pro_code = B.pro_code "
 						+ " JOIN project_join C ON A.pro_code = C.pro_code "
-						+ " WHERE (C.id = ? OR A.pro_master = ?) AND A.pro_code = ? "
+						+ " WHERE (C.id = ? OR A.pro_master = ? OR A.id = ? ) AND A.pro_code = ? "
 						+ " ORDER BY A.pro_sdate DESC ";
 				
 				pstmt = conn.prepareStatement(sql);
 				
 				pstmt.setString(1, me_id);
 				pstmt.setString(2, me_id);
-				pstmt.setString(3, pro_code);
+				pstmt.setString(3, me_id);
+				pstmt.setString(4, pro_code);
 				
 				rs = pstmt.executeQuery();
 				
@@ -1386,17 +1391,22 @@ public class ProjectDAO {
 				
 				//내 사번으로 연관된 프로젝트 list
 				sql = " SELECT DISTINCT E.ori_filename, E.name, A.pro_code, A.id id_p, A.pro_name, A.pro_clear, A.pro_type, A.pro_master, A.pro_outline, A.pro_content, A.pro_sdate, A.pro_edate "
-						+ "	FROM Employee E "
-						+ " JOIN project A ON A.pro_master = E.id "
-						+ "	JOIN project_join C ON A.pro_code = C.pro_code "
-						+ "	WHERE (C.id = ? OR A.pro_master = ?) AND A.pro_type = ? "
-						+ "	ORDER BY A.pro_sdate ASC ";
+						+ " , count(C.id) pj_count, NVL(pp, 0) pp, NVL(cc,0) cc "
+						+ "FROM Employee E "
+						+ "JOIN project A ON A.pro_master = E.id  "
+						+ "JOIN project_join C ON A.pro_code = C.pro_code  "
+						+ "left join (select sum(pd_part) as pp,count(*) as cc , pro_code from project_detail where pd_ing > 0 group by pro_code) B on A.pro_code = B.pro_code "
+						+ "WHERE (C.id = ?  OR A.pro_master = ? OR A.id = ?) AND A.pro_type = ? "
+						+ "group by E.ori_filename, E.name, A.pro_code, A.id, A.pro_name, A.pro_clear, A.pro_type, A.pro_master, A.pro_outline, A.pro_content, A.pro_sdate, A.pro_edate, pp, cc "
+						+ "ORDER BY A.pro_sdate ASC ";
 				
 				pstmt = conn.prepareStatement(sql);
 				
 				pstmt.setString(1, dto.getPj_id());
 				pstmt.setString(2, dto.getPj_id());
-				pstmt.setString(3, pro_type);
+				pstmt.setString(3, dto.getPj_id());
+				
+				pstmt.setString(4, pro_type);
 
 				rs = pstmt.executeQuery();
 				
@@ -1415,7 +1425,11 @@ public class ProjectDAO {
 					dto2.setPro_content(rs.getString("pro_content"));
 					dto2.setPro_sdate(rs.getDate("pro_sdate").toString());
 					dto2.setPro_edate(rs.getDate("pro_edate").toString());
-					
+					dto2.setPj_id(rs.getString("pj_count"));
+					dto2.setPd_part(rs.getInt("pp"));
+					dto2.setPd_ing(rs.getInt("cc"));
+
+
 					list.add(dto2);
 				}
 				

@@ -14,7 +14,28 @@ public class ScheduleDTO {
 	private int sch_repeat;
 	private int sch_repeat_c;		//반복 주기
 	private String sch_reg_date; //등록일
+	private String sc_color;
+	private String period;
+	private String sc_type;
 	
+	public String getSc_type() {
+		return sc_type;
+	}
+	public void setSc_type(String sc_type) {
+		this.sc_type = sc_type;
+	}
+	public String getPeriod() {
+		return period;
+	}
+	public void setPeriod(String period) {
+		this.period = period;
+	}
+	public String getSc_color() {
+		return sc_color;
+	}
+	public void setSc_color(String sc_color) {
+		this.sc_color = sc_color;
+	}
 	public String getSch_num() {
 		return sch_num;
 	}

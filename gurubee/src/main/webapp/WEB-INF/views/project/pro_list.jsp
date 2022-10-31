@@ -17,7 +17,7 @@
 									<input type="hidden" value="${dto.pd_code}">
 									<input type="hidden" value="${dto.id_p}" >
 									<h6 class="mb-0 font__bold">${dto.name_p}</h6> <span>${dto.pro_sdate} ~ ${dto.pro_edate}</span>
-									<div class="clear__state">${dto.pro_clear}</div>
+									<div class=" ${dto.pd_part >99 ? 'clear__state__wan': 'clear__state'} ">${dto.pd_part > 99 ? '성공' : '진행중'}</div>
 								</div>
 							</div>
 						</div>
@@ -27,6 +27,9 @@
 						<div class="mt-3">
 							<p style="color: #404040;">${dto.pro_outline}</p>
 							<div id="here_progress_main">
+								<div class="progress progress__design">
+									<div class="progress-bar progress__color " id="here_progress" role="progressbar" style="width: ${dto.pd_part}%" >${dto.pd_part}</div>
+								</div>
 							</div>
 							<div class="mt-3"><span class="text1">${dto.pro_type}</span> &nbsp; <span class="text2">[프로젝트 참여자 수 : ${dto.pj_id}]</span></div>
 						</div>
