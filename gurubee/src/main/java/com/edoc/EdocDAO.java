@@ -150,11 +150,11 @@ public class EdocDAO {
 			sql = "SELECT COUNT(*) FROM E_APPROVAL "
 					+ " WHERE id IN ? AND temp NOT IN 0 ";
 
-			if(myDate==null && edoc!=null) {
+			if(myDate.length()==0 && edoc.length()!=0) {
 				sql += " AND app_doc = ? ";
-			} else if(myDate!=null && edoc==null) {
+			} else if(myDate.length()!=0 && edoc.length()==0) {
 				sql += " AND TO_CHAR(app_date,'YYYY-MM-DD') = ? ";
-			} else if (myDate!=null && edoc!=null) {
+			} else if (myDate.length()!=0 && edoc.length()!=0) {
 				sql += " AND app_doc=? AND TO_CHAR(app_date,'YYYY-MM-DD') = ?";
 			}
 			
@@ -162,11 +162,11 @@ public class EdocDAO {
 			
 			pstmt.setString(1, writeId);
 			
-			if(myDate==null && edoc!=null) {
+			if(myDate.length()==0 && edoc.length()!=0) {
 				pstmt.setString(2, edoc);
-			} else if(myDate==null && edoc==null) {
+			} else if(myDate.length()!=0 && edoc.length()==0) {
 				pstmt.setString(2, myDate);
-			} else if (myDate!=null && edoc!=null) {
+			} else if (myDate.length()!=0 && edoc.length()!=0) {
 				pstmt.setString(2, edoc);
 				pstmt.setString(3, myDate);
 			}
@@ -366,8 +366,6 @@ public class EdocDAO {
 					}
 				}
 				
-				// System.out.println(edocdto.getApp_num() + ": " + rs.getString("id") +edocdto.getResult() + ", " + edocdto.getResult_name());
-				
 				edocdto.setTitle(rs.getString("title"));
 				edocdto.setApp_date(rs.getString("app_date"));
 				edocdto.setTemp(rs.getInt("temp"));
@@ -419,11 +417,11 @@ public class EdocDAO {
 						+ "    ON er.app_num = al.app_num "
 						+ " WHERE (temp=1 OR temp=-1) AND al.id = ? ";
 						
-				if(myDate==null && edoc!=null) {
+				if(myDate.length()==0 && edoc.length()!=0) {
 					sql += " AND app_doc = ? ";
-				} else if(myDate!=null && edoc==null) {
+				} else if(myDate.length()!=0 && edoc.length()==0) {
 					sql += " AND TO_CHAR(app_date,'YYYY-MM-DD') = ? ";
-				} else if (myDate!=null && edoc!=null) {
+				} else if (myDate.length()!=0 && edoc.length()!=0) {
 					sql += " AND app_doc=? AND TO_CHAR(app_date,'YYYY-MM-DD')=? ";
 				}
 
@@ -434,15 +432,15 @@ public class EdocDAO {
 				
 				pstmt.setString(1, writeId);
 
-				if(myDate==null && edoc!=null) {
+				if(myDate.length()==0 && edoc.length()!=0) {
 					pstmt.setString(2, edoc);
 					pstmt.setInt(3, offset);
 					pstmt.setInt(4, size);
-				} else if(myDate!=null && edoc==null) {
+				} else if(myDate.length()!=0 && edoc.length()==0) {
 					pstmt.setString(2, myDate);
 					pstmt.setInt(3, offset);
 					pstmt.setInt(4, size);
-				} else if (myDate!=null && edoc!=null) {
+				} else if (myDate.length()!=0 && edoc.length()!=0) {
 					pstmt.setString(2, edoc);
 					pstmt.setString(3, myDate);
 					pstmt.setInt(4, offset);
@@ -452,9 +450,6 @@ public class EdocDAO {
 					pstmt.setInt(3, size);
 				}
 				
-				
-				System.out.println("DAO: "+edoc +", "+ myDate);
-		
 				rs = pstmt.executeQuery();
 				
 				while(rs.next()) {
@@ -482,8 +477,6 @@ public class EdocDAO {
 							}
 						}
 					}
-					
-					// System.out.println(edocdto.getApp_num() + ": " +edocdto.getResult() + ", " + edocdto.getResult_name());
 					
 					edocdto.setTitle(rs.getString("title"));
 					edocdto.setApp_date(rs.getString("app_date"));
@@ -524,7 +517,7 @@ public class EdocDAO {
 			sql = "select al.app_num, al.app_doc, TO_CHAR(al.app_date,'YYYY-MM-DD')app_date, al.id, "
 					+ "    name, al.title, resultList, apperList, idList, al.temp "
 					+ " FROM E_APPROVAL al "
-					+ " LEFT OUTER JOIN "
+					+ " JOIN "
 					+ "    (SELECT app_num, LISTAGG(app_result, ',') WITHIN GROUP(ORDER BY app_level) "
 					+ "        AS resultList, "
 					+ "        LISTAGG(e.name, ',') WITHIN GROUP(ORDER BY app_level)  "
@@ -536,33 +529,33 @@ public class EdocDAO {
 					+ "     GROUP BY app_num "
 					+ "    ) er "
 					+ "    ON er.app_num = al.app_num "
-					+ " LEFT OUTER JOIN EMPLOYEE e ON e.id=al.id "
+					+ " JOIN EMPLOYEE e ON e.id=al.id "
 					+ " WHERE (temp=1 OR temp=-1) AND INSTR(idList, ?) > 0 ";
 			
-			if(myDate==null && edoc!=null) {
+			if(myDate.length()==0 && edoc.length()!=0) {
 				sql += " AND app_doc = ? ";
-			} else if(myDate!=null && edoc==null) {
+			} else if(myDate.length()!=0 && edoc.length()==0) {
 				sql += " AND TO_CHAR(app_date,'YYYY-MM-DD') = ? ";
-			} else if (myDate!=null && edoc!=null) {
+			} else if (myDate.length()!=0 && edoc.length()!=0) {
 				sql += " AND app_doc=? AND TO_CHAR(app_date,'YYYY-MM-DD')=? ";
 			}
 
 			sql += " ORDER BY al.app_num DESC "
 					+ " OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ";
-			
+
 			pstmt = conn.prepareStatement(sql);
 			
 			pstmt.setString(1, appID);
 
-			if(myDate==null && edoc!=null) {
+			if(myDate.length()==0 && edoc.length()!=0) {
 				pstmt.setString(2, edoc);
 				pstmt.setInt(3, offset);
 				pstmt.setInt(4, size);
-			} else if(myDate!=null && edoc==null) {
+			} else if(myDate.length()!=0 && edoc.length()==0) {
 				pstmt.setString(2, myDate);
 				pstmt.setInt(3, offset);
 				pstmt.setInt(4, size);
-			} else if (myDate!=null && edoc!=null) {
+			} else if (myDate.length()!=0 && edoc.length()!=0) {
 				pstmt.setString(2, edoc);
 				pstmt.setString(3, myDate);
 				pstmt.setInt(4, offset);
@@ -641,30 +634,29 @@ public class EdocDAO {
 			
 			sql = "SELECT COUNT(*) "
 					+ " FROM E_APPROVAL al "
-					+ " LEFT OUTER JOIN "
-					+ " (SELECT app_num, er.id, app_result, app_level "
+					+ " JOIN (SELECT app_num, er.id, app_result, app_level "
 					+ " FROM E_APPROVER er "
 					+ " WHERE er.id = ?) er "
 					+ " ON er.app_num = al.app_num"
 					+ " WHERE al.temp NOT IN 0 ";
-			System.out.println("DAO: "+myDate+", "+edoc);
-			if(myDate==null && edoc!=null) {
+
+			if(myDate.length()==0 && edoc.length()!=0) {
 				sql += " AND app_doc = ? ";
-			} else if(myDate!=null && edoc==null) {
+			} else if(myDate.length()!=0 && edoc.length()==0) {
 				sql += " AND TO_CHAR(app_date,'YYYY-MM-DD') = ? ";
-			} else if (myDate!=null && edoc!=null) {
+			} else if (myDate.length()!=0 && edoc.length()!=0) {
 				sql += " AND app_doc=? AND TO_CHAR(app_date,'YYYY-MM-DD') = ?";
 			}
-			
+
 			pstmt = conn.prepareStatement(sql);
 			
 			pstmt.setString(1, apperId);
 			
-			if(myDate==null && edoc!=null) {
+			if(myDate.length()==0 && edoc.length()!=0) {
 				pstmt.setString(2, edoc);
-			} else if(myDate!=null && edoc==null) {
+			} else if(myDate.length()!=0 && edoc.length()==0) {
 				pstmt.setString(2, myDate);
-			} else if (myDate!=null && edoc!=null) {
+			} else if (myDate.length()!=0 && edoc.length()!=0) {
 				pstmt.setString(2, edoc);
 				pstmt.setString(3, myDate);
 			}
@@ -946,7 +938,9 @@ public class EdocDAO {
 				
 			sql = "UPDATE SET E_APPROVER app_result=? "
 					+ "WHERE app_num=? AND id = ?";
-				
+			
+			pstmt = conn.prepareStatement(sql);
+			
 			pstmt.setInt(1, app_result);
 			pstmt.setInt(2, app_num);
 			pstmt.setString(3, id_apper);
@@ -1016,4 +1010,123 @@ public class EdocDAO {
 		
 		return level;
 	}
+	
+	// 문서 작성자 확인
+	public boolean readEdocWriteId(String writeId, int app_num) {
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		boolean b=false;
+		
+		try {
+			sql = "SELECT app_num, app_doc, id, app_date, doc_form, title, temp"
+				+ " FROM E_APPROVAL "
+				+ " WHERE app_num=? AND id=?";
+
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, app_num);
+			pstmt.setString(2, writeId);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				b = true;
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e2) {
+				}
+			}
+
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+				}
+			}
+		}
+		
+		return b;
+	}
+	
+	// 문서의 결재상태 확인
+	public boolean readEdocResult(int app_num) {
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		boolean b = true;
+		
+		try {
+			sql = "SELECT app_result FROM E_APPROVER "
+				+ " WHERE app_num=?";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, app_num);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				System.out.println(rs.getInt("app_result"));
+				if(rs.getInt("app_result")!=0) {
+					b = false;
+				}
+			}
+			
+			System.out.println(b);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e2) {
+				}
+			}
+
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+				}
+			}
+		}
+		
+		return b;
+	}
+	
+	// 문서 수정
+	public void updateEdoc(EdocDTO edocdto) {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			sql = "UPDATE E_APPROVAL SET app_doc=?, app_date=SYSDATE, "
+				+ "    doc_form=?, title=?, temp=-1 "
+				+ "    WHERE app_num=?";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, edocdto.getApp_doc());
+			pstmt.setString(2, edocdto.getDoc_form());
+			pstmt.setString(3, edocdto.getTitle());
+			pstmt.setInt(4, edocdto.getApp_num());
+			
+			pstmt.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	
 }

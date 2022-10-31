@@ -255,17 +255,33 @@ $(function(){
 					</tr>
 				</table>
 				<div style="text-align: right;">
-					<c:if test="${dto.id_write == sessionScope.member.id}">
-					<button type="button" onclick="update();" class="btn btn-success" style="font-size: 17px;">수정하기</button>
-					</c:if>
+					<c:choose>
+						<c:when test="${dto.id_write == sessionScope.member.id}">
+							<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/edoc/update.do?app_num=${dto.app_num}&page=${page}';">문서수정</button>	
+						</c:when>
+						<c:otherwise>
+							<button type="button" class="btn btn-light" disabled="disabled">수정</button>
+						</c:otherwise>
+					</c:choose>
+					
 					<c:if test="${dto.id_write != sessionScope.member.id}">
-					<button type="button" class="btn btn-success" disabled style="font-size: 17px;">수정하기</button>
+						<button type="button" class="btn btn-success" disabled style="font-size: 17px;">수정하기</button>
 					</c:if>
 				</div>
 				
 				<div style="text-align: center;">
-					<button type="button" id="btnApproval" name="btnApproval" class="btn btn-success" style="font-size: 25px;">결제하기</button>
+					<c:choose>
+						<c:when test="${dto.id_write == sessionScope.member.id}">
+							<button type="button" id="btnApproval" name="btnApproval" class="btn btn-success" disabled="disabled" style="font-size: 25px;">결제하기</button>
+						</c:when>
+						<c:otherwise>
+							<button type="button" id="btnApproval" name="btnApproval" class="btn btn-success" style="font-size: 25px;">결제하기</button>
+						</c:otherwise>
+					</c:choose>
+					
 				</div>
+				<input type="hidden" name="app_num" value="${dto.app_num }">
+				<input type="hidden" name="page" value="${page}">
 			</form>
 		</div>
 	

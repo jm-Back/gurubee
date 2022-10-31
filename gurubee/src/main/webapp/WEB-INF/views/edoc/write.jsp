@@ -94,7 +94,7 @@ function sendOk() {
  		return false;
  	}
  	
- 	f.action = "${pageContext.request.contextPath}/edoc/write_ok.do";
+ 	f.action = "${pageContext.request.contextPath}/edoc/${mode}_ok.do";
  
   	f.submit();
 }
@@ -297,7 +297,8 @@ function clickEmpSearch(object) {
 						<th class="fs-6">제목</th>
 						<td> 
 							<div class="mb-3">
-  							<input class="form-control" type="text" id="title" name="title" multiple style="width: 50%; height: 80px;">
+  							<input class="form-control" type="text" id="title" name="title" multiple value="${dto.title }"
+  								style="width: 50%; height: 80px;">
 							</div>
 						</td>
 					</tr>
@@ -349,7 +350,7 @@ function clickEmpSearch(object) {
 					<tr>
 						<th class="fs-6">상세내용</th>
 						<td>
-							<textarea name="content" id="ir1" class="form-control"style="width: 90%; height:500px; ">${formdto.doc_form}</textarea>
+							<textarea name="content" id="ir1" class="form-control"style="width: 90%; height:500px; ">${dto.doc_form}</textarea>
 							
 						</td>
 					</tr>
@@ -377,8 +378,13 @@ function clickEmpSearch(object) {
 				</div>
 				
 				<div style="text-align: center;">
-					<button type="button" onclick="sendOk();" class="btn btn-success" style="font-size: 20px;">결제요청</button>
+					<button type="button" onclick="sendOk();" class="btn btn-success" style="font-size: 20px;">${mode=='update'?'수정하기':'결제요청'}</button>
 				</div>
+				<c:if test="${mode=='update'}">
+					<input type="hidden" name="app_num" value="${dto.app_num }">
+					<input type="hidden" name="page" value="${page}">
+				</c:if>
+				
 			</form>
 		</div>
 	

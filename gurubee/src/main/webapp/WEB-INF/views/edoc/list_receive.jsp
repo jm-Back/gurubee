@@ -104,8 +104,6 @@ function checkValidDate(value) {
 function conditionSubmit() {
 	const f = document.conditionForm;
 	
-	alert('실행');
-	
 	let myDate = $("form input[name=myDate]").val();
 	let edoc = $("#edocSelect option:selected").attr("data-edoc");
 
@@ -120,30 +118,6 @@ function conditionSubmit() {
 	
 	f.submit();
 }
-
-
-$(function() {
-	/*
-	$("form button[name=btnSearchEdoc]").click(function() {
-		let f = document.conditionForm;
-
-		let startDate = $("form input[name=startDate]").val();
-		let endDate = $("form input[name=endDate]").val();
-		let result =  $("#resultSelect option:selected").attr("data-result");
-		let edoc = $("#edocSelect option:selected").attr("data-edoc");
-		// ! 로 값 존재 확인	
-		startDate = encodeURIComponent(startDate);
-		endDate = encodeURIComponent(endDate);
-		result = encodeURIComponent(result);
-		edoc = encodeURIComponent(edoc);
-
-		let url = "${pageContext.request.contextPath}/edoc/send_condition.do"
-		
-		let query = "startDate="+startDate;
-		let query = $(".conditionForm").serialize()
-	});
-	*/
-})
 
 </script>
 
@@ -162,7 +136,7 @@ $(function() {
 						<div class="col-12 text-center">
 							<form class="row" id="conditionForm" name="conditionForm" method="post" enctype="multipart/form-data">
 								<div class="col-1 p-1">
-									<input type="text" class="form-control" id="myDate" name="myDate" placeholder="날짜">
+									<input type="text" class="form-control" id="myDate" name="myDate" val="" placeholder="날짜">
 								</div>
 								<div class="col-2 p-1" style="width: 200px;">
 									<select id="edocSelect" name="edocSelect" class="form-select">
@@ -177,10 +151,8 @@ $(function() {
 								</div>
 								<div class="col-1 p-1">
 									<button type="button" id="btnContidion" onclick="conditionSubmit();" class="btn btn-success" style="height: 35px;"><i class="bi bi-search"></i></button>	
-									<button type="button" id="btnContidion" onclick="${pageContext.request.contextPath}/edoc/liset_receive.do" class="btn btn-success" style="height: 35px;"><i class="bi bi-arrow-repeat"></i></button>	
-								
 								</div>
-								<input type="hidden" id="page" value=" ">		
+								<input type="hidden" id="page" value="">		
 							</form>
 						</div>
 						

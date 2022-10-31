@@ -104,8 +104,6 @@ function checkValidDate(value) {
 function conditionSubmit() {
 	const f = document.conditionForm;
 	
-	alert('실행');
-	
 	let myDate = $("form input[name=myDate]").val();
 	let edoc = $("#edocSelect option:selected").attr("data-edoc");
 
@@ -235,6 +233,7 @@ $(function() {
 										</td>
 									</tr>
 									<input type="hidden" name="app_num" value="${dto.app_num}">
+									<input type="hidden" name="page" value="${page}">
 								</c:forEach>
 								
 							</tbody>
