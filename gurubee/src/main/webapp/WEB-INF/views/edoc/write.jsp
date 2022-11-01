@@ -261,6 +261,17 @@ function clickEmpSearch(object) {
     ajaxFun(url, "post", query, "text", fn);
 }
 
+<c:if test="${mode=='update'}">
+function deleteFile(fileNum, app_num) {
+	if(! confirm("파일을 삭제 하시겠습니까 ?")) {
+		return;
+	}
+	
+	let query = "fileNum="+fileNum+"&app_num="+app_num+"&page=${page}";
+	let url = "${pageContext.request.contextPath}/edoc/deleteFile.do?" + query;
+	location.href = url;
+}
+</c:if>
 
 </script>
 
@@ -360,10 +371,23 @@ function clickEmpSearch(object) {
 						<th class="fs-6">첨부파일</th>
 						<td> 
 							<div class="mb-3">
-  							<input class="form-control" type="file" id="formFileMultiple" multiple style="width: 50%;">
+  							<input class="form-control" type="file" name="selectFile" multiple="multiple" style="width: 50%;">
 							</div>
 						</td>
 					</tr>
+					<c:if test="${mode=='update'}">
+						<c:forEach var="vo" items="${listFile}">
+							<tr>
+								<td class="table-light col-sm-2" scope="row">첨부된파일</td>
+								<td> 
+									<p class="form-control-plaintext">
+										<a href="javascript:deleteFile('${vo.fileNum}','${dto.app_num}');"><i class="bi bi-trash"></i></a>
+										${vo.originalFilename}
+									</p>
+								</td>
+							</tr>
+						</c:forEach> 
+					</c:if>
 					
 					<tr>
 						<th class="fs-6">메모</th>
@@ -381,14 +405,15 @@ function clickEmpSearch(object) {
 				<div style="text-align: center;">
 					<button type="button" onclick="sendOk();" class="btn btn-success" style="font-size: 20px;">${mode=='update'?'수정하기':'결제요청'}</button>
 				</div>
+				
+				<input type="hidden" name="app_num" value="${dto.app_num }">
+				<input type="hidden" name="page" value="${page}">
+				<input type="hidden" name="size" value="${size}">
+				<input type="hidden" name="mode" value="${mode}">
 				<c:if test="${mode=='update'}">
-					<input type="hidden" name="app_num" value="${dto.app_num }">
-					<input type="hidden" name="page" value="${page}">
 					<input type="hidden" name="temp" value="-1">
 				</c:if>
 				<c:if test="${mode!='update'}">
-					<input type="hidden" name="app_num" value="${dto.app_num }">
-					<input type="hidden" name="page" value="${page}">
 					<input type="hidden" name="temp" value="1">
 				</c:if>
 			</form>

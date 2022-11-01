@@ -18,6 +18,8 @@ public class EdocDAO {
 		String sql;
 		
 		try {
+			conn.setAutoCommit(false);
+			
 			sql = "INSERT INTO E_APPROVAL (app_num, app_doc, id, app_date, doc_form, title, temp, result) "
 					+ " VALUES (APPVAL_SEQ.NEXTVAL, ?, ?, SYSDATE, ?, ?, ?, 0) ";
 			
@@ -30,7 +32,26 @@ public class EdocDAO {
 			pstmt.setInt(5, edocdto.getTemp());
 			
 			pstmt.executeQuery();
+
+			pstmt.close();
+			pstmt = null;
 			
+			if(edocdto.getSaveFiles() != null) {
+				sql = "INSERT INTO E_APPROVAL_FILE(app_num, file_num, save_filename, ori_filename)"
+					+ "	VALUES(APPVAL_SEQ.CURRVAL, APPVALFILE_SEQ.NEXTVAL, ?, ?)";
+			
+				pstmt = conn.prepareStatement(sql);
+				
+				for(int i=0; i<edocdto.getSaveFiles().length; i++) {
+					pstmt.setString(1, edocdto.getSaveFiles()[i]);
+					pstmt.setString(2, edocdto.getOriginalFiles()[i]);
+				
+					pstmt.executeUpdate();
+				}	
+			}
+			
+			conn.commit();
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -40,6 +61,10 @@ public class EdocDAO {
 				} catch (Exception e2) {
 					e2.printStackTrace();
 				}
+			}
+			try {
+				conn.setAutoCommit(true);
+			} catch (Exception e) {
 			}
 		}
 		
@@ -447,7 +472,7 @@ public class EdocDAO {
 				
 				edocdto.setApp_num(rs.getInt("app_num"));
 				edocdto.setApp_doc(rs.getString("app_doc"));
-				if(rs.getString("resultList").length()==0) {
+				if(rs.getString("resultList")==null) {
 					break;
 				}
 				rr = rs.getString("resultList").split(",");
@@ -971,8 +996,7 @@ public class EdocDAO {
 				edocdto.setTitle(rs.getString("title"));
 				edocdto.setTemp(rs.getInt("temp"));
 			}
-			
-			
+	
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -993,8 +1017,7 @@ public class EdocDAO {
 		return edocdto;
 	}
 	
-	
-		// 문서의 결재자 리스트 가져오기
+	// 문서의 결재자 리스트 가져오기
 	public List<EdocEmpDTO> readEdocApper(int app_num) {
 		List<EdocEmpDTO> list = new ArrayList<>();
 		PreparedStatement pstmt = null;
@@ -1036,6 +1059,7 @@ public class EdocDAO {
 
 				list.add(empdto);
 			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -1350,9 +1374,12 @@ public class EdocDAO {
 		String sql;
 		
 		try {
+			System.out.println("updateEdoc 실행");
+			conn.setAutoCommit(false);
+			
 			sql = "UPDATE E_APPROVAL SET app_doc=?, app_date=SYSDATE, "
-				+ "    doc_form=?, title=?, temp=-1 "
-				+ "    WHERE app_num=?";
+					+ " doc_form=?, title=?, temp=-1 "
+					+ " WHERE app_num=?";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -1362,12 +1389,45 @@ public class EdocDAO {
 			pstmt.setInt(4, edocdto.getApp_num());
 			
 			pstmt.executeUpdate();
+	
+			pstmt.close();
+			pstmt=null;
 			
+			if(edocdto.getSaveFiles() != null) {
+				sql = "INSERT INTO E_APPROVAL_FILE(app_num, file_num, save_filename, ori_filename)"
+					+ "	VALUES(?, APPVALFILE_SEQ.NEXTVAL, ?, ?)";
+			
+				pstmt = conn.prepareStatement(sql);
+				
+				for(int i=0; i<edocdto.getSaveFiles().length; i++) {
+					System.out.println("파일 갯수만큼 실행된다잇");
+					pstmt.setInt(1, edocdto.getApp_num());
+					pstmt.setString(2, edocdto.getSaveFiles()[i]);
+					pstmt.setString(3, edocdto.getOriginalFiles()[i]);
+				
+					pstmt.executeUpdate();
+				}	
+			}
+			
+			conn.commit();
+
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+			}
+			try {
+				conn.setAutoCommit(true);
+			} catch (Exception e) {
+			}
 		}
+		
 	}
-	
 	
 	// 임시저장한 문서 작성 
 	public void updateTempEdoc(EdocDTO edocdto) {
@@ -1375,22 +1435,57 @@ public class EdocDAO {
 		String sql;
 
 		try {
-			sql = "UPDATE E_APPROVAL SET app_doc=?, app_date=SYSDATE, " 
-				+ " doc_form=?, title=?, temp=1 "
-				+ " WHERE app_num=?";
-
+			conn.setAutoCommit(false);
+			
+			sql = "UPDATE E_APPROVAL SET app_doc=?, app_date=SYSDATE, "
+					+ " doc_form=?, title=?, temp=1 "
+					+ " WHERE app_num=?";
+			
 			pstmt = conn.prepareStatement(sql);
-
+			
 			pstmt.setString(1, edocdto.getApp_doc());
 			pstmt.setString(2, edocdto.getDoc_form());
 			pstmt.setString(3, edocdto.getTitle());
 			pstmt.setInt(4, edocdto.getApp_num());
-
+			
 			pstmt.executeUpdate();
+			
+			pstmt.close();
+			pstmt=null;
+			
+			if(edocdto.getSaveFiles() != null) {
+				sql = "INSERT INTO E_APPROVAL_FILE(app_num, file_num, save_filename, ori_filename)"
+					+ "	VALUES(?, APPVALFILE_SEQ.NEXTVAL, ?, ?)";
+			
+				pstmt = conn.prepareStatement(sql);
+				
+				for(int i=0; i<edocdto.getSaveFiles().length; i++) {
+					pstmt.setInt(1, edocdto.getApp_num());
+					pstmt.setString(2, edocdto.getSaveFiles()[i]);
+					pstmt.setString(3, edocdto.getOriginalFiles()[i]);
+				
+					pstmt.executeUpdate();
+				}	
+			}
+			
+			conn.commit();
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+			}
+			try {
+				conn.setAutoCommit(true);
+			} catch (Exception e) {
+			}
 		}
+		
 	}
 	
 	// 결재자 삭제
@@ -1452,5 +1547,128 @@ public class EdocDAO {
 		}
 	}
 	
+	// 파일 리스트 가져오기
+	public List<EdocDTO> listEdocFile(int app_num){
+		List<EdocDTO> list = new ArrayList<>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			sql = "SELECT file_num, save_filename, ori_filename, app_num" 
+					+ " FROM E_APPROVAL_FILE" 
+					+ " WHERE app_num = ?";
+
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setInt(1, app_num);
+
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				EdocDTO dto = new EdocDTO();
+				
+				dto.setApp_num(rs.getInt("app_num"));
+				dto.setFileNum(rs.getInt("file_num"));
+				dto.setSaveFilename(rs.getString("save_filename"));
+				dto.setOriginalFilename(rs.getString("ori_filename"));
+			
+				
+				list.add(dto);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+			}
+		}
+		return list;
+	}
+
+	// 파일 가져오기
+	public EdocDTO edocFile(int file_num) {
+		EdocDTO dto = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+
+		try {
+			sql = "SELECT file_num, save_filename, ori_filename, app_num" 
+					+ " FROM E_APPROVAL_FILE"
+					+ " WHERE file_num = ?";
+
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setInt(1, file_num);
+
+			rs = pstmt.executeQuery();
+
+			if(rs.next()) {
+				dto = new EdocDTO();
+				
+				dto.setApp_num(rs.getInt("app_num"));
+				dto.setFileNum(rs.getInt("file_num"));
+				dto.setSaveFilename(rs.getString("save_filename"));
+				dto.setOriginalFilename(rs.getString("ori_filename"));
+			}
+			
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+			}
+		}
+		return dto;
+	}
+	/*
+	public void deleteFile(EdocDTO edocdto) {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			sql = "UPDATE save_filename, ori_filename WHERE app_num = ?";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, edocdto.getSaveFilename());
+			pstmt.setString(2, edocdto.getOriginalFilename());
+			pstmt.setInt(3, edocdto.getApp_num());
+
+			pstmt.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	*/
+	public void deleteFile(int app_num) {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			sql = "DELETE FROM E_APPROVAL_FILE WHERE app_num = ?";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, app_num);
+
+			pstmt.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 }

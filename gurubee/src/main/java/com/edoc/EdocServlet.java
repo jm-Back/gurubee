@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -13,9 +14,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
+
 import org.json.JSONObject;
 
 import com.login.SessionInfo;
+import com.util.FileManager;
 import com.util.MyUploadServlet;
 import com.util.MyUtil;
 import com.util.MyUtilBootstrap;
@@ -54,15 +58,10 @@ public class EdocServlet extends MyUploadServlet {
 		} else if(uri.indexOf("write_ok.do") != -1) {
 			writeSubmit(req, resp, 1);
 		} else if(uri.indexOf("write_save.do") != -1) {
-			// 임시저장
 			writeSubmit(req, resp, 0);
 		} else if(uri.indexOf("list_temp.do") != -1) {
-			// 임시저장 리스트
-			System.out.println("왜안되는거지");
 			listTemp(req, resp);
 		} else if(uri.indexOf("temp.do") != -1) {
-			// 임시저장 글쓰기
-			System.out.println("니는 왜 되는데");
 			tempForm(req, resp);
 		} else if(uri.indexOf("temp_ok.do") != -1) {
 			tempSubmit(req, resp);
@@ -82,13 +81,20 @@ public class EdocServlet extends MyUploadServlet {
 			updateSubmit(req, resp);
 		} else if(uri.indexOf("result_ok.do") != -1) {
 			insertResult(req, resp);
+		} else if(uri.indexOf("download.do") != -1) {
+			download(req, resp);
+		} else if(uri.indexOf("deleteFile.do") != -1) {
+			deleteFile(req, resp);
 		}
 		
 	}
 	
 	protected void writeForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String path = "/WEB-INF/views/edoc/write.jsp";
+		String size = req.getParameter("size");
+		
 		req.setAttribute("mode", "write");
+		req.setAttribute("size", size);
 		forward(req, resp, path);
 	}
 	
@@ -97,7 +103,6 @@ public class EdocServlet extends MyUploadServlet {
 		EdocDAO dao = new EdocDAO();
 		HttpSession session = req.getSession();
 		SessionInfo info = (SessionInfo) session.getAttribute("member");
-		
 		String cp = req.getContextPath();
 		if(req.getMethod().equalsIgnoreCase("GET")) {
 			resp.sendRedirect(cp + "/edoc/list_send.do");
@@ -113,17 +118,15 @@ public class EdocServlet extends MyUploadServlet {
 			edocdto.setDoc_form(req.getParameter("content"));
 			edocdto.setTitle(req.getParameter("title"));
 			edocdto.setTemp(temp);
-
-			/*
-			// 파일 정보
-			Part p = req.getPart("selectFile");
-			Map<String, String> map = doFileUpload(p, pathname);
+			
+			// Part p = req.getPart("selectFile");
+			Map<String, String[]> map = doFileUpload(req.getParts(), pathname);
 			if(map != null) {
-				String saveFilename = map.get("saveFilename");
-				String originalFilename = map.get("originalFilename");
-				long
+				String[] saveFiles = map.get("saveFilenames");
+				String[] originalFiles = map.get("originalFilenames");
+				edocdto.setSaveFiles(saveFiles);
+				edocdto.setOriginalFiles(originalFiles);
 			}
-			*/
 			
 			dao.insertEApproval(edocdto);
 			
@@ -254,6 +257,7 @@ public class EdocServlet extends MyUploadServlet {
 			} else {
 				myEdocList = dao.listEApproval(info.getId(), offset, size, edoc, myDate);
 			}
+			
 			// 페이징 처리
 			String listUrl = cp + "/edoc/list_send.do";
 			String articleUrl = cp + "/edoc/article.do?page=" + current_page;
@@ -362,10 +366,14 @@ public class EdocServlet extends MyUploadServlet {
 		try {
 			int app_num = Integer.parseInt(req.getParameter("app_num"));
 			List<EdocEmpDTO> empdto = new ArrayList<>();
+			List<EdocDTO> filedto = new ArrayList<>();
 
 			// 문서, 결재자 리스트 가져오기. readEdoc, readEdocEmp
 			EdocDTO dto = dao.readEdoc(app_num);
 			empdto = dao.readEdocApper(app_num);
+			
+			// 문서 파일 리스트 가져오기
+			filedto = dao.listEdocFile(app_num);
 			
 			if(dto == null) {
 				resp.sendRedirect(cp+"/edoc/list_send");
@@ -373,6 +381,7 @@ public class EdocServlet extends MyUploadServlet {
 			}
 			
 			req.setAttribute("dto", dto);
+			req.setAttribute("listFile", filedto);
 			req.setAttribute("empdto", empdto);
 			req.setAttribute("page", page);
 			
@@ -529,6 +538,7 @@ public class EdocServlet extends MyUploadServlet {
 		try {
 			int app_num = Integer.parseInt(req.getParameter("app_num"));
 			EdocDTO edocdto = dao.readEdoc(app_num);
+			List<EdocDTO> filedto = new ArrayList<>();
 			
 			boolean b1= false, b2 = false;
 			
@@ -538,12 +548,15 @@ public class EdocServlet extends MyUploadServlet {
 			b2 = dao.readEdocResult(app_num);
 			
 			if(b2==false || b1==false) {
-				System.out.println("fasle다");
 				resp.sendRedirect(cp+"/edoc/list_send.do?page="+page);
 				return;
 			}	
 			
+			filedto = dao.listEdocFile(app_num);
+			
+
 			req.setAttribute("dto", edocdto);
+			req.setAttribute("listFile", filedto);
 			req.setAttribute("page", page);
 			req.setAttribute("mode", "update");
 			
@@ -573,7 +586,6 @@ public class EdocServlet extends MyUploadServlet {
 		}
 		
 		try {
-			
 			EdocDTO edocdto = new EdocDTO();
 			
 			edocdto.setId_write(info.getId());
@@ -581,8 +593,17 @@ public class EdocServlet extends MyUploadServlet {
 			edocdto.setApp_doc(req.getParameter("edocSelect"));
 			edocdto.setDoc_form(req.getParameter("content"));
 			edocdto.setTitle(req.getParameter("title"));
+
+			// 새로운 파일 올리기
+			Map<String, String[]> map = doFileUpload(req.getParts(), pathname);
+			if (map != null) {
+				
+				String[] saveFiles = map.get("saveFilenames");
+				String[] originalFiles = map.get("originalFilenames");
+				edocdto.setSaveFiles(saveFiles);
+				edocdto.setOriginalFiles(originalFiles);
+			}
 			
-			// 수정
 			dao.updateEdoc(edocdto);
 			
 			req.setAttribute("page", page);
@@ -594,7 +615,7 @@ public class EdocServlet extends MyUploadServlet {
 		resp.sendRedirect(cp+"/edoc/list_send.do?page="+page);
 	}
 	
-	
+
 	protected void tempForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {		
 		EdocDAO dao = new EdocDAO();
 		
@@ -609,6 +630,7 @@ public class EdocServlet extends MyUploadServlet {
 			// System.out.println(req.getParameter("app_num"));
 			int app_num = Integer.parseInt(req.getParameter("app_num"));
 			EdocDTO edocdto = dao.readEdoc(app_num);
+			List<EdocDTO> filedto = new ArrayList<>();
 			
 			boolean b1= false;
 			
@@ -620,11 +642,13 @@ public class EdocServlet extends MyUploadServlet {
 				return;
 			}	
 			
-			System.out.println("tempForm app_num: " + app_num);
+			filedto = dao.listEdocFile(app_num);
 			
 			req.setAttribute("dto", edocdto);
+			req.setAttribute("listFile", filedto);
 			req.setAttribute("app_num", app_num);
 			req.setAttribute("page", page);
+			req.setAttribute("mode", "temp");
 			
 			forward(req, resp, "/WEB-INF/views/edoc/write_temp.jsp");
 			return;
@@ -654,6 +678,18 @@ public class EdocServlet extends MyUploadServlet {
 			edocdto.setDoc_form(req.getParameter("content"));
 			edocdto.setTitle(req.getParameter("title"));
 			edocdto.setTemp(1);
+		
+			// 파일 여부 확인
+			Map<String, String[]> map = doFileUpload(req.getParts(), pathname);
+			if (map != null) {
+				//FileManager.doFiledelete(pathname, edocdto.getSaveFilename());
+				//dao.deleteFile(edocdto.getApp_num());
+				
+				String[] saveFiles = map.get("saveFilenames");
+				String[] originalFiles = map.get("originalFilenames");
+				edocdto.setSaveFiles(saveFiles);
+				edocdto.setOriginalFiles(originalFiles);
+			}
 			
 			// 이미 저장된 결재자가 있는지 확인
 			dao.deleteTempApper(app_num);
@@ -683,4 +719,82 @@ public class EdocServlet extends MyUploadServlet {
 		resp.sendRedirect(cp + "/edoc/list_send.do");
 	}
 
+	// 파일 다운로드
+	protected void download(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		EdocDAO dao = new EdocDAO();
+		
+		boolean b = false;
+		
+		try {
+			
+			int fileNum = Integer.parseInt(req.getParameter("fileNum"));
+			
+			EdocDTO dto = dao.edocFile(fileNum);
+			
+			
+			if(dto != null) {
+				b = FileManager.doFiledownload(dto.getSaveFilename(),
+				dto.getOriginalFilename(), pathname, resp);
+			}
+			
+			if(! b) {
+				// 브라우저에게 utf-8을 사용할거라는 메시지를 전달
+				resp.setContentType("text/html; charset=utf-8");
+				// PrintWriter : byte를 문자열 형태로 변환
+				// .getWriter  : 
+				PrintWriter out = resp.getWriter();
+				out.print("<script>alert('파일다운로드가 실패했습니다. 다시 시도해 주세요!'); history.back();</script>");
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	
+	}
+	
+	// 수정 시 파일 삭제
+	protected void deleteFile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		EdocDAO dao = new EdocDAO();
+		String page = req.getParameter("page");
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		String cp = req.getContextPath();
+
+		try {
+
+			int fileNum = Integer.parseInt(req.getParameter("fileNum"));
+			int app_num = Integer.parseInt(req.getParameter("app_num"));
+			EdocDTO dto = dao.edocFile(fileNum);
+			// 작성자 일치 여부 확인
+			boolean b1= false;
+			
+			// 문서 작성자 확인
+			b1 = dao.readEdocWriteId(info.getId(), app_num);
+			
+			if(b1==false) {
+				resp.sendRedirect(cp+"/edoc/list_send.do?page="+page);
+				return;
+			}	
+			
+			// 삭제
+			FileManager.doFiledelete(pathname, dto.getSaveFilename());
+			
+			dao.deleteFile(app_num);
+			
+			req.setAttribute("page", page);
+			req.setAttribute("dto", dto);
+			req.setAttribute("mode", "update");
+			
+			resp.sendRedirect(cp+"/edoc/list_send.do");
+
+			return;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		// resp.sendRedirect(cp+"/edoc/list_send.do");
+
+	}
+	
+	
 }

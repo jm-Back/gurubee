@@ -183,7 +183,6 @@ function conditionSubmit() {
 									</tr>
 									<input type="hidden" name="app_num" value="${dto.app_num}">
 									<input type="hidden" name="page" value="${page}">
-									<input type="hidden" name="temp" value="${dto.temp}">
 								</c:forEach>
 								
 							</tbody>

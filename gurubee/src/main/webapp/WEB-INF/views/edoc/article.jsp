@@ -186,7 +186,7 @@ $(function(){
 			</header>
 			
 		<div>
-			<form action="" method="post" name="articleForm" enctype="multipart/form-data">
+			<form method="post" name="articleForm" enctype="multipart/form-data">
 				<table class="table table-border table-form">
 					<tr>
 						<th class="fs-6">제목</th>
@@ -241,18 +241,20 @@ $(function(){
 					</tr>
 					
 					<tr>
-						<th class="fs-6">첨부파일</th>
-						<td> 
-							
-						</td>
-					</tr>
-					
-					<tr>
 						<th class="fs-6">메모</th>
 						<td> 
 							${dto.memo }
 						</td>
 					</tr>
+					
+					<c:forEach var="vo" items="${listFile}">
+						<tr>
+							<td colspan="2">
+								파일 :
+								<a href="${pageContext.request.contextPath}/edoc/download.do?fileNum=${vo.fileNum}">${vo.originalFilename}</a>
+							</td>
+						</tr>
+					</c:forEach>
 				</table>
 				<div style="text-align: right;">
 					<c:choose>
