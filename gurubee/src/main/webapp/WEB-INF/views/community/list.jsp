@@ -61,10 +61,7 @@
 	font-weight: bold;
 }
 
-.table-light {
-	background-color: #00d1b3;
-	color: white;
-}
+
 
 .form-select {
 	background-color: #00d1b3;
@@ -94,6 +91,41 @@
 	margin-top: 4px;
 }
 
+.list {
+	border: 1px solid #eaecee;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    padding: 25px;
+    padding-bottom: 35px;
+}
+
+.title {
+	color: rgb(4, 5, 5);
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 25px;
+    font-family: "Pretendard-Regular", sans-serif;
+}
+
+.right {
+	float: right;
+}
+
+.left {
+	float: left;
+}
+
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+.file {
+	float: left;
+}
+
 </style>
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board2.css" type="text/css">
@@ -121,63 +153,64 @@ function searchList() {
 				<h3>익명 커뮤니티</h3>
 			</div>
 			<div class="body-main">
-				<div class="row board-list-header">
+				
+				
+				
+					
+					
+					<div class="board">
+						<c:forEach var="dto" items="${listNotice}">
+							<div class="list" onclick="location.href='${articleUrl}&num=${dto.num}'" style="cursor: pointer;">	
+								<p><span class="notice">공지</span></p>
+								<p class="left">
+									<a href="${articleUrl}&num=${dto.num}" class="text-reset" style="font-weight: bold">${dto.com_title}</a>
+									<c:if test="${dto.replyCount!=0}">(${dto.replyCount})</c:if>
+								</p>
+								<p>${dto.writer_name}</p>
+								<p>${dto.regdate}</p>
+								<p><i class="fa-solid fa-eye"></i> ${dto.views}</p>
+								<p>
+									<c:if test="${not empty dto.save_filename}"><!-- bi bi-file-arrow-down -->
+										<a href="${pageContext.request.contextPath}/community/download.do?num=${dto.num}" class="text-reset"><i class="bi bi-box2-heart"></i></a>
+									</c:if>
+								</p>
+							</div>
+						</c:forEach>
+					</div>
+					<div class="board">
+						<c:forEach var="dto" items="${list}" varStatus="status">
+							<div class="list" onclick="location.href='${articleUrl}&num=${dto.num}'" style="cursor: pointer;">
+								
+								<p class="right">익명 ${dataCount - (page-1) * size - status.index}</p> 
+								<p class="title"><c:if test="${dto.gap<3}"><img id="new" src="${pageContext.request.contextPath}/resources/images/new1.gif"></c:if>&nbsp;&nbsp;${dto.com_title}</p>
+									
+									
+								<p>${dto.com_contents}</p>
+								<!-- <p>${dto.writer_name}</p> -->
+								<br>
+								<div class="foot">
+									<div class="left view"><i class="fa-solid fa-eye"></i> ${dto.views}&nbsp;&nbsp;</div> 
+									<div class="left"><i class="fa-regular fa-comment-dots"></i> ${dto.replyCount}&nbsp;&nbsp;</div>
+									<div class="left"><i class="fa-regular fa-heart"></i>&nbsp;</div>
+									<c:forEach var="dtoLike" items="${listLike}" varStatus="status">
+										<div class="left"><c:if test="${dtoLike.num == dto.num}">${dtoLike.boardLikeCount}</c:if></div>
+									</c:forEach>
+									<div class="right">${dto.regdate}</div>
+									<div class="file">
+										<c:if test="${not empty dto.save_filename}">
+											&nbsp;&nbsp;<a href="${pageContext.request.contextPath}/community/download.do?num=${dto.num}" class="text-reset"><i class="fa-regular fa-file"></i></a>
+										</c:if>	
+									</div>
+								</div>
+									
+							</div>
+						</c:forEach>
+					</div>
+					
+				<div class="row board-list-header" style="float: right">
 					<div class="col-auto me-auto">${dataCount}개(${page}/${total_page}페이지)</div>
 					<div class="col-auto">&nbsp;</div>
 				</div>
-				
-				<table class="table table-hover board-list">
-					<thead class="table-light">
-						<tr>
-							<th class="num">번호</th>
-							<th class="subject">제목</th>
-							<th class="name">닉네임</th>
-							<th class="date">작성일</th>
-							<th class="hit">조회수</th>
-							<th class="file">파일</th>
-						</tr>
-					</thead>
-					
-					<tbody>
-						<c:forEach var="dto" items="${listNotice}">
-								<tr>	
-									<td><span class="notice">공지</span></td>
-									<td class="left">
-										<a href="${articleUrl}&num=${dto.num}" class="text-reset" style="font-weight: bold">${dto.com_title}</a>
-										<c:if test="${dto.replyCount!=0}">(${dto.replyCount})</c:if>
-									</td>
-									<td>${dto.writer_name}</td>
-									<td>${dto.regdate}</td>
-									<td>${dto.views}</td>
-									<td>
-										<c:if test="${not empty dto.save_filename}"><!-- bi bi-file-arrow-down -->
-											<a href="${pageContext.request.contextPath}/community/download.do?num=${dto.num}" class="text-reset"><i class="bi bi-box2-heart"></i></a>
-										</c:if>
-									</td>
-								</tr>
-							</c:forEach>
-					
-						<c:forEach var="dto" items="${list}" varStatus="status">
-							<tr>
-								<td>${dataCount - (page-1) * size - status.index}</td>
-								<td class="left">
-									<a href="${articleUrl}&num=${dto.num}" class="text-reset">${dto.com_title}</a>
-									<c:if test="${dto.replyCount!=0}">(${dto.replyCount})</c:if>
-									<c:if test="${dto.gap<3}"><img id="new" src="${pageContext.request.contextPath}/resources/images/new1.gif"></c:if>
-								</td>
-								<td>${dto.writer_name}</td>
-								<td>${dto.regdate}</td>
-								<td>${dto.views}</td>
-								<td>
-									<c:if test="${not empty dto.save_filename}">
-										<a href="${pageContext.request.contextPath}/community/download.do?num=${dto.num}" class="text-reset"><i class="bi bi-box2-heart"></i></a>
-									</c:if>
-								</td>
-							</tr>
-						</c:forEach>
-					</tbody>
-				</table>
-				
 				<div class="page-navigation">
 					${dataCount == 0 ? "등록된 공지사항이 없습니다." : paging}
 				</div>

@@ -204,6 +204,8 @@ public class CommunityServlet extends MyUploadServlet {
 			}
 			String paging = util.paging(current_page, total_page, listUrl);
 			
+			List<CommunityDTO> listLike = dao.allBoardLike();
+			
 			// 포워딩할 JSP에 넘길 속성
 			req.setAttribute("list", list); // 공지시항 리스트
 			req.setAttribute("page", current_page); // 현재 페이지
@@ -216,6 +218,7 @@ public class CommunityServlet extends MyUploadServlet {
 			req.setAttribute("keyword", keyword);
 			
 			req.setAttribute("listNotice", listNotice); // [공지사항]
+			req.setAttribute("listLike", listLike);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
