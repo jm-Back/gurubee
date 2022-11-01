@@ -51,10 +51,6 @@ public class ProjectServlet extends MyServlet{
 			updateForm(req, resp);
 		}else if (uri.indexOf("update_ok.do") != -1) {
 			updateSubmit(req, resp);			
-		} else if(uri.indexOf("progress.do") != -1) { //진행현황 수정
-			progressUpdate(req, resp);
-		} else if(uri.indexOf("progress_ok.do") != -1) {
-			progressSubmit(req, resp);
 		} else if(uri.indexOf("delete_ok.do") != -1) { //프로젝트 삭제(담당자전용)
 			projectdelete(req, resp);
 		} else if(uri.indexOf("delete_emp_ok.do") != -1) { //프로젝트 참여자 삭제
@@ -174,7 +170,7 @@ public class ProjectServlet extends MyServlet{
 			
 			//데이터 개수
 			int dataCount = dao.dataCount(dto);
-			int size = 3;
+			int size = 6;
 			int total_page = util.pageCount(dataCount, size);
 			
 
@@ -188,7 +184,7 @@ public class ProjectServlet extends MyServlet{
 			
 			//프로젝트 리스트 출력
 			List<ProjectDTO> list = null;
-			list = dao.listProject(dto);
+			list = dao.listProject(dto, offset, size);
 			
 			String paging = util.pagingMethod(current_page, total_page, "listPage");
 			
@@ -408,16 +404,6 @@ public class ProjectServlet extends MyServlet{
 		}
 		
 		resp.sendRedirect(cp + "/project/list.do");
-		
-	}
-
-	private void progressUpdate(HttpServletRequest req, HttpServletResponse resp) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void progressSubmit(HttpServletRequest req, HttpServletResponse resp) {
-		// TODO Auto-generated method stub
 		
 	}
 

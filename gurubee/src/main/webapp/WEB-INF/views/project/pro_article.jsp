@@ -488,7 +488,7 @@ $(function(){
 });
 
 
-//프로젝트 챕터 추가등록 !!!!!!!!!!!!
+//프로젝트 챕터 등록 !!!!!!!!!!!!
 $(function(){
 	$(".plus__project").click(function(){
 		$("#detail__add").modal("show");
@@ -501,21 +501,25 @@ $(function(){
 	
 	$("#add__detail__submit").click(function(){
 		//pro_code와 내용 등등 다 넘기기
-			
 		let pro_code = $("input[name=pro_code]").val();
 		
-		let pd_subject = $("input[name=pd_subject]").val();
-		let pd_content = $(".pd_content").val();
-		let pd_sdate = $("input[name=pd_sdate]").val();
-		let pd_edate = $("input[name=pd_edate]").val();
+		let pd_subject = $("#m_pd_subject").val();
+		let pd_content = $("#m_pd_content").val();
+		let pd_sdate = $("#m_pd_sdate").val();
+		let pd_edate = $("#m_pd_edate").val();
 		
-
+		if(! check()){
+			return false;
+		};
+		
 		let url = "${pageContext.request.contextPath}/project/listDetail_insert.do";
 		let query = "pro_code="+pro_code;
 		query += "&pd_subject="+pd_subject;
 		query += "&pd_content="+pd_content;
 		query += "&pd_sdate="+pd_sdate;
 		query += "&pd_edate="+pd_edate;
+		
+		
 		
 		const fn = function(data){
 			if(data.state === "true"){
@@ -536,11 +540,80 @@ $(function(){
 	
 });
 
+//챕터 수정...
+$(function(){
+	$("body").on("click", ".update__detail", function(){
+		let pd_subject = $("#form-pd_subject").val();
+		let pd_content = $(".detail__content__textarea").val();
+		let pd_sdate = $("#form-pd_sdate").val();
+		let pd_edate = $("#form-pd_edate").val();
+		
+		let pd_code = $("#form-pd_code").val();
+		
+		//값 넣기
+		$("#m_pd_subject").val(pd_subject);
+		$("#m_pd_content").val(pd_content);
+		$("#m_pd_sdate").val(pd_sdate);
+		$("#m_pd_edate").val(pd_edate);
+		$("#m_pd_code").val(pd_code);
+		
+		//텍스트 변경
+		$("#detail__addLabel2").html("챕터 수정하기");
+		$("#guide").html("수정할 내용을 입력하세요!");
+		
+		$("#add__detail__submit").html(" 수정 완료 ");
+		$("#add__detail__cancle").html(" 수정 취소 ");
+		
+		$("#detail__add").modal("show");
+		
+		
+		$("#add__detail__submit").click(function(){
+			let pd_code = $("#m_pd_code").val();
+			
+			let pd_subject = $("#m_pd_subject").val();
+			let pd_content = $("#m_pd_content").val();
+			let pd_sdate = $("#m_pd_sdate").val();
+			let pd_edate = $("#m_pd_edate").val();
+			
+			if(! check()){
+				return false;
+			};
+			
+			let url = "${pageContext.request.contextPath}/project/listDetail_update.do";
+			let query = "pd_code="+pd_code;
+			query += "&pd_subject="+pd_subject;
+			query += "&pd_content="+pd_content;
+			query += "&pd_sdate="+pd_sdate;
+			query += "&pd_edate="+pd_edate;
+			
+			const fn = function(data){
+				if(data.state === "true"){
+					$("#detail__add").modal("hide");
+					window.location.reload();
+					listPage(1);
+					
+				} else {
+					alert("프로젝트 수정이 실패했습니다.")
+
+				}
+			};
+			
+			ajaxFun(url, "post", query, "json", fn);
+
+		});
+		
+		
+		
+	});
+});
+
+
+/*
 //프로젝트 챕터 수정 -> 해당 프로젝트 정보 (update 로 변경, 모달로 변경)
 $(function(){
 	$("body").on("click", ".update__detail", function(){
-		$("#detail__add").modal("show");
 		
+
 		let pd_subject = $("#form-pd_subject").val();
 		let pd_content = $(".detail__content__textarea").val();
 		let pd_sdate = $("#form-pd_sdate").val();
@@ -560,64 +633,42 @@ $(function(){
 		$("#add__detail__submit").attr("data-mode", "update");
 		$("#add__detail__cancle").html(" 수정 취소 ");
 		
-		
-		//버튼 클릭
-		$("#add__detail__submit").click(function(){
-			let url = "${pageContext.request.contextPath}/project/listDetail_update.do";
-			let query = "pd_code="+pd_code;
-			query += "&pd_subject="+pd_subject;
-			query += "&pd_content="+pd_content;
-			query += "&pd_sdate="+pd_sdate;
-			query += "&pd_edate="+pd_edate;
-			
-			
-			const fn = function(data){
-				if(data.state === "true"){
-					$("#detail__add").modal("hide");
-					window.location.reload();
-					listPage(1);
-					
-				} else {
-					alert("프로젝트 챕터 수정이 실패했습니다.")
-
-				}
-			};
-			
-			ajaxFun(url, "post", query, "json", fn);
-			
-			
-		});
+		$("#detail__add").modal("show");
+	
 	});
 	
 });
+*/
+
 
 function check(){
-	if(! $("input[name=pd_subject]").val() ){
-		$("input[name=pd_subject]").focus();
+	if(! $("#m_pd_subject").val() ){
+		$("#m_pd_subject").focus();
 		return false;
 	};
 	
-	if(! $(".pd_content").val() ){
-		$(".pd_content").focus();
+	if(! $("#m_pd_content").val() ){
+		$("#m_pd_content").focus();
 		return false;
 	};
 	
-	if(! $("input[name=pd_sdate]").val() ){
-		$("input[name=pd_sdate]").focus();
+	if(! $("#m_pd_sdate").val() ){
+		$("#m_pd_sdate").focus();
 		return false;
 	};
 	
 	
-	if(! $("input[name=pd_edate]").val() ){
-		$("input[name=pd_edate]").focus();
+	if(! $("#m_pd_edate").val() ){
+		$("#m_pd_edate").focus();
 		return false;
 	};
 	
-	if($("input[name=pd_edate]").val() ){
-		let s1 = $("input[name=pd_sdate]").val().replace("-", "");
-		let s2 = $("input[name=pd_edate]").val().replace("-", "");
+	if($("#m_pd_edate").val() ){
+		let s1 = $("#m_pd_sdate").val().replace("-", "");
+		let s2 = $("#m_pd_edate").val().replace("-", "");
 		if(s1 > s2){
-			$("input[name=pd_edate]").focus();
+			alert("종료일이 시작일보다 빠를 수 없습니다.")
+			$("#m_pd_edate").focus();
 			return false;
 		}
 	}
@@ -625,7 +676,6 @@ function check(){
 	return true;
 
 };
-
 
 
 //프로젝트 챕터 삭제
@@ -907,7 +957,7 @@ $(function(){
 
 
 	<!-- 프로젝트 챕터 모달 -->
-<form id="add__detail__form" method="post">
+<form name="add__detail__form" method="post">
 <div class="modal fade modal__size" id="detail__add" tabindex="-1" 
 		data-bs-backdrop="static" data-bs-keyboard="false"
 		aria-labelledby="myDialogModalLabel2" aria-hidden="true">
@@ -922,15 +972,15 @@ $(function(){
 						<table class="table form-table">
 							<tr>
 							    <td><span>프로젝트 챕터명</span></td>
-							    <td><input type="text" name="pd_subject"></td>
+							    <td><input type="text" name="pd_subject" id="m_pd_subject"><input type="hidden" id="m_pd_code"></td>
 							</tr>
 							<tr>
 							    <td ><span>진행 기간</span></td>
-							    <td><input type="date" name="pd_sdate"> ~ <input type="date" name="pd_edate"></td>
+							    <td><input type="date" name="pd_sdate" id="m_pd_sdate"> ~ <input type="date" name="pd_edate" id="m_pd_edate"></td>
 							</tr>
 							<tr>
 							    <td ><span>프로젝트 챕터 내용</span></td>
-							    <td><textarea name="pd_content" class="pd_content"></textarea> </td>
+							    <td><textarea name="pd_content" class="pd_content" id="m_pd_content"></textarea> </td>
 							</tr>
 						</table>		
 			</div>

@@ -10,13 +10,7 @@
 		<div class="col-md-12">
 			<div class="p-3 mb-4 project__detail__design shadow p-1 rounded">
 				<div class="row">
-					<div class="col-md-12 pt-2 pb-4 justify-content-between">
-						<img class="profile__project__detail" src="${pageContext.request.contextPath}/resources/images/${me.pro_profile}">
-						<span class="font__project__detail">&nbsp;&nbsp; ${deo.pd_subject}</span>
-						<input type="hidden" value="${deo.pd_writer}" name="pd_writer">
-						<input type="hidden" value="${deo.pd_subject}" name="pd_subject" id="form-pd_subject">
-						<input type="hidden" value="${deo.pd_code}" name="pd_code" id="form-pd_code">
-						
+					<div class="col-md-12 pt-2 pb-4 justify-content-between">	
 						<i class="fa-solid fa-circle-check edit__icon clear__detail ${deo.pd_ing > 0 ? 'change__color' : ''}" data-pd_code="${deo.pd_code}"></i>
 						<i class="fa-regular fa-pen-to-square edit__icon" data-bs-toggle="dropdown" aria-expanded="false"></i>
 						<ul class="dropdown-menu">
@@ -24,10 +18,19 @@
 							<li><hr></li>
 							<li class="dropdown-item delete__detail" id="delete__detail" data-pd_code="${deo.pd_code}" data-pro_code="${deo.pro_code}">프로젝트 챕터 삭제</li>
 						</ul>
+							
+						<img class="profile__project__detail" src="${pageContext.request.contextPath}/resources/images/${deo.pd_writer}">
+						<span class="font__project__detail">&nbsp;&nbsp; ${deo.pd_subject}</span>
+						<div style="margin-left: 42px; margin-top: 5px;">${deo.name_p}</<div>	
+						<input type="hidden" value="${deo.pd_writer}" name="pd_writer">
+						<input type="hidden" value="${deo.pd_subject}" name="pd_subject" id="form-pd_subject">
+						<input type="hidden" value="${deo.pd_code}" name="pd_code" id="form-pd_code">
+						
+
 					</div>
 					<hr class="hr__style"> 
 				</div>
-
+		</div>
 				<div class="row">
 					<div class="col-md-2 pb-3 detail__title" >
 						프로젝트 챕터 진행기간 
@@ -56,6 +59,7 @@
 					<textarea class="col-md-8 pb-3 detail__content__textarea" readonly="readonly">${deo.pd_content}</textarea>
 				</div>
 			</div>
+		</div>
 		</div>
 	</div>
 </c:forEach>
