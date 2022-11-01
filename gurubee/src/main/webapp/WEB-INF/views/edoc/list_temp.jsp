@@ -119,28 +119,6 @@ function conditionSubmit() {
 	f.submit();
 }
 
-$(function() {
-	/*
-	$("form button[name=btnSearchEdoc]").click(function() {
-		let f = document.conditionForm;
-
-		let startDate = $("form input[name=startDate]").val();
-		let endDate = $("form input[name=endDate]").val();
-		let result =  $("#resultSelect option:selected").attr("data-result");
-		let edoc = $("#edocSelect option:selected").attr("data-edoc");
-		// ! 로 값 존재 확인	
-		startDate = encodeURIComponent(startDate);
-		endDate = encodeURIComponent(endDate);
-		result = encodeURIComponent(result);
-		edoc = encodeURIComponent(edoc);
-
-		let url = "${pageContext.request.contextPath}/edoc/send_condition.do"
-		
-		let query = "startDate="+startDate;
-		let query = $(".conditionForm").serialize()
-	});
-	*/
-})
 
 </script>
 
@@ -175,7 +153,7 @@ $(function() {
 								<div class="col-1 p-1">
 									<button type="button" id="btnContidion" onclick="conditionSubmit();" class="btn btn-success" style="height: 35px;"><i class="bi bi-search"></i></button>	
 								</div>
-								<input type="hidden" id="page" value=" ">		
+								<input type="hidden" id="page" value="">		
 							</form>
 						</div>
 						
@@ -188,11 +166,8 @@ $(function() {
 								<tr style="width: 100%">
 									<td style="width: 5%">No</td>
 									<td style="width: 10%">문서구분</td>
-									<td style="width: 10%">결재상태</td>
-									<td style="width: 10%">마지막결재자</td>
 									<td style="width: 30%">제목</td>
-									<td style="width: 10%">작성일</td>
-									<td style="width: 10%">처리결과</td>
+									<td style="width: 10%">임시저장일</td>
 								</tr>
 							</thead>
 						
@@ -202,50 +177,21 @@ $(function() {
 									<tr><td>${dto.app_num}</td>
 										<td>${dto.app_doc}</td>
 										<td>
-											<c:if test="${fn:contains(dto.result, '반려')}">
-												<button class="btn btn-warning" disabled style="border-radius: 20px;">${dto.result}</button>
-											</c:if>
-											<c:if test="${fn:contains(dto.result, '승인')}">
-												<button class="btn btn-success" disabled style="border-radius: 20px;">${dto.result}</button>
-											</c:if>
-											<c:if test="${fn:contains(dto.result, '대기')}">
-												<button class="btn btn-success" disabled style="border-radius: 20px;">${dto.result}</button>
-											</c:if>
-										</td>
-										<td>${dto.result_name}</td>
-										<td>
-											<c:if test="${dto.temp == -1}">
-												<button class="btn btn-outline-success" disabled style="border-radius: 20px; width: 85px;">수정 이력</button>		
-											</c:if>
 											<a href="${articleUrl}&app_num=${dto.app_num}">${dto.title}</a>
 										</td>
 										<td>${dto.app_date}</td>
-										<td>
-											<c:if test="${fn:contains(dto.result, '반려')}">
-												<button class="btn btn-warning" disabled style="border-radius: 20px;">반려</button>
-											</c:if>
-											<c:if test="${fn:contains(dto.result, '승인')}">
-												<button class="btn btn-success" disabled style="border-radius: 20px;">승인</button>
-											</c:if>
-											<c:if test="${fn:contains(dto.result, '대기')}">
-												<button class="btn btn-success" disabled style="border-radius: 20px;">진행중</button>
-											</c:if>
-										</td>
 									</tr>
 									<input type="hidden" name="app_num" value="${dto.app_num}">
 									<input type="hidden" name="page" value="${page}">
+									<input type="hidden" name="temp" value="${dto.temp}">
 								</c:forEach>
 								
 							</tbody>
-						</table>
-						
+						</table> 
 						
 						<div style="float: right;">
 							<a href="${pageContext.request.contextPath}/edoc/write.do">
 							<button type="button" id="btnWriteEdoc" class="btn btn-success" style="height: 35px;">문서작성</button></a>
-							
-							<a href="${pageContext.request.contextPath}/edoc/list_temp.do">
-							<button type="button" id="btnTempEdoc" class="btn btn-success" style="height: 35px;">임시보관함</button></a>
 						</div>
 						
 					</form>

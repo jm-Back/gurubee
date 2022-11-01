@@ -56,8 +56,13 @@ public class EdocServlet extends MyUploadServlet {
 		} else if(uri.indexOf("write_save.do") != -1) {
 			// 임시저장
 			writeSubmit(req, resp, 0);
+		} else if(uri.indexOf("list_temp.do") != -1) {
+			// 임시저장 리스트
+			System.out.println("왜안되는거지");
+			listTemp(req, resp);
 		} else if(uri.indexOf("temp.do") != -1) {
 			// 임시저장 글쓰기
+			System.out.println("니는 왜 되는데");
 			tempForm(req, resp);
 		} else if(uri.indexOf("temp_ok.do") != -1) {
 			tempSubmit(req, resp);
@@ -69,8 +74,6 @@ public class EdocServlet extends MyUploadServlet {
 			listSend(req, resp);
 		} else if(uri.indexOf("list_receive.do") != -1) {
 			listReceive(req, resp);
-		} else if(uri.indexOf("list_temp.do") != -1) {
-			listTemp(req, resp);
 		} else if(uri.indexOf("article.do") != -1) {
 			article(req, resp);
 		} else if(uri.indexOf("update.do") != -1) {
@@ -424,15 +427,16 @@ public class EdocServlet extends MyUploadServlet {
 	}
 	
 	// 임시보관함 글 리스트 출력
-	protected void listTemp(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		EdocDAO dao = new EdocDAO();
-		MyUtil util = new MyUtilBootstrap();
-		String cp = req.getContextPath();
-		
-		HttpSession session = req.getSession();
-		SessionInfo info = (SessionInfo) session.getAttribute("member");
-		
+	protected void listTemp(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {		
 		try {
+			
+			EdocDAO dao = new EdocDAO();
+			MyUtil util = new MyUtilBootstrap();
+			String cp = req.getContextPath();
+			
+			HttpSession session = req.getSession();
+			SessionInfo info = (SessionInfo) session.getAttribute("member");
+			
 			String page = req.getParameter("page");
 			int current_page = 1;
 			if(page != null) {
@@ -440,16 +444,13 @@ public class EdocServlet extends MyUploadServlet {
 			}
 			
 			// 날짜 myDate, 문서구분 edocSelect
-			// String myDate = req.getParameter("myDate");
-			// String edoc = req.getParameter("edocSelect");
-			
+			String myDate = req.getParameter("myDate");
+			String edoc = req.getParameter("edocSelect");
 			
 			// 전체 데이터 갯수
 			int dataCount=0;
 	
 			// 조건 없을 때
-			dataCount = dao.edocCountTemp(info.getId());
-			/*
 			if(myDate==null && edoc==null) {
 				dataCount = dao.edocCountTemp(info.getId());
 			} else {
@@ -465,7 +466,7 @@ public class EdocServlet extends MyUploadServlet {
 				}
 				dataCount = dao.edocCountTemp(info.getId(), edoc, myDate);
 			}
-			*/
+			
 			// 전체 페이지 수
 			int size = 5;
 			int total_page = util.pageCount(dataCount, size);
@@ -481,20 +482,23 @@ public class EdocServlet extends MyUploadServlet {
 
 			// 결재문서 리스트 가져오기
 			List<EdocDTO> myEdocList= null;
-			myEdocList = dao.listEApprovalTemp(info.getId(), offset, size);
-			/*
+			
 			if(myDate==null && edoc==null) {
 				myEdocList = dao.listEApprovalTemp(info.getId(), offset, size);
 			} else {
 				myEdocList = dao.listEApprovalTemp(info.getId(), offset, size, edoc, myDate);
 			}
-			*/
+			
+			if(myEdocList.size()==0) {
+				System.out.println("없어요잉");
+			}
+			
 			// 페이징 처리
 			String listUrl = cp + "/edoc/list_temp.do";
 			String articleUrl = cp + "/edoc/article.do?page=" + current_page;
 			
 			String paging = util.paging(current_page, total_page, listUrl);
-	
+			
 			req.setAttribute("list", myEdocList);
 			req.setAttribute("page", current_page);
 			req.setAttribute("total_page", total_page);
@@ -628,7 +632,7 @@ public class EdocServlet extends MyUploadServlet {
 			e.printStackTrace();
 		}
 		
-		resp.sendRedirect(cp+"/edoc/list_temp.do?page="+page);
+		// resp.sendRedirect(cp+"/edoc/list_temp.do?page="+page);
 		
 	}
 	

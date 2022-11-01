@@ -51,10 +51,6 @@ public class ProjectServlet extends MyServlet{
 			updateForm(req, resp);
 		}else if (uri.indexOf("update_ok.do") != -1) {
 			updateSubmit(req, resp);			
-		} else if(uri.indexOf("progress.do") != -1) { //진행현황 수정
-			progressUpdate(req, resp);
-		} else if(uri.indexOf("progress_ok.do") != -1) {
-			progressSubmit(req, resp);
 		} else if(uri.indexOf("delete_ok.do") != -1) { //프로젝트 삭제(담당자전용)
 			projectdelete(req, resp);
 		} else if(uri.indexOf("delete_emp_ok.do") != -1) { //프로젝트 참여자 삭제
@@ -174,7 +170,7 @@ public class ProjectServlet extends MyServlet{
 			
 			//데이터 개수
 			int dataCount = dao.dataCount(dto);
-			int size = 3;
+			int size = 6;
 			int total_page = util.pageCount(dataCount, size);
 			
 
@@ -188,7 +184,7 @@ public class ProjectServlet extends MyServlet{
 			
 			//프로젝트 리스트 출력
 			List<ProjectDTO> list = null;
-			list = dao.listProject(dto);
+			list = dao.listProject(dto, offset, size);
 			
 			String paging = util.pagingMethod(current_page, total_page, "listPage");
 			
@@ -411,16 +407,6 @@ public class ProjectServlet extends MyServlet{
 		
 	}
 
-	private void progressUpdate(HttpServletRequest req, HttpServletResponse resp) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void progressSubmit(HttpServletRequest req, HttpServletResponse resp) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	
 	private void projectdelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		// 프로젝트 삭제 (담당자만 가능!)
@@ -452,10 +438,16 @@ public class ProjectServlet extends MyServlet{
 			String pj_id = req.getParameter("pj_id");
 			String pro_code = req.getParameter("pro_code");
 			
-			dao.deleteEmployeeList(pj_id, pro_code);
+			int result = dao.CountEmployee(pro_code);
 			
-			//삭제 되면 true
-			state = "true";
+			if(result < 2) {
+				state = "false";
+			} else {
+				dao.deleteEmployeeList(pj_id, pro_code);
+				//삭제 되면 true
+				state = "true";
+			}
+
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -546,7 +538,6 @@ public class ProjectServlet extends MyServlet{
 			for(ProjectDTO dto : list_detail) {
 				dto.setPd_content(util.htmlSymbols(dto.getPd_content()));
 			}
-			
 			
 			String paging = util.pagingMethod(current_page, total_page, "listPage");
 			

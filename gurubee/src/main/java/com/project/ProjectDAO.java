@@ -347,7 +347,7 @@ public class ProjectDAO {
 	
 	
 		// ** 내가 참여자 or 마스터인 프로젝트 리스트
-		public List<ProjectDTO> listProject(ProjectDTO dto){
+		public List<ProjectDTO> listProject(ProjectDTO dto, int offset, int size){
 			List<ProjectDTO> list = new ArrayList<>();
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
@@ -358,19 +358,22 @@ public class ProjectDAO {
 				//내 사번으로 연관된 프로젝트 list
 				sql = " SELECT DISTINCT E.ori_filename, E.name, A.pro_code, A.id id_p, A.pro_name, A.pro_clear, A.pro_type, A.pro_master, A.pro_outline, A.pro_content, A.pro_sdate, A.pro_edate "
 						+ " , count(C.id) pj_count, NVL(pp, 0) pp, NVL(cc,0) cc "
-						+ "FROM Employee E  "
-						+ "JOIN project A ON A.pro_master = E.id  "
-						+ "JOIN project_join C ON A.pro_code = C.pro_code  "
-						+ "left join (select sum(pd_part) as pp,count(*) as cc , pro_code from project_detail where pd_ing > 0 group by pro_code) B on A.pro_code = B.pro_code "
-						+ "WHERE (C.id = ?  OR A.pro_master = ?  OR A.id = ? ) "
-						+ "group by E.ori_filename, E.name, A.pro_code, A.id, A.pro_name, A.pro_clear, A.pro_type, A.pro_master, A.pro_outline, A.pro_content, A.pro_sdate, A.pro_edate, pp, cc "
-						+ "ORDER BY A.pro_sdate ASC  ";
+						+ " FROM Employee E  "
+						+ " JOIN project A ON A.pro_master = E.id  "
+						+ " JOIN project_join C ON A.pro_code = C.pro_code  "
+						+ " left join (select sum(pd_part) as pp,count(*) as cc , pro_code from project_detail where pd_ing > 0 group by pro_code) B on A.pro_code = B.pro_code "
+						+ " WHERE (C.id = ?  OR A.pro_master = ?  OR A.id = ? ) "
+						+ " group by E.ori_filename, E.name, A.pro_code, A.id, A.pro_name, A.pro_clear, A.pro_type, A.pro_master, A.pro_outline, A.pro_content, A.pro_sdate, A.pro_edate, pp, cc "
+						+ " ORDER BY A.pro_sdate ASC  "
+						+ " OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ";
 				
 				pstmt = conn.prepareStatement(sql);
 				
 				pstmt.setString(1, dto.getPj_id());
 				pstmt.setString(2, dto.getPj_id());
 				pstmt.setString(3, dto.getPj_id());
+				pstmt.setInt(4, offset);
+				pstmt.setInt(5, size);
 				
 				rs = pstmt.executeQuery();
 				
@@ -927,6 +930,54 @@ public class ProjectDAO {
 			}
 		}
 		
+		public int CountEmployee(String pro_code) throws SQLException {
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql;
+			int result = 0;
+			
+			try {
+				
+				sql = " SELECT COUNT(*) FROM project_join "
+						+ " WHERE pro_code = ? ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, pro_code);
+				
+				rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					result = rs.getInt(1);
+				}
+				
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw e;
+				
+			} finally {
+				if(pstmt!=null) {
+					try {
+						pstmt.close();
+					} catch (Exception e2) {
+					}
+				}
+				
+				if(rs!=null) {
+					try {
+						rs.close();
+					} catch (Exception e2) {
+					}
+				}
+			}
+			
+			return result;
+		}
+		
+		
+		
+		
 		//프로젝트 참여자 중복 검사
 		public int checkEmployee(String pro_code, String pj_id) throws SQLException {
 			PreparedStatement pstmt = null;
@@ -981,11 +1032,12 @@ public class ProjectDAO {
 			
 			try {
 				
-				sql = " SELECT pd_code, pro_code, pd_rank, pd_subject, pd_content, pd_part, pd_ing, "
+				sql = " SELECT pd_code, pro_code, pd_rank, pd_subject, pd_content, pd_part, pd_ing, pd_sdate, pd_edate, ori_filename, ee.name name FROM ( "
+						+ "SELECT pd_code, pro_code, pd_rank, pd_subject, pd_content, pd_part, pd_ing, "
 						+ " pd_sdate, pd_edate, pd_writer "
 						+ " FROM project_detail "
 						+ " WHERE pro_code = ? "
-						+ " ORDER BY pd_rank ASC "
+						+ " ORDER BY pd_rank ASC ) pp left outer join employee ee on pp.pd_writer = ee.id "
 						+ " OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ";
 				
 				pstmt = conn.prepareStatement(sql);
@@ -1007,7 +1059,8 @@ public class ProjectDAO {
 					dto.setPd_ing(rs.getInt("pd_ing"));
 					dto.setPd_sdate(rs.getDate("pd_sdate").toString());
 					dto.setPd_edate(rs.getDate("pd_edate").toString());
-					dto.setPd_writer(rs.getString("pd_writer"));
+					dto.setPd_writer(rs.getString("ori_filename"));
+					dto.setName_p(rs.getString("name"));
 					
 					list.add(dto);
 					

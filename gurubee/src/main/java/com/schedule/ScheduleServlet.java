@@ -143,10 +143,12 @@ public class ScheduleServlet extends MyServlet {
 					int cn8 = Integer.parseInt(s);
 					int cn4 = Integer.parseInt(s.substring(4));
 					
+					/*
 					if(cnt ==4) {
 						days[0][i - 1] += "<span class='scheduleMore' data-date='" + s + "' >" + "more..." + "</span>";
 						break;
 					}
+					*/
 					
 					if((dto.getSch_repeat()==0 && (sd8 == cn8 || sd8 <= cn8 && ed8 >= cn8 ))
 							|| (dto.getSch_repeat()==1 && sd4 == cn4)) {
@@ -190,10 +192,12 @@ public class ScheduleServlet extends MyServlet {
 						int cn8 = Integer.parseInt(s);
 						int cn4 = Integer.parseInt(s.substring(4));
 						
+						/*
 						if(cnt==4) {
 							days[row][i] += "<span class='scheduleMore' data-date='" + s + "' >" + "more..." + "</span>";
 							break;
 						}
+						*/
 						
 						if ((dto.getSch_repeat() == 0 && (sd8 == cn8 || sd8 <= cn8 && ed8 >= cn8))
 								|| (dto.getSch_repeat() == 1 && sd4 == cn4)) {
@@ -236,10 +240,12 @@ public class ScheduleServlet extends MyServlet {
 						int cn8 = Integer.parseInt(s);
 						int cn4 = Integer.parseInt(s.substring(4));
 						
+						/*
 						if(cnt==4) {
 							days[row][i] += "<span class='scheduleMore' data-date='" + s + "' >" + "more..." + "</span>";
 							break;
 						}
+						*/
 						
 						if ((dto.getSch_repeat() == 0 && (sd8 == cn8 || sd8 <= cn8 && ed8 >= cn8))
 								|| (dto.getSch_repeat() == 1 && sd4 == cn4)) {
