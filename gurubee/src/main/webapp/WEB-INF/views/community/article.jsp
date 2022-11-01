@@ -16,6 +16,40 @@
 .body-container {
 	max-width: 800px;
 }
+
+#title {
+	font-family: 'Pretendard-Regular';
+    color: #fff;
+    padding: 0.7rem 0.7rem 0.7rem 2rem;
+    border-radius: 10px;
+    background: linear-gradient(45deg, #00d1b3 5%, rgb(255, 255, 255) 79%);
+    box-shadow: #00d1b3 1px 1px 2px 1px;
+    font-weight: 600;
+    margin-bottom: 60px;
+    border-bottom: none;
+    width: 796px;
+}
+
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+body {
+	font-family: 'Pretendard-Regular', sans-serif;
+	font-size: 15px;
+}
+
+#list {
+    border: 1px solid #eaecee;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    padding: 25px;
+    padding-bottom: 35px;
+}
+
 </style>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board2.css" type="text/css">
 
@@ -350,16 +384,14 @@ $(function(){
 <main>
 	<div class="container">
 		<div class="body-container">	
-			<div class="body-title">
-				<h3>회사 공지사항</h3>
-			</div>
+			<h3 id="title">익명 커뮤니티</h3>
 			
 			<div class="body-main">
 				
 				<table class="table">
 					<thead>
 						<tr>
-							<td colspan="2" align="center">
+							<td>
 								${dto.com_title}
 							</td>
 						</tr>
@@ -368,7 +400,7 @@ $(function(){
 					<tbody>
 						<tr>
 							<td width="50%">
-								이름 : ${dto.writer_name}
+								익명 ${dto.num}
 							</td>
 							<td align="right">
 								${dto.regdate} | 조회 ${dto.views}
@@ -376,7 +408,7 @@ $(function(){
 						</tr>
 						
 						<tr>
-							<td colspan="2" valign="top" height="200">
+							<td id="list" colspan="2" valign="top" height="200">
 								${dto.com_contents}
 							</td>
 						</tr>
@@ -445,7 +477,7 @@ $(function(){
 				<div class="reply">
 					<form name="replyForm" method="post">
 						<div class='form-header'>
-							<span class="bold">Q n A</span><span> 클린한 댓글을 사용하는 gurubee人이 됩시다! </span>
+							<span> 클린한 댓글을 사용하는 gurubee人이 됩시다! </span>
 						</div>
 						
 						<table class="table table-borderless reply-form">
