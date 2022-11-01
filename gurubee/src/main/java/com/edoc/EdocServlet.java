@@ -14,7 +14,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.Part;
 
 import org.json.JSONObject;
 
@@ -136,7 +135,6 @@ public class EdocServlet extends MyUploadServlet {
 			// 전자결재문서 결재자 등록 - 수신자 아이디 갯수만큼 반복
 			for (int i = 0; i < app_id.length; i++) {
 				if (!(app_id[i] == null || app_id[i].length() == 0)) {
-					// System.out.println(app_id[i]);
 					EdocEmpDTO empdto = new EdocEmpDTO();
 					empdto.setId_apper(app_id[i]);
 					empdto.setApp_level(i + 1);
@@ -483,8 +481,6 @@ public class EdocServlet extends MyUploadServlet {
 				current_page = total_page;
 			}
 			
-			System.out.println(dataCount + total_page + current_page);
-			
 			// 게시물 가져오기
 			int offset = (current_page - 1) * size;
 			if(offset < 0) offset = 0;
@@ -499,7 +495,7 @@ public class EdocServlet extends MyUploadServlet {
 			}
 			
 			if(myEdocList.size()==0) {
-				System.out.println("없어요잉");
+				System.out.println("임시보관 문서 X");
 			}
 			
 			// 페이징 처리
@@ -516,7 +512,6 @@ public class EdocServlet extends MyUploadServlet {
 			req.setAttribute("articleUrl", articleUrl);
 			req.setAttribute("paging", paging);
 			
-			// System.out.println(dataCount + total_page + current_page);
 			forward(req, resp, "/WEB-INF/views/edoc/list_temp.jsp");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -593,7 +588,7 @@ public class EdocServlet extends MyUploadServlet {
 			edocdto.setApp_doc(req.getParameter("edocSelect"));
 			edocdto.setDoc_form(req.getParameter("content"));
 			edocdto.setTitle(req.getParameter("title"));
-
+			
 			// 새로운 파일 올리기
 			Map<String, String[]> map = doFileUpload(req.getParts(), pathname);
 			if (map != null) {
@@ -627,7 +622,6 @@ public class EdocServlet extends MyUploadServlet {
 		String page = req.getParameter("page");
 		
 		try {
-			// System.out.println(req.getParameter("app_num"));
 			int app_num = Integer.parseInt(req.getParameter("app_num"));
 			EdocDTO edocdto = dao.readEdoc(app_num);
 			List<EdocDTO> filedto = new ArrayList<>();
@@ -701,7 +695,6 @@ public class EdocServlet extends MyUploadServlet {
 			// 전자결재문서 결재자 등록 - 수신자 아이디 갯수만큼 반복
 			for (int i = 0; i < app_id.length; i++) {
 				if (! (app_id[i] == null || app_id[i].length() == 0)) {
-					// System.out.println(app_id[i]);
 					EdocEmpDTO empdto = new EdocEmpDTO();
 					empdto.setApp_num(app_num);
 					empdto.setId_apper(app_id[i]);

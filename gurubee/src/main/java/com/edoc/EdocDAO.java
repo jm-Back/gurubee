@@ -1339,13 +1339,10 @@ public class EdocDAO {
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
-				System.out.println(rs.getInt("app_result"));
 				if(rs.getInt("app_result")!=0) {
 					b = false;
 				}
 			}
-			
-			System.out.println(b);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1374,7 +1371,6 @@ public class EdocDAO {
 		String sql;
 		
 		try {
-			System.out.println("updateEdoc 실행");
 			conn.setAutoCommit(false);
 			
 			sql = "UPDATE E_APPROVAL SET app_doc=?, app_date=SYSDATE, "
@@ -1400,7 +1396,6 @@ public class EdocDAO {
 				pstmt = conn.prepareStatement(sql);
 				
 				for(int i=0; i<edocdto.getSaveFiles().length; i++) {
-					System.out.println("파일 갯수만큼 실행된다잇");
 					pstmt.setInt(1, edocdto.getApp_num());
 					pstmt.setString(2, edocdto.getSaveFiles()[i]);
 					pstmt.setString(3, edocdto.getOriginalFiles()[i]);
