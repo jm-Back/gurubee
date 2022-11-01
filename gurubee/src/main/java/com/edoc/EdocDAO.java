@@ -20,8 +20,8 @@ public class EdocDAO {
 		try {
 			conn.setAutoCommit(false);
 			
-			sql = "INSERT INTO E_APPROVAL (app_num, app_doc, id, app_date, doc_form, title, temp, result) "
-					+ " VALUES (APPVAL_SEQ.NEXTVAL, ?, ?, SYSDATE, ?, ?, ?, 0) ";
+			sql = "INSERT INTO E_APPROVAL (app_num, app_doc, id, app_date, doc_form, title, temp) "
+					+ " VALUES (APPVAL_SEQ.NEXTVAL, ?, ?, SYSDATE, ?, ?, ?) ";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -1181,14 +1181,16 @@ public class EdocDAO {
 				// 나의 이전 결과 이력이 있는지
 			sql = "SELECT app_level, app_result, id "
 				+ " FROM E_APPROVER "
-				+ " WHERE app_num=? ";
+				+ " WHERE app_num=? AND app_level=?";
 				
 			pstmt = conn.prepareStatement(sql);
 				
 			pstmt.setInt(1, app_num);
+			pstmt.setInt(2, app_level);
 				
 			rs = pstmt.executeQuery();
 			if(rs.next()) {	
+				System.out.println(sql);
 				if(rs.getInt("app_result")!=0) {
 					beforeResult = "이미 결재가 완료된 문서입니다.";
 					return beforeResult;
@@ -1202,7 +1204,7 @@ public class EdocDAO {
 			rs = null;
 			pstmt = null;
 				
-			sql = "UPDATE SET E_APPROVER app_result=? "
+			sql = "UPDATE E_APPROVER SET app_result=? "
 					+ "WHERE app_num=? AND id = ?";
 			
 			pstmt = conn.prepareStatement(sql);

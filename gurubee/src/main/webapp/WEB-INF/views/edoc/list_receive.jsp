@@ -177,6 +177,7 @@ function conditionSubmit() {
 									<td style="width: 10%">마지막결재자</td>
 									<td style="width: 30%">제목</td>
 									<td style="width: 10%">작성일</td>
+									<td style="width: 10%">처리결과</td>
 								</tr>
 							</thead>
 						

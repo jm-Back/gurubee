@@ -220,7 +220,7 @@ $(function(){
 
 							<tr>
 								<th class="fs-6">상세내용</th>
-								<td>${dto.doc_form}</td>
+								<td style="margin-top: 40px;">${dto.doc_form}</td>
 							</tr>
 
 							<tr>
