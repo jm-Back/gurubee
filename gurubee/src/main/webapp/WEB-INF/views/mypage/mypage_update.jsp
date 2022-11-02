@@ -167,10 +167,9 @@ $(function() {
 			</header>
 		</div>
 			
-		<h2 class="container mb-2 pt-3">My page</h2>
-		<hr class="container mb-2 pt-3">
+		<h2 class="container mb-2 pt-3"><i class="bi bi-person"></i> | My Page</h2>
 		
-		<div class="container mb-2 pt-3">
+		<div class="container mb-2 pt-4">
 	
 			<ul class="nav nav-tabs" id="myTab" role="tablist">
 				<li class="nav-item" role="presentation">
@@ -189,6 +188,8 @@ $(function() {
 	
 			<div class="tab-content pt-5" id="nav-tabContent">
 				<div class="tab-pane fade show active" id="nav-1" role="tabpanel" aria-labelledby="nav-tab-1">
+				<h3><i class="bi bi-person-check-fill"></i> | 개인정보 수정</h3>
+				<hr class="container mb-2 pt-3" style="width : 95%">
 				  <form name="myForm" method="post" class="w-75 pt-4 mx-auto border rounded-3" style="text-align: center" enctype="multipart/form-data">
 				   <div class="input-form col-md-11 mx-auto">
 				   		<div class="row mb-3 pt-3" >

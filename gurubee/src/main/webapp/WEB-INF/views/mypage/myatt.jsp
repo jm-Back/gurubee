@@ -40,7 +40,9 @@ $(function(){
 });
 </script>
 
-<div class="row mt-4 mb-3">
+	<h3><i class=" bi bi-person-badge-fill"></i> | 근태관리</h3>
+	<hr class="container mb-2 pt-3" style="width : 95%">
+<div class="row mt-4 mb-2">
 	<div class="col text-start">
 		&nbsp;
 	</div>
@@ -50,7 +52,7 @@ $(function(){
 		<span class="btn" onclick="changeMonth(${year}, ${month+1});"><i class="bi bi-chevron-right"></i></span>
 	</div>
 	<div class="col fs-6 text-end">
-		<span class="btn btn-sm" onclick="changeMonth(${todayYear}, ${todayMonth});">오늘</span>
+		<span class="btn btn-sm" onclick="changeMonth(${todayYear}, ${todayMonth});">이번달</span>
 	</div>
 </div>
 
@@ -86,7 +88,47 @@ $(function(){
 	</div>
 </div>
 
-<div>
+<div class="container">
+		<div class="body-container">	
+			<div class="body-title">
+				<h3><i class="bi bi-calendar4"></i> | 월별근태현황</h3>
+			</div>
+			
+			<div class="body-main">
+				
+				<table class="table table-hover board-list">
+					<thead class="table-light">
+						<tr>
+							<th class="att_id">근태번호</th>
+							<th class="date">날짜</th>
+							<th class="att_start">출근</th>
+							<th class="att_end">퇴근</th>
+							<th class="att_ing">비고</th>
+						</tr>
+					</thead>
+					
+					<tbody>
+						<c:forEach var="dto" items="${list}" varStatus="status">
+							<tr>
+								<td>${dataCount - (page-1) * size - status.index}</td>
+								<td class="left">
+									<c:forEach var="n" begin="1" end="${dto.depth }">&nbsp;&nbsp;</c:forEach>
+									<c:if test="${dto.depth!=0}">└&nbsp;</c:if>
+									<a href="${articleUrl}&boardNum=${dto.att_id}" class="text-reset">${dto.subject}</a>
+								</td>
+								<td>${dto.userName}</td>
+								<td>${dto.reg_date}</td>
+								<td>${dto.hitCount}</td>
+							</tr>
+						</c:forEach>
+					</tbody>
+				</table>
+				
+				<div class="page-navigation">
+					${dataCount == 0 ? "근태기록이 없습니다." : paging}
+				</div>
 
 
-</div>
+			</div>
+		</div>
+	</div>
