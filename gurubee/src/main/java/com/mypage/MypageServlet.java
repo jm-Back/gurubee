@@ -348,7 +348,7 @@ public class MypageServlet extends MyUploadServlet{
 			e.printStackTrace();
 		}
 
-		resp.sendRedirect(cp + "/board/list.do?page=" + page);
+		resp.sendRedirect(cp + "/mypage/myatt.do?page=" + page);
 	}
 	
 	private void myattarticleForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{

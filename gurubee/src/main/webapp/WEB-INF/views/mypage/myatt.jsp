@@ -67,8 +67,8 @@ $(function(){
 	<div class="col">
 		<div class="row">
 			<div class="col">
-				<button class="btn btn-primary btn-Attendance" ${not empty todayAttendance.att_start ? "disabled='disabled'":""}>출근</button>
-				<button class="btn btn-primary btn-Attendance" ${empty todayAttendance.att_start or not empty todayAttendance.att_end ? "disabled='disabled'":""}>퇴근</button>
+				<button class="btn" style="background-color: aquamarine; color:white;" ${not empty todayAttendance.att_start ? "disabled='disabled'":""}>출근</button>
+				<button class="btn" style="background-color: aquamarine; color:white;" ${empty todayAttendance.att_start or not empty todayAttendance.att_end ? "disabled='disabled'":""}>퇴근</button>
 			</div>
 		</div>		
 	</div>
