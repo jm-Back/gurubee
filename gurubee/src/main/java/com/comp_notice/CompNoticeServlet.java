@@ -798,11 +798,16 @@ public class CompNoticeServlet extends MyUploadServlet {
 		
 		try {
 			
+			String cp = req.getContextPath();
+			
+			String articleUrl = cp + "/comp_notice/article.do";
+			
 			CompNoticeDAO dao = new CompNoticeDAO();
 			
 			List<CompNoticeDTO> list = dao.mainList();
 			
 			req.setAttribute("list", list);
+			req.setAttribute("articleUrl", articleUrl);
 			
 			forward(req, resp, "/WEB-INF/views/layout/compNotice.jsp");
 			return;

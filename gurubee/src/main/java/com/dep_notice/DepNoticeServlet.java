@@ -806,11 +806,16 @@ public class DepNoticeServlet extends MyUploadServlet {
 		
 		try {
 			
+			String cp = req.getContextPath();
+			
+			String articleUrl = cp + "/dep_notice/article.do";
+			
 			DepNoticeDAO dao = new DepNoticeDAO();
 			
 			List<DepNoticeDTO> list = dao.mainList();
 			
 			req.setAttribute("list", list);
+			req.setAttribute("articleUrl", articleUrl);
 			
 			forward(req, resp, "/WEB-INF/views/layout/depNotice.jsp");
 			return;

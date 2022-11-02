@@ -1389,7 +1389,7 @@ public class CommunityDAO {
 			
 			try {
 				
-				sql = " SELECT com_title, TO_CHAR(regdate, 'YYYY-MM-DD') regdate, name "
+				sql = " SELECT com_num, com_title, TO_CHAR(regdate, 'YYYY-MM-DD') regdate, name "
 						+ " FROM community c "
 						+ " JOIN employee e ON c.id = e.id "
 						+ " ORDER BY com_num DESC  "
@@ -1403,6 +1403,7 @@ public class CommunityDAO {
 					
 					CommunityDTO dto = new CommunityDTO();
 					
+					dto.setNum(rs.getLong("com_num"));
 					dto.setCom_title(rs.getString("com_title"));
 					dto.setRegdate(rs.getString("regdate"));
 					dto.setWriter_name(rs.getString("name"));

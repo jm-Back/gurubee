@@ -24,8 +24,9 @@
 }
 
 .card-bg {
-	background-color: aquamarine;
+	background-color: #00d1b3;
 	font-weight: 700;
+	opacity: 80%;
 }
 
 .card_body {
@@ -43,10 +44,8 @@
 				<div class="card border rounded-2">
 					<div class="card-header card-bg " id="boardmenu" style="width: 100%;">
 						<ul>
-							<li><i class="bi bi-clipboard-check"></i><a class="t" href="#">전사공지</a>
-							<li><a class="t" href="#">부서공지</a>
-							<li><a class="t" href="#">커뮤니티</a>
-							<li style="float: right;"><a class="" href="#"></a><img src="${pageContext.request.contextPath}/resources/images/icon-plus.png">
+							<li><i class="bi bi-clipboard-check"></i><a class="t" href="#">익명 커뮤니티</a>
+							<li style="float: right;"><a href="${pageContext.request.contextPath}/community/list.do"><img src="${pageContext.request.contextPath}/resources/images/icon-plus.png"></a>
 						</ul>
 					</div>
 				
@@ -56,7 +55,7 @@
 						<table class="table table-hover table-light " style="width: 100%;">
 							<c:forEach var="dto" items="${list}">
 								<tr>
-									<th>${dto.com_title}</th>
+									<th id="title"><a href="${articleUrl}?num=${dto.num}" class="text-reset" style="font-weight: bold">${dto.com_title}</a></th>
 									<th>${dto.regdate}</th>
 								</tr>
 							</c:forEach>

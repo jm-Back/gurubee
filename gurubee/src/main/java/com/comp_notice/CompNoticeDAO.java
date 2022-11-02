@@ -1086,7 +1086,7 @@ public class CompNoticeDAO {
 			
 			try {
 				
-				sql = " SELECT notice_title, TO_CHAR(regdate, 'YYYY-MM-DD') regdate, name "
+				sql = " SELECT notice_num, notice_title, TO_CHAR(regdate, 'YYYY-MM-DD') regdate, name "
 						+ " FROM noticeAll n "
 						+ " JOIN employee e ON n.id = e.id "
 						+ " ORDER BY notice_num DESC  "
@@ -1100,6 +1100,7 @@ public class CompNoticeDAO {
 					
 					CompNoticeDTO dto = new CompNoticeDTO();
 					
+					dto.setNum(rs.getLong("notice_num"));
 					dto.setNotice_title(rs.getString("notice_title"));
 					dto.setRegdate(rs.getString("regdate"));
 					dto.setWriter_name(rs.getString("name"));

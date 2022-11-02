@@ -935,11 +935,16 @@ public class CommunityServlet extends MyUploadServlet {
 			
 			try {
 				
+				String cp = req.getContextPath();
+				
+				String articleUrl = cp + "/community/article.do";
+				
 				CommunityDAO dao = new CommunityDAO();
 				
 				List<CommunityDTO> list = dao.mainList();
 				
 				req.setAttribute("list", list);
+				req.setAttribute("articleUrl", articleUrl);
 				
 				forward(req, resp, "/WEB-INF/views/layout/community.jsp");
 				return;

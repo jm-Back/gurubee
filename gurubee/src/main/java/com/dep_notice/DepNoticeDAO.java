@@ -1105,7 +1105,7 @@ public class DepNoticeDAO {
 			
 			try {
 				
-				sql = " SELECT notice_title, TO_CHAR(regdate, 'YYYY-MM-DD') regdate, name "
+				sql = " SELECT notice_num, notice_title, TO_CHAR(regdate, 'YYYY-MM-DD') regdate, name "
 						+ " FROM noticeDept n "
 						+ " JOIN employee e ON n.id = e.id "
 						+ " ORDER BY notice_num DESC  "
@@ -1119,6 +1119,7 @@ public class DepNoticeDAO {
 					
 					DepNoticeDTO dto = new DepNoticeDTO();
 					
+					dto.setNum(rs.getLong("notice_num"));
 					dto.setNotice_title(rs.getString("notice_title"));
 					dto.setRegdate(rs.getString("regdate"));
 					dto.setWriter_name(rs.getString("name"));
