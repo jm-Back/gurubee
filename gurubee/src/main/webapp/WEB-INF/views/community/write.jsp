@@ -74,7 +74,7 @@ function check() {
 	<div class="container">
 		<div class="body-container">	
 			<div class="body-title">
-				<h3>회사 공지사항</h3>
+				<h3>익명 커뮤니티</h3>
 			</div>
 			
 			<div class="body-main">
@@ -87,7 +87,7 @@ function check() {
 								<input type="text" name="com_title" class="form-control" value="${dto.com_title}">
 							</td>
 						</tr>
-	        			
+	        			<!-- 
 	        			<tr>
 							<td class="table-light col-sm-2" scope="row">공지여부</td>
 							<td>
@@ -95,11 +95,11 @@ function check() {
 								<label class="form-check-label" for="notice"> 공지</label>
 							</td>
 						</tr>
-	        			
+	        			 -->
 						<tr>
-							<td class="table-light col-sm-2" scope="row">작성자명</td>
+							<td class="table-light col-sm-2" scope="row">커뮤니티</td>
 	 						<td>
-								<p class="form-control-plaintext">${sessionScope.member.name}</p>
+								<p class="form-control-plaintext">익명보장</p>
 							</td>
 						</tr>
 	

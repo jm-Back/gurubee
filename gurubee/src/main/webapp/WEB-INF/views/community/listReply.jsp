@@ -12,7 +12,7 @@
 	<c:forEach var="vo" items="${listReply}">
 		<tr class='list-header'>
 			<td width='50%'>
-				<span class='bold'>${vo.reply_name}</span>
+				<span class='bold'>익명 ${vo.replyNum}</span>
 			</td>
 			<td width='50%' align='right'>
 				<span>${vo.rep_regdate}</span>

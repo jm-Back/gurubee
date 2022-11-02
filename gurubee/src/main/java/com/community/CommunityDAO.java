@@ -258,7 +258,7 @@ public class CommunityDAO {
 		try {
 			
 			sql = " SELECT c.com_num, e.name, c.com_title, c.views, cf.save_filename, "
-					+ " regdate,  NVL(replyCount, 0) replyCount  "
+					+ " regdate,  NVL(replyCount, 0) replyCount, c.com_contents  "
 					+ " FROM community c "
 					+ " JOIN employee e ON c.id = e.id "
 					+ " JOIN comFile cf ON c.com_num = cf.com_num "
@@ -305,6 +305,7 @@ public class CommunityDAO {
 				dto.setSave_filename(rs.getString("save_filename"));
 				
 				dto.setReplyCount(rs.getInt("replyCount"));
+				dto.setCom_contents(rs.getString("com_contents"));
 				
 				list.add(dto);
 			}
@@ -1074,7 +1075,7 @@ public class CommunityDAO {
 			try { 
 				sb.append(" SELECT c.com_num, c.id, name, c.com_title, ");
 				sb.append("       views, TO_CHAR(regdate, 'YYYY-MM-DD') regdate, ");
-				sb.append("        NVL(replyCount, 0) replyCount ");
+				sb.append("        NVL(replyCount, 0) replyCount, cf.save_filename ");
 				sb.append(" FROM community c ");
 				sb.append(" JOIN employee e ON c.id=e.id ");
 				sb.append(" LEFT OUTER JOIN ( ");
@@ -1083,7 +1084,8 @@ public class CommunityDAO {
 				sb.append(" 	WHERE answer = 0 ");
 				sb.append(" 	GROUP BY com_num ");
 				sb.append(" ) cr ON c.com_num = cr.com_num ");
-				sb.append(" WHERE notice=1  ");
+				sb.append(" JOIN comFile cf ON c.com_num=cf.com_num ");
+				// sb.append(" WHERE notice=1  ");
 				sb.append(" ORDER BY c.com_num DESC ");
 
 				pstmt = conn.prepareStatement(sb.toString());
@@ -1101,7 +1103,8 @@ public class CommunityDAO {
 					dto.setRegdate(rs.getString("regdate"));
 					
 					dto.setReplyCount(rs.getInt("replyCount"));
-
+					dto.setSave_filename(rs.getString("save_filename"));
+					
 					list.add(dto);
 				}
 			} catch (SQLException e) {
