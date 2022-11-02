@@ -55,6 +55,14 @@ $(function(){
     });
 });
 
+function changeMonth(year, month) {
+	url = "${pageContext.request.contextPath}/mypage/myatt.do";
+	let query = "year="+year+"&month="+month;
+	
+	
+	$("#nav-2").load(url+"?"+query);
+}
+
 </script>
 </head>
 <body>
@@ -88,78 +96,78 @@ $(function(){
 				</li>				
 			</ul>
 	
-			<div class="tab-content pt-3" id="nav-tabContent">
+			<div class="tab-content pt-5 " id="nav-tabContent">
 			<!-- 개인정보관리 -->
-				<div class="tab-pane fade show active" id="nav-1" role="tabpanel" aria-labelledby="nav-tab-1">
-				  <form name="myForm" class="h-100 p-5 bg-light border rounded-3" style="text-align: center" enctype="multipart/form-data">
-				   <div class="input-form col-md-12 mx-auto">
-				   		<div class="row mb-3" >
-				   			<label class="col-sm-2 col-form-label" >프로필사진</label>
-				   			<div class="img-viewer"></div>
+				<div class="tab-pane fade show active " id="nav-1" role="tabpanel" aria-labelledby="nav-tab-1">
+				  <form name="myForm" class="w-75 pt-4 mx-auto border rounded-3" style="text-align: center" enctype="multipart/form-data">
+				   <div class="input-form col-md-11 mx-auto">
+				   		<div class="row mb-3 pt-3" >
+				   			<label class="col-sm-7 fs-6 fw-semibold col-form-label" >프로필&nbsp;사진</label>
+				   			<div class="img-viewer mx-5"></div>
 				   		</div>
 				   	</div>
 				   	
   						<div style="margin-bottom: 0px;">
-								<div class="row mb-3" >
-									<label class="col-sm-2 col-form-label" for="name">이름</label>
-									<div class="col-sm-10">
-									<input type="text"  style="width: 50%;" name="name" id="name" class="form-control-plaintext" autocomplete="off">${dto.name}
+								<div class="row mb-3 pt-3 " >
+									<label class="col-sm-7 fs-6 fw-semibold col-form-label" for="name">이&nbsp;름</label>
+									<div class="col-sm-2 ">
+									<div class="form-control-plaintext" >${dto.name}</div>
 				        			</div>
 								</div>
 								
-								<div class="row mb-3">
-									<label class="col-sm-2 col-form-label" for="id">사번</label>
-									<div class="col-sm-10">
+								<div class="row mb-3 pt-3 ">
+									<label class="col-sm-7 fs-6 fw-semibold col-form-label" for="id">사&nbsp;번</label>
+									<div class="col-sm-2">
 				            		<div class="form-control-plaintext" >${dto.id}</div>
 									</div>
 								</div>
 								
-								<div class="row mb-3">
-									<label class="col-sm-2 col-form-label" for="dep_name">부서</label>
-									<div class="col-sm-10">
+								<div class="row mb-3 pt-3 ">
+									<label class="col-sm-7 fs-6 fw-semibold col-form-label" for="dep_name">부&nbsp;서</label>
+									<div class="col-sm-2">
 				            		<div class="form-control-plaintext" >${dto.dep_name}</div>
 									</div>
 								</div>
 								
-								<div class="row mb-3">
-									<label class="col-sm-2 col-form-label" for="pos_name">직급</label>
-									<div class="col-sm-10">
+								<div class="row mb-3 pt-3 ">
+									<label class="col-sm-7 fs-6 fw-semibold col-form-label" for="pos_name">직&nbsp;급</label>
+									<div class="col-sm-2">
 				            		<div class="form-control-plaintext" >${dto.pos_name}</div>
 									</div>
 								</div>
 						</div>
 						
-				  	 	<div class="row mb-3">
-				        	<label class="col-sm-2 col-form-label" for="reg">주민등록번호</label>
-				        	<div class="col-sm-10">
+				  	 	<div class="row mb-3 pt-3 ">
+				        	<label class="col-sm-7 fs-6 fw-semibold col-form-label" for="reg">주민등록번호</label>
+				        	<div class="col-sm-2">
 							<div class="form-control-plaintext" >${dto.reg}</div>
 				        	</div>
 				   		 </div>
 				  	 	 
-				  	 	 <div class="row mb-3">
-				  			<label class="col-sm-2 col-form-label" for="email">이메일 </label>
-				  			<div class="col-sm-10">
+				  	 	 <div class="row mb-3 pt-3 ">
+				  			<label class="col-sm-7 fs-6 fw-semibold col-form-label" for="email">이메일 </label>
+				  			<div class="col-sm-2">
 							<div class="form-control-plaintext" >${dto.email}</div>
 							</div>
 				  	 	 </div>
 				  	 	 
-				  	 	<div class="row mb-3">
-				        <label class="col-sm-2 col-form-label" for="phone">전화번호</label>
-				        <div class="col-sm-10 row">
-				        <div class="form-control-plaintext" >${dto.phone}</div>
+				  	 	<div class="row mb-3 pt-3 ">
+				        <label class="col-sm-7 fs-6 fw-semibold col-form-label" for="phone">전화번호</label>
+				        <div class="col-sm-2">
+				        <div class=" form-control-plaintext" >${dto.phone}</div>
 						</div>
 				    </div>
 				  	 	 
-				  	 	 <div class="row mb-3">
-				        <label class="col-sm-2 col-form-label" for="tel">내선번호 </label>
-				       		<div class="col-sm-10">
+				  	 	 <div class="row pt-3 mx-center">
+				        <label class="col-sm-7 fs-6 fw-semibold col-form-label" for="tel">내선번호 </label>
+				       		<div class="col-sm-2 ">
 				            <div class="form-control-plaintext" >${dto.tel}</div>
 				        	</div>
 				  	 	 </div>
 				  	 	 
-				  	 	 <div class="row mb-3">
+				  	 	 <div class="row pt-5 pb-4 mx-auto">
 				        <div class="text-center">
-				            <button type="button" name="sendButton" class="btn btn-primary" onclick="location.href='${pageContext.request.contextPath}/mypage/mypage_update.do';"> 수정하기 <i class="bi bi-check2"></i></button>
+				            <button type="button"  name="sendButton" class="btn" style="background-color: aquamarine; color:white;" onclick="location.href='${pageContext.request.contextPath}/mypage/mypage_update.do';"> 수정하기 <i class="bi bi-check2"></i></button>
 							<input type="hidden" name="userIdValid" id="userIdValid" value="false">
 				        </div>
 				    </div>

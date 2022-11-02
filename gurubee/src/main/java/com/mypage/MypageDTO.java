@@ -3,9 +3,10 @@ package com.mypage;
 public class MypageDTO {
 
 	//마이페이지 근태관리
-	private int att_id; // 근태번호
-	private int att_start; // 출근시간
-	private int att_end; // 퇴근시간
+	private String att_id; // 근태번호
+	private String id;
+	private String att_start; // 출근시간
+	private String att_end; // 퇴근시간
 	private String att_ing; // 출근 퇴근 외출
 	
 	// 마이페이지 연차관리
@@ -53,22 +54,22 @@ public class MypageDTO {
 	private int startdate; // 입사일
 	private int enddate; // 퇴사일
 	
-	public int getAtt_id() {
+	public String getAtt_id() {
 		return att_id;
 	}
-	public void setAtt_id(int att_id) {
+	public void setAtt_id(String att_id) {
 		this.att_id = att_id;
 	}
-	public int getAtt_start() {
+	public String getAtt_start() {
 		return att_start;
 	}
-	public void setAtt_start(int att_start) {
+	public void setAtt_start(String att_start) {
 		this.att_start = att_start;
 	}
-	public int getAtt_end() {
+	public String getAtt_end() {
 		return att_end;
 	}
-	public void setAtt_end(int att_end) {
+	public void setAtt_end(String att_end) {
 		this.att_end = att_end;
 	}
 	public String getAtt_ing() {
@@ -263,6 +264,13 @@ public class MypageDTO {
 	public void setEnddate(int enddate) {
 		this.enddate = enddate;
 	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	
 
 }
