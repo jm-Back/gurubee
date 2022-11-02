@@ -185,7 +185,7 @@ public class CommunityDAO {
 		try {
 			
 			sql = " SELECT c.com_num, name, com_title, views, cf.save_filename, "
-					+ " regdate, NVL(replyCount, 0) replyCount "
+					+ " regdate, NVL(replyCount, 0) replyCount, com_contents "
 					+ " FROM community c "
 					+ " JOIN employee e ON c.id = e.id "
 					+ " JOIN comFile cf ON c.com_num = cf.com_num "
@@ -220,6 +220,7 @@ public class CommunityDAO {
 				dto.setSave_filename(rs.getString("save_filename"));
 				
 				dto.setReplyCount(rs.getInt("replyCount"));
+				dto.setCom_contents(rs.getString("com_contents"));
 				
 				list.add(dto);
 				
@@ -257,7 +258,7 @@ public class CommunityDAO {
 		try {
 			
 			sql = " SELECT c.com_num, e.name, c.com_title, c.views, cf.save_filename, "
-					+ " regdate,  NVL(replyCount, 0) replyCount  "
+					+ " regdate,  NVL(replyCount, 0) replyCount, c.com_contents  "
 					+ " FROM community c "
 					+ " JOIN employee e ON c.id = e.id "
 					+ " JOIN comFile cf ON c.com_num = cf.com_num "
@@ -304,6 +305,7 @@ public class CommunityDAO {
 				dto.setSave_filename(rs.getString("save_filename"));
 				
 				dto.setReplyCount(rs.getInt("replyCount"));
+				dto.setCom_contents(rs.getString("com_contents"));
 				
 				list.add(dto);
 			}
@@ -1073,7 +1075,7 @@ public class CommunityDAO {
 			try { 
 				sb.append(" SELECT c.com_num, c.id, name, c.com_title, ");
 				sb.append("       views, TO_CHAR(regdate, 'YYYY-MM-DD') regdate, ");
-				sb.append("        NVL(replyCount, 0) replyCount ");
+				sb.append("        NVL(replyCount, 0) replyCount, cf.save_filename ");
 				sb.append(" FROM community c ");
 				sb.append(" JOIN employee e ON c.id=e.id ");
 				sb.append(" LEFT OUTER JOIN ( ");
@@ -1082,7 +1084,8 @@ public class CommunityDAO {
 				sb.append(" 	WHERE answer = 0 ");
 				sb.append(" 	GROUP BY com_num ");
 				sb.append(" ) cr ON c.com_num = cr.com_num ");
-				sb.append(" WHERE notice=1  ");
+				sb.append(" JOIN comFile cf ON c.com_num=cf.com_num ");
+				// sb.append(" WHERE notice=1  ");
 				sb.append(" ORDER BY c.com_num DESC ");
 
 				pstmt = conn.prepareStatement(sb.toString());
@@ -1100,7 +1103,8 @@ public class CommunityDAO {
 					dto.setRegdate(rs.getString("regdate"));
 					
 					dto.setReplyCount(rs.getInt("replyCount"));
-
+					dto.setSave_filename(rs.getString("save_filename"));
+					
 					list.add(dto);
 				}
 			} catch (SQLException e) {
@@ -1290,6 +1294,50 @@ public class CommunityDAO {
 			
 			return result;
 		}	
+		
+		// 모든 게시물의 좋아요 수(각각)
+		
+		public List<CommunityDTO> allBoardLike() {
+			List<CommunityDTO> list = new ArrayList<>();
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql;
+			
+			try {
+				
+				sql = //" SELECT com_num, NVL(COUNT(*), 0) FROM comLike "
+						//+ " GROUP BY com_num ";
+				
+						 " SELECT c.com_num, COUNT(cl.com_num) "
+					+    " FROM community c "
+					+    " LEFT OUTER JOIN comLike cl "
+					+    " ON c.com_num = cl.com_num "
+					+    " GROUP BY c.com_num ";
+				
+				
+				
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				rs = pstmt.executeQuery();
+				
+				while(rs.next()) {
+					
+					CommunityDTO dto = new CommunityDTO();
+					
+					dto.setNum(rs.getLong("com_num"));
+					dto.setBoardLikeCount(rs.getInt(2));
+					
+					list.add(dto);
+				}
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			
+			return list;
+		}
 		
 		// 로그인 유저의 게시글 공감 유무
 		public boolean isUserBoardLike(long num, String userId) {

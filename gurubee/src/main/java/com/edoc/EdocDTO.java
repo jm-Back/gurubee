@@ -19,6 +19,13 @@ public class EdocDTO {
 	
 	private String result; // 현재 처리결과. 0:대기, 1:승인, -1:반려
 	private String result_name; // 현재 처리 결재자 이름
+	
+	private int fileNum;
+	private String saveFilename;
+	private String originalFilename;
+	
+	private String[] saveFiles;
+	private String[] originalFiles;
 
 	public String getId_write() {
 		return id_write;
@@ -103,6 +110,36 @@ public class EdocDTO {
 	}
 	public void setPosCode_write(int posCode_write) {
 		this.posCode_write = posCode_write;
+	}
+	public String[] getSaveFiles() {
+		return saveFiles;
+	}
+	public void setSaveFiles(String[] saveFiles) {
+		this.saveFiles = saveFiles;
+	}
+	public String[] getOriginalFiles() {
+		return originalFiles;
+	}
+	public void setOriginalFiles(String[] originalFiles) {
+		this.originalFiles = originalFiles;
+	}
+	public String getSaveFilename() {
+		return saveFilename;
+	}
+	public void setSaveFilename(String saveFilename) {
+		this.saveFilename = saveFilename;
+	}
+	public String getOriginalFilename() {
+		return originalFilename;
+	}
+	public void setOriginalFilename(String originalFilename) {
+		this.originalFilename = originalFilename;
+	}
+	public int getFileNum() {
+		return fileNum;
+	}
+	public void setFileNum(int fileNum) {
+		this.fileNum = fileNum;
 	}
 	
 }

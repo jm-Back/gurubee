@@ -123,13 +123,16 @@ function conditionSubmit() {
 
 <body>
 
+	<header class="pb-3 mb-4 border-bottom">
+		<jsp:include page="/WEB-INF/views/layout/header.jsp" />
+		<jsp:include page="/WEB-INF/views/layout/sidebar.jsp" />
+	</header>
+
 	<main>
 		<div class="container py-4">
-			<header class="pb-3 mb-4 border-bottom">
-				<jsp:include page="/WEB-INF/views/layout/header.jsp" />
-				<jsp:include page="/WEB-INF/views/layout/sidebar.jsp" />
-			</header>
-	
+			<div class="body-title">
+				<h3><i class="bi bi-envelope-paper"></i>&nbsp;문서 수신함</h3>
+			</div>
 			<div class="body-container">
 				<div class="body-main">
 					<div class="row board-list-header">
@@ -156,7 +159,11 @@ function conditionSubmit() {
 							</form>
 						</div>
 						
-						<div class="row">${dataCount}개(${page}/${total_page})</div>
+						<div class="row board-list-header">
+							<div class="col-auto me-auto">${dataCount}개(${page}/${total_page}
+								페이지)</div>
+							<div class="col-auto">&nbsp;</div>
+						</div>
 					</div>
 					
 					<form name="listForm" method="post" enctype="multipart/form-data">
@@ -170,6 +177,7 @@ function conditionSubmit() {
 									<td style="width: 10%">마지막결재자</td>
 									<td style="width: 30%">제목</td>
 									<td style="width: 10%">작성일</td>
+									<td style="width: 10%">처리결과</td>
 								</tr>
 							</thead>
 						
