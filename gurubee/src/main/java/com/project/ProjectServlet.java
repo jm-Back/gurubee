@@ -63,7 +63,7 @@ public class ProjectServlet extends MyServlet{
 			detailInsert(req, resp);
 		} else if(uri.indexOf("listDetail_delete.do") != -1) { //챕터 삭제
 			detailDelete(req, resp);
-		} else if(uri.indexOf("listDetail_update.do") != -1) { //챕터 수정폼
+		} else if(uri.indexOf("listDetailUpdate.do") != -1) { //챕터 수정폼
 			detailUpdateForm(req, resp);
 		} else if(uri.indexOf("listDetail_clear.do") != -1) { //챕터 완료처리~
 			detailClear(req, resp);
@@ -535,9 +535,11 @@ public class ProjectServlet extends MyServlet{
 			
 			ProjectDTO me = dao.readId(id_p);
 			
+			/*
 			for(ProjectDTO dto : list_detail) {
 				dto.setPd_content(util.htmlSymbols(dto.getPd_content()));
 			}
+			*/
 			
 			String paging = util.pagingMethod(current_page, total_page, "listPage");
 			

@@ -372,6 +372,14 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 	width: 100%;
 }
 
+.modal__size2 {
+	width: 140%;
+}
+
+.modal__input__design {
+	width: 400px;
+}
+
 .click__icon {
 	cursor: pointer;
 }
@@ -496,13 +504,14 @@ $(function(){
 	});
 	
 	$(".btnClose").click(function(){
+		$("#detail__add").attr("data-mode", "");
 		$("#detail__add").modal("hide");
 	});
 	
 	$("#add__detail__submit").click(function(){
 		//pro_code와 내용 등등 다 넘기기
+		let pd_code = $("#m_pd_code").val();
 		let pro_code = $("input[name=pro_code]").val();
-		
 		let pd_subject = $("#m_pd_subject").val();
 		let pd_content = $("#m_pd_content").val();
 		let pd_sdate = $("#m_pd_sdate").val();
@@ -512,15 +521,25 @@ $(function(){
 			return false;
 		};
 		
-		let url = "${pageContext.request.contextPath}/project/listDetail_insert.do";
-		let query = "pro_code="+pro_code;
+		
+		let mode = $("#detail__add").attr("data-mode");
+		$("#detail__add").attr("data-mode", "");
+		
+		let url = "";
+		let query = "";
+		if(mode==="update") {
+			url = "${pageContext.request.contextPath}/project/listDetailUpdate.do";
+			query = "pd_code="+pd_code;
+		} else {
+			url = "${pageContext.request.contextPath}/project/listDetail_insert.do";
+			query = "pro_code="+pro_code;
+		}
 		query += "&pd_subject="+pd_subject;
 		query += "&pd_content="+pd_content;
 		query += "&pd_sdate="+pd_sdate;
 		query += "&pd_edate="+pd_edate;
 		
-		
-		
+		alert(url);
 		const fn = function(data){
 			if(data.state === "true"){
 				$("#detail__add").modal("hide");
@@ -539,6 +558,7 @@ $(function(){
 	});
 	
 });
+
 
 //챕터 수정...
 $(function(){
@@ -563,48 +583,12 @@ $(function(){
 		
 		$("#add__detail__submit").html(" 수정 완료 ");
 		$("#add__detail__cancle").html(" 수정 취소 ");
+		$("#detail__add").attr("data-mode", "update");
 		
 		$("#detail__add").modal("show");
-		
-		
-		$("#add__detail__submit").click(function(){
-			let pd_code = $("#m_pd_code").val();
-			
-			let pd_subject = $("#m_pd_subject").val();
-			let pd_content = $("#m_pd_content").val();
-			let pd_sdate = $("#m_pd_sdate").val();
-			let pd_edate = $("#m_pd_edate").val();
-			
-			if(! check()){
-				return false;
-			};
-			
-			let url = "${pageContext.request.contextPath}/project/listDetail_update.do";
-			let query = "pd_code="+pd_code;
-			query += "&pd_subject="+pd_subject;
-			query += "&pd_content="+pd_content;
-			query += "&pd_sdate="+pd_sdate;
-			query += "&pd_edate="+pd_edate;
-			
-			const fn = function(data){
-				if(data.state === "true"){
-					$("#detail__add").modal("hide");
-					window.location.reload();
-					listPage(1);
-					
-				} else {
-					alert("프로젝트 수정이 실패했습니다.")
-
-				}
-			};
-			
-			ajaxFun(url, "post", query, "json", fn);
-
-		});
-		
-		
-		
 	});
+	
+
 });
 
 
@@ -962,7 +946,7 @@ $(function(){
 		data-bs-backdrop="static" data-bs-keyboard="false"
 		aria-labelledby="myDialogModalLabel2" aria-hidden="true">
 	<div class="modal-dialog ">
-		<div class="modal-content ">
+		<div class="modal-content modal__size2 ">
 			<div class="modal-header">
 				<h5 class="modal-title" id="detail__addLabel2">프로젝트 챕터 추가</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -972,7 +956,7 @@ $(function(){
 						<table class="table form-table">
 							<tr>
 							    <td><span>프로젝트 챕터명</span></td>
-							    <td><input type="text" name="pd_subject" id="m_pd_subject"><input type="hidden" id="m_pd_code"></td>
+							    <td><input type="text" name="pd_subject" id="m_pd_subject"><input class="modal__input__design" type="hidden" id="m_pd_code"></td>
 							</tr>
 							<tr>
 							    <td ><span>진행 기간</span></td>

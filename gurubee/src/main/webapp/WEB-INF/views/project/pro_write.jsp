@@ -233,10 +233,12 @@ function sendOk(){
 		return false;
 	}
 	
+	/*
 	if(! $("input[name=pj_id]").val() ){
 		alert("참여자는 한 명이상 선택하세요.")
 		return false;
 	}
+	*/
 	
 	f.action = "${pageContext.request.contextPath}/project/${mode}_ok.do";
     f.submit();
