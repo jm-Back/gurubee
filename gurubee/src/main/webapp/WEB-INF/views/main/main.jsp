@@ -134,6 +134,86 @@
 
 
 </style>
+<script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script>
+
+function ajaxFun(url, method, query, dataType, fn) {
+	$.ajax({
+		type:method, // ex) GET, POST
+		url:url, // 클라이언트가 HTTP 요청을 보낼 서버의 주소
+		data:query, // 요청과 함께 서버에 보내는 string 또는 json
+		dataType:dataType, // 서버에서 내려온 data 형식 (default : xml, json, script, text, html)
+		success:function(data) {
+			fn(data);
+		}, 
+		beforeSend:function(jqXHR) {
+			//    HTTP 요청 헤더값 설정
+			//    setRequestHeader(헤더이름, 헤더값);
+			jqXHR.setRequestHeader("AJAX", true);
+		},
+		error:function(jqXHR) {
+			// 403 : 서버측 클라이언트 접근 거부 
+			//       ex) 권한에 맞지 않은 접속 요청
+			if(jqXHR.status === 403) {
+				alert("권한에 맞지 않은 접속요청입니다.");
+				return false;
+			
+			// 400 : 잘못된 요청으로 인한 문법 오류
+			// 		 ex) url을 잘못 입력했을 경우
+			} else if(jqXHR.status === 400) {
+				alert("요청 처리가 실패했습니다.");
+				return false;
+			}
+			// responseText : 서버에 요청하여 응답받은 데이터를 문자열로 반환
+			console.log(jqXHR.responseText);
+		}
+	});
+}
+
+$(document).ready(
+	function listNoticeAll() {
+		let url = "${pageContext.request.contextPath}/comp_notice/mainList.do";
+		let query = "";
+		
+		let selector = "#board";
+		
+		const fn = function(data) {
+			$(selector).html(data);
+		};
+		ajaxFun(url, "get", query, "html", fn);
+
+});
+
+$(document).ready(
+		function listNoticeDept() {
+			let url = "${pageContext.request.contextPath}/dep_notice/mainList.do";
+			let query = "";
+			
+			let selector = "#board2";
+			
+			const fn = function(data) {
+				$(selector).html(data);
+			};
+			ajaxFun(url, "get", query, "html", fn);
+
+	});
+	
+$(document).ready(
+		function listCommunity() {
+			let url = "${pageContext.request.contextPath}/community/mainList.do";
+			let query = "";
+			
+			let selector = "#board3";
+			
+			const fn = function(data) {
+				$(selector).html(data);
+			};
+			ajaxFun(url, "get", query, "html", fn);
+
+	});
+
+
+</script>
 
 
 </head>
@@ -148,8 +228,9 @@
 			</header>
 			
 		<!-- 로그인 사원 정보 -->
-			<div class="container row">
-				<div class="col-md-3 align-items-md-stretch">
+		<div class="row">
+			<div class="col container">
+				<div class="col-md-4 align-items-md-stretch">
 					<div class="">
 						<div class="h-100 p-5 text-center bg-light border rounded-3" style="font-size: 13px;">
 							<div style="margin-bottom: 0px;" >
@@ -222,16 +303,16 @@
 							</div>
 	
 						</div>
-					</div>
-					
-				</div>
-				<div class="col-md-6 align-items-md-stretch">
-					<jsp:include page="/WEB-INF/views/layout/compNotice.jsp"/>
-					<jsp:include page="/WEB-INF/views/layout/depNotice.jsp"/>
-					<jsp:include page="/WEB-INF/views/layout/community.jsp"/>
+					</div>		
 				</div>
 			</div>
-			
+				<div class="col-md-4">
+					<div id="board"></div>
+					<div id="board2"></div>
+					<div id="board3"></div>
+				</div>
+		</div>
+					
 			
 			
 		</div>

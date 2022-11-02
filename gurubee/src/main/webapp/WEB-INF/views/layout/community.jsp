@@ -28,6 +28,12 @@
 	font-weight: 700;
 }
 
+.card_body {
+	text-overflow:ellipsis; 
+	overflow:hidden; 
+	white-space:nowrap;
+}
+
 </style>
 
 </head>
@@ -48,31 +54,12 @@
 					<!-- 게시글 최신 6개까지만 출력 -->
 					<div class="card-body" id="boardlist" style="height: 250px; overflow: auto;">
 						<table class="table table-hover table-light " style="width: 100%;">
-							<tr>
-								<th style="width: 60%;">[인사]채용_신규 입사자 공지</th>
-								<th>김자바</th>
-								<th>2022-10-16</th>
-							</tr>
-							<tr>
-								<th>[인사]채용_신규 입사자 공지</th>
-								<th>김자바</th>
-								<th>2022-10-16</th>
-							</tr>
-							<tr>
-								<th>[인사]채용_신규 입사자 공지</th>
-								<th>김자바</th>
-								<th>2022-10-16</th>
-							</tr>
-							<tr>
-								<th>[인사]채용_신규 입사자 공지</th>
-								<th>김자바</th>
-								<th>2022-10-16</th>
-							</tr>
-							<tr>
-								<th>[인사]채용_신규 입사자 공지</th>
-								<th>김자바</th>
-								<th>2022-10-16</th>
-							</tr>
+							<c:forEach var="dto" items="${list}">
+								<tr>
+									<th>${dto.com_title}</th>
+									<th>${dto.regdate}</th>
+								</tr>
+							</c:forEach>
 						</table>
 					</div>
 				</div>

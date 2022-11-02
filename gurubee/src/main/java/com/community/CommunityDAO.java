@@ -1379,4 +1379,60 @@ public class CommunityDAO {
 			
 			return result;
 		}	
+		
+		// 메인 메뉴 표시
+		public List<CommunityDTO> mainList() {
+			List<CommunityDTO> list = new ArrayList<>();
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql;
+			
+			try {
+				
+				sql = " SELECT com_title, TO_CHAR(regdate, 'YYYY-MM-DD') regdate, name "
+						+ " FROM community c "
+						+ " JOIN employee e ON c.id = e.id "
+						+ " ORDER BY com_num DESC  "
+						+ " FETCH FIRST 6 ROWS ONLY ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				rs = pstmt.executeQuery();
+				
+				while(rs.next()) {
+					
+					CommunityDTO dto = new CommunityDTO();
+					
+					dto.setCom_title(rs.getString("com_title"));
+					dto.setRegdate(rs.getString("regdate"));
+					dto.setWriter_name(rs.getString("name"));
+					
+					list.add(dto);
+				}
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if(rs != null) {
+					try {
+						rs.close();
+					} catch (Exception e2) {
+						
+					}
+				}
+				
+				if(pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (Exception e2) {
+						
+					}
+				}
+				
+			}
+			
+			return list;
+			
+			
+		}	
 }

@@ -1097,5 +1097,58 @@ public class DepNoticeDAO {
 			return list;
 		}
 	
-	
+		public List<DepNoticeDTO> mainList() {
+			List<DepNoticeDTO> list = new ArrayList<>();
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql;
+			
+			try {
+				
+				sql = " SELECT notice_title, TO_CHAR(regdate, 'YYYY-MM-DD') regdate, name "
+						+ " FROM noticeDept n "
+						+ " JOIN employee e ON n.id = e.id "
+						+ " ORDER BY notice_num DESC  "
+						+ " FETCH FIRST 6 ROWS ONLY ";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				rs = pstmt.executeQuery();
+				
+				while(rs.next()) {
+					
+					DepNoticeDTO dto = new DepNoticeDTO();
+					
+					dto.setNotice_title(rs.getString("notice_title"));
+					dto.setRegdate(rs.getString("regdate"));
+					dto.setWriter_name(rs.getString("name"));
+					
+					list.add(dto);
+				}
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if(rs != null) {
+					try {
+						rs.close();
+					} catch (Exception e2) {
+						
+					}
+				}
+				
+				if(pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (Exception e2) {
+						
+					}
+				}
+				
+			}
+			
+			return list;
+			
+			
+		}
 }

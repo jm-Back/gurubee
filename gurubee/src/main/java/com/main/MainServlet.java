@@ -6,7 +6,9 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import com.login.SessionInfo;
 import com.util.MyServlet;
 
 @WebServlet("/main.do")
@@ -19,7 +21,19 @@ public class MainServlet extends MyServlet {
 		String uri=req.getRequestURI();
 		
 		if(uri.indexOf("main.do") != -1) {
+			
+			HttpSession session = req.getSession();
+			SessionInfo info = (SessionInfo)session.getAttribute("member");
+			
+			String cp = req.getContextPath();
+			
+			if(info == null) {
+				resp.sendRedirect(cp + "/");
+				return;
+			}
+			
 			forward(req, resp, "/WEB-INF/views/main/main.jsp");
+			
 		} else if(uri.indexOf("testmain.do") != -1) {
 			forward(req, resp, "/WEB-INF/views/main/testmain.jsp");
 		}
