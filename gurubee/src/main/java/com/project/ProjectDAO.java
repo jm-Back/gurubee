@@ -1037,7 +1037,8 @@ public class ProjectDAO {
 						+ " pd_sdate, pd_edate, pd_writer "
 						+ " FROM project_detail "
 						+ " WHERE pro_code = ? "
-						+ " ORDER BY pd_rank ASC ) pp left outer join employee ee on pp.pd_writer = ee.id "
+						+ " ORDER BY pd_sdate ASC ) pp left outer join employee ee on pp.pd_writer = ee.id "
+						+ " ORDER BY pd_sdate ASC "
 						+ " OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ";
 				
 				pstmt = conn.prepareStatement(sql);
