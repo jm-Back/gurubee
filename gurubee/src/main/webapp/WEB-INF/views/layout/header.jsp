@@ -21,28 +21,35 @@
 	border-radius: 20px;
     padding: 10px;
     z-index: 2;
+    
+    
 }
 
+#mar {
+	margin-right: 30px;
+}
 
+.menu:after{display:block; content:''; clear:both;}
+.menu > li{position:relative; float:left; margin-right:5px;}
+.menu > li > a{display:block; padding:0 15px; background:#cfffe5; height:40px; line-height:40px; color:#fff;}
+.menu > li:hover .depth_1 {display:block;}
+.menu .depth_1{display:none; position:absolute; left:0; right:0; text-align:center; background:#cfffe5;}
+.menu .depth_1 a{display:block; padding:5px; background:#cfffe5; color:#5e6576;}
 
+*/
 </style>
 
 <script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
 
 <script type="text/javascript">
-	
+	/*
 	$(function() {
-		$(".dropdown").hover(function() {
-			$(this).find(".dropdown-menu").slideToggle("fix");
-		}).mouseover(function(){
-			$(".dropdow-menu").css("position","fixed");
+		$(".dropdown").hover(
+				function() { $(this).find(".dropdown-menu").slideToggle(400); 
 		});
 	});
-	/*
-	.mouseover(function(){
-        $(".dropdown-menu").next("ul").slideDown();
-    });
 	*/
+	
 </script>
 
 	<nav class="navbar navbar-expand-xl navbar-light" style="background-color: white;">
@@ -55,7 +62,7 @@
 			</div>
 		</div>
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
-				<ul id="main-menu" class="navbar-nav flex-nowrap align-middle" > <!-- ms-auto : 우측으로 정렬 -->
+				<ul id="main-menu" class="menu navbar-nav flex-nowrap align-middle" > <!-- ms-auto : 우측으로 정렬 -->
 					
 					<li class="nav-item">
 						<a class="nav-link" href="${pageContext.request.contextPath}/project/list.do" id="navbarDropdown" role="button"  aria-expanded="false">
@@ -67,13 +74,13 @@
 						<a style="margin-top: -1px;" class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 							전자결재
 						</a>
-						<ul class="dropdown-menu" aria-labelledby="navbarDropdown" >
+						<ul id="mar" class="depth_1 dropdown-menu" aria-labelledby="navbarDropdown">
 							<li><a class="dropdown-item" href="${pageContext.request.contextPath}/edoc/write.do" >전자결재 작성</a></li>
 							<li><a class="dropdown-item" href="${pageContext.request.contextPath}/edoc/list_receive.do">수신함</a></li>
 							<li><a class="dropdown-item" href="${pageContext.request.contextPath}/edoc/list_send.do">발신함</a></li>
 							<li><a class="dropdown-item" href="${pageContext.request.contextPath}/edoc/list_temp.do">임시보관함</a></li>
 						</ul>
-					</li>
+					
 					
 					<li class="nav-item">
 						<a class="nav-link" href="${pageContext.request.contextPath}/schedule/main.do" id="navbarDropdown" role="button"  aria-expanded="false">
@@ -85,7 +92,7 @@
 						<a style="margin-top: -1px;" class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 							인사관리
 						</a>
-						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<ul class="depth_1 dropdown-menu" aria-labelledby="navbarDropdown">
 						<li><a class="dropdown-item" href="${pageContext.request.contextPath}/eattendance/write.do">근태 등록</a></li>
 							<li><a class="dropdown-item" href="${pageContext.request.contextPath}/employee/write.do">신입사원 등록</a></li>
 							<li><a class="dropdown-item" href="${pageContext.request.contextPath}/employee/update.do">사원 통합관리</a></li>
@@ -98,7 +105,7 @@
 						<a style="margin-top: -1px;" class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 							커뮤니티
 						</a>
-						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<ul class="depth_1 dropdown-menu" aria-labelledby="navbarDropdown">
 							<li><a class="dropdown-item" href="${pageContext.request.contextPath}/comp_notice/list.do">회사 공지사항</a></li>
 							<li><a class="dropdown-item" href="${pageContext.request.contextPath}/dep_notice/list.do">부서 공지사항</a></li>
 							<li><a class="dropdown-item" href="${pageContext.request.contextPath}/community/list.do">익명 커뮤니티</a></li>
