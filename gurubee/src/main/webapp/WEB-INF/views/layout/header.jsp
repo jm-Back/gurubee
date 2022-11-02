@@ -32,8 +32,10 @@
 <script type="text/javascript">
 	
 	$(function() {
-		$(".nav-item").hover(function() {
-			$(this).find(".dropdown-menu").slideToggle(400);
+		$(".dropdown").hover(function() {
+			$(this).find(".dropdown-menu").slideToggle("fix");
+		}).mouseover(function(){
+			$(".dropdow-menu").css("position","fixed");
 		});
 	});
 	/*

@@ -226,9 +226,9 @@
 					
 				</div>
 				<div class="col-md-6 align-items-md-stretch">
-					<jsp:include page="/WEB-INF/views/layout/community.jsp" />
-					<jsp:include page="/WEB-INF/views/layout/community1.jsp" />
-					<jsp:include page="/WEB-INF/views/layout/community1.jsp" />
+					<jsp:include page="/WEB-INF/views/layout/compNotice.jsp"/>
+					<jsp:include page="/WEB-INF/views/layout/depNotice.jsp"/>
+					<jsp:include page="/WEB-INF/views/layout/community.jsp"/>
 				</div>
 			</div>
 			
