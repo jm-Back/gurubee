@@ -71,15 +71,11 @@ function sendOk() {
 	let title = f.title.value.trim(); // 문서제목
 	let id_array = [f.empId1.value, f.empId2.value, f.empId3.value, f.empId4.value];
 	
-	console.log(content);
-	
 	// 결재자 사번 빈 값 없애기 
-	const id_apper_array = id_array.filter(
-		(element) => true		
-	);
-	
-	console.log(id_array);
-  	
+	id_array = id_array.filter(function(id) {
+		return id !== null && id!='';
+	});
+
   	if(! edoc.trim()) {
       	alert("문서구분을 선택하세요. ");
   	    return false;
@@ -96,8 +92,13 @@ function sendOk() {
     	return false;
   	}
   
- 	if(id_apper_array.length < 1) {
+ 	if(id_array.length===0) {
  		alert("수신자는 1명 이상 선택하세요. ");
+ 		return false;
+ 	}
+ 	
+ 	if(id_array.indexOf('${sessionScope.member.id}')!=-1) {
+ 		alert("본인이 수신자가 될 수 없습니다.");
  		return false;
  	}
  	

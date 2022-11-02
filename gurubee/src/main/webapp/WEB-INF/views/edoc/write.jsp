@@ -71,15 +71,60 @@ function sendOk() {
 	let title = f.title.value.trim(); // 문서제목
 	let id_array = [f.empId1.value, f.empId2.value, f.empId3.value, f.empId4.value];
 	
-	console.log(content);
+	// 결재자 사번 빈 값 없애기 
+	id_array = id_array.filter(function(id) {
+		return id !== null && id!='';
+	});
+	
+  	
+  	if(! edoc.trim()) {
+      	alert("문서구분을 선택하세요. ");
+  	    return false;
+ 	}
+  	
+  	if(! title.trim()) {
+      	alert("제목을 선택하세요. ");
+  	    return false;
+ 	}
+  
+ 	if(!content || content==="<p><br></p>") {
+    	alert("상세내용을 입력하세요. ");
+    	$("#content").focus();
+    	return false;
+  	}
+ 	
+ 	if(id_array.length===0) {
+ 		alert("수신자는 1명 이상 선택하세요. ");
+ 		return false;
+ 	}
+ 	
+ 	if(id_array.indexOf('${sessionScope.member.id}')!=-1) {
+ 		alert("본인이 수신자가 될 수 없습니다.");
+ 		return false;
+ 	}
+ 	
+ 	f.action = "${pageContext.request.contextPath}/edoc/${mode}_ok.do";
+ 
+    f.submit();
+}
+
+// 문서 임시저장
+function saveOk() {
+	alert('임시작성');
+	
+	const f = document.writeForm;
+	
+	let edoc = f.edocSelect.value.trim(); // 문서구분
+	oEditors.getById["ir1"].exec("UPDATE_CONTENTS_FIELD", []);
+	let content = oEditors.getById["ir1"].getIR(); // 문서폼
+	let title = f.title.value.trim(); // 문서제목
+	let id_array = [f.empId1.value, f.empId2.value, f.empId3.value, f.empId4.value];
 	
 	// 결재자 사번 빈 값 없애기 
-	const id_apper_array = id_array.filter(
-		(element) => true		
-	);
+	id_array = id_array.filter(function(id) {
+		return id !== null && id!='';
+	});
 	
-	console.log(id_array);
-  	
   	if(! edoc.trim()) {
       	alert("문서구분을 선택하세요. ");
   	    return false;
@@ -101,51 +146,8 @@ function sendOk() {
  		return false;
  	}
  	
- 	f.action = "${pageContext.request.contextPath}/edoc/${mode}_ok.do";
- 
-  	f.submit();
-}
-
-// 문서 임시저장
-function saveOk() {
-	alert('임시작성');
-	
-	const f = document.writeForm;
-	
-	let edoc = f.edocSelect.value.trim(); // 문서구분
-	oEditors.getById["ir1"].exec("UPDATE_CONTENTS_FIELD", []);
-	let content = oEditors.getById["ir1"].getIR(); // 문서폼
-	let title = f.title.value.trim(); // 문서제목
-	let id_array = [f.empId1.value, f.empId2.value, f.empId3.value, f.empId4.value];
-	
-	
-	console.log(content);
-	
-	// 결재자 사번 빈 값 없애기 
-	const id_apper_array = id_array.filter(
-		(element) => true		
-	);
-	
-	console.log(id_array);
-  	
-  	if(! edoc.trim()) {
-      	alert("문서구분을 선택하세요. ");
-  	    return false;
- 	}
-  	
-  	if(! title.trim()) {
-      	alert("제목을 선택하세요. ");
-  	    return false;
- 	}
-  
- 	if(!content || content==="<p><br></p>") {
-    	alert("상세내용을 입력하세요. ");
-    	$("#content").focus();
-    	return false;
-  	}
-  
- 	if(id_apper_array.length < 1) {
- 		alert("수신자는 1명 이상 선택하세요. ");
+ 	if(id_array.indexOf('${sessionScope.member.id}')!=-1) {
+ 		alert("본인이 수신자가 될 수 없습니다.");
  		return false;
  	}
  	
