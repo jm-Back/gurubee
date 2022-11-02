@@ -119,37 +119,26 @@
                     <i class="fa-solid fa-bars side_nav__toggle"></i>
                 </div>
                 <div class="">
-                    <a href="#" class="side_nav__link active">
+                    <a href="${pageContext.request.contextPath}/main.do" class="side_nav__link active">
                         <i class="fa-solid fa-house-chimney  side_nav__icon"></i>
                     </a>
-                    <a href="#" class="side_nav__link">
-                        <i class="fa-regular fa-envelope side_nav__icon" ></i>
-                    </a>
-                    <a href="#" class="side_nav__link">
+                    <a href="${pageContext.request.contextPath}/mypage/mypage.do" class="side_nav__link">
                         <i class="fa-regular fa-user side_nav__icon"></i>
                     </a>
-                    <a href="#" class="side_nav__link">
-                        <i class="fa-regular fa-folder-open side_nav__icon"></i>
+                    <a href="${pageContext.request.contextPath}/edoc/list_send.do" class="side_nav__link">
+                        <i class="fa-solid fa-file-signature size__big"></i>
                     </a>
-                    <a href="#" class="side_nav__link">
-                        <i class="fa-solid fa-chart-area side_nav__icon"></i>
+                    <a href="${pageContext.request.contextPath}/project/list.do" class="side_nav__link">
+                        <i class="fa-regular fa-folder-open size__big"></i>
                     </a>
-                    <a href="#" class="side_nav__link">
+                    <a href="${pageContext.request.contextPath}/comp_notice/list.do" class="side_nav__link">
                         <i class="fa-regular fa-rectangle-list side_nav__icon"></i>
                     </a>
-                    <a href="#" class="side_nav__link ">
+                    <a href="${pageContext.request.contextPath}/schedule/main.do" class="side_nav__link ">
                         <i class="fa-regular fa-calendar-check size__big"></i>
                     </a>
-                    <a href="#" class="side_nav__link ">
-                        <i class="fa-solid fa-umbrella-beach side_nav__icon"></i>
-                    </a>
 	            </div>
-	            	<div class="bott">
-		                <a href="#" class="side_nav__link">
-		                    <i class="fa-solid fa-right-from-bracket side_nav__icon"></i>
-		                </a>
-	                </div>
-	            </div>
+	        </div>
         </nav>
     </div>
 
