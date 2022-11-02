@@ -410,7 +410,6 @@ public class EdocServlet extends MyUploadServlet {
 			
 			// 나의 결재단계 가져오기
 			app_level = dao.readAppLevel(info.getId(), app_num);
-			System.out.println("내 결재 레벨"+app_level);
 			// 1vL 결재자
 			if(app_level == 1) {
 				resultMessage = dao.insertEdocMyResult1(app_num, info.getId(), app_result);

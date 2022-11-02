@@ -114,20 +114,10 @@ public class LoginServlet extends MyServlet {
 		// 세션에 저장된 모든 정보를 지우고 세션을 초기화 한다.
 		session.invalidate();
 
-		// 루트로 리다이렉트
-		resp.sendRedirect(cp + "/");
+		String path = "/WEB-INF/views/member/login.jsp";
+		forward(req, resp, path);
+		return;
 	}
-	/*
-	 * private void passwordForm(HttpServletRequest req, HttpServletResponse resp)
-	 * throws ServletException, IOException { String cp = req.getContextPath();
-	 * 
-	 * LoginDAO dao = new LoginDAO();
-	 * 
-	 * // dao.updateMember(id, pwd);
-	 * 
-	 * forward(req, resp, "/WEB-INF/views/main/main.jsp"); }
-	 */
-	
 	
 	private void passwordChange(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		

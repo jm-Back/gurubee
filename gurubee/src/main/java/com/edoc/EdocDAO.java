@@ -1190,7 +1190,6 @@ public class EdocDAO {
 				
 			rs = pstmt.executeQuery();
 			if(rs.next()) {	
-				System.out.println(sql);
 				if(rs.getInt("app_result")!=0) {
 					beforeResult = "이미 결재가 완료된 문서입니다.";
 					return beforeResult;

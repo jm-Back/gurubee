@@ -142,6 +142,11 @@
                     </a>
 	            </div>
 	        </div>
+	        <div>
+	        	<a href="${pageContext.request.contextPath}/member/logout.do" class="side_nav__link ">
+	        		<i class="fa-solid fa-right-from-bracket size__big"></i>
+	        	</a>
+	        </div>
         </nav>
     </div>
 
