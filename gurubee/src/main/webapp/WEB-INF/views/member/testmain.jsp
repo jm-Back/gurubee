@@ -154,8 +154,20 @@
 						<div class="h-100 p-5 text-center bg-light border rounded-3" style="font-size: 13px;">
 							<div style="margin-bottom: 0px;" >
 								<div class="box_photo"><img class="profile" src="${pageContext.request.contextPath}/resources/images/profile.jpg" ></div>
-									<span class="fw-bold fs-6">${sessionScope.member.id}&nbsp;${sessionScope.member.name}님</span>
-									<div>${sessionScope.member.dep_name}&nbsp;${sessionScope.member.pos_name} </div>
+									<span class="fw-bold fs-6"> ${dto.id}&nbsp;${dto.name}님</span>
+									<div>${dto.dep_name} (${dto.pos_name}) </div>
+							</div>
+							<div class="text-center col-12 p-4" >
+								<button type="button" class="btn"
+									style="background-color: aquamarine;"  data-bs-toggle="modal"
+									data-bs-target="#exampleModal">
+									&nbsp;출&nbsp;근&nbsp;
+								</button>
+								<button type="button" class="btn"
+									style="background-color: aquamarine;" data-bs-toggle="modal"
+									data-bs-target="#exampleModal">
+									&nbsp;퇴&nbsp;근&nbsp;
+								</button>
 							</div>
 							
 							<div id="infomenu" style="width: 100%; text-align: center;">
@@ -219,6 +231,8 @@
 					<jsp:include page="/WEB-INF/views/layout/community.jsp"/>
 				</div>
 			</div>
+			
+			
 			
 		</div>
 		

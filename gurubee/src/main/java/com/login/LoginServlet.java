@@ -34,6 +34,9 @@ public class LoginServlet extends MyServlet {
 			return;
 		} else if(uri.indexOf("password_ok.do") != -1) {
 			passwordChange(req, resp);
+		} else if(uri.indexOf("testmain.do") != -1) {
+			String path = "/WEB-INF/views/member/testmain.jsp";
+			forward(req, resp, path);
 		}
 	}
 
