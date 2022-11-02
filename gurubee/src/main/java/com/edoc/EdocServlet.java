@@ -64,6 +64,8 @@ public class EdocServlet extends MyUploadServlet {
 			tempForm(req, resp);
 		} else if(uri.indexOf("temp_ok.do") != -1) {
 			tempSubmit(req, resp);
+		} else if(uri.indexOf("deleteTemp.do") != -1) {
+			deleteTempEdoc(req, resp);
 		} else if(uri.indexOf("write_searchEmp.do") != -1) {
 			listEmp(req, resp);
 		} else if(uri.indexOf("write_edocForm.do") != -1) {
@@ -609,7 +611,7 @@ public class EdocServlet extends MyUploadServlet {
 		resp.sendRedirect(cp+"/edoc/list_send.do?page="+page);
 	}
 	
-
+	
 	protected void tempForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {		
 		EdocDAO dao = new EdocDAO();
 		
@@ -710,6 +712,30 @@ public class EdocServlet extends MyUploadServlet {
 		}
 		resp.sendRedirect(cp + "/edoc/list_send.do");
 	}
+	
+	// 임시 저장 글, 수신자, 파일 삭제
+	protected void deleteTempEdoc(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		EdocDAO dao = new EdocDAO();
+		String cp = req.getContextPath();
+		
+		try {
+			int app_num = Integer.parseInt(req.getParameter("app_num"));
+			
+			// 결재자 삭제
+			dao.deleteTempApper(app_num);
+			
+			// 파일 삭제
+			dao.deleteFile(app_num);
+			
+			// 문서 삭제
+			dao.deleteTempApproval(app_num);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		resp.sendRedirect(cp + "/edoc/list_temp.do");
+	}
 
 	// 파일 다운로드
 	protected void download(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -722,8 +748,7 @@ public class EdocServlet extends MyUploadServlet {
 			int fileNum = Integer.parseInt(req.getParameter("fileNum"));
 			
 			EdocDTO dto = dao.edocFile(fileNum);
-			
-			
+				
 			if(dto != null) {
 				b = FileManager.doFiledownload(dto.getSaveFilename(),
 				dto.getOriginalFilename(), pathname, resp);

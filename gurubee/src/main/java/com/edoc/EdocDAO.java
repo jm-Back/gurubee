@@ -9,6 +9,8 @@ import java.util.List;
 
 import com.util.DBConn;
 
+import oracle.jdbc.proxy.annotation.Pre;
+
 public class EdocDAO {
 	private Connection conn = DBConn.getConnection();
 	
@@ -1628,27 +1630,7 @@ public class EdocDAO {
 		}
 		return dto;
 	}
-	/*
-	public void deleteFile(EdocDTO edocdto) {
-		PreparedStatement pstmt = null;
-		String sql;
-		
-		try {
-			sql = "UPDATE save_filename, ori_filename WHERE app_num = ?";
-			
-			pstmt = conn.prepareStatement(sql);
-			
-			pstmt.setString(1, edocdto.getSaveFilename());
-			pstmt.setString(2, edocdto.getOriginalFilename());
-			pstmt.setInt(3, edocdto.getApp_num());
-
-			pstmt.executeUpdate();
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	*/
+	
 	public void deleteFile(int app_num) {
 		PreparedStatement pstmt = null;
 		String sql;
@@ -1665,6 +1647,25 @@ public class EdocDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void deleteTempApproval(int app_num) {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			sql = "DELETE FROM E_APPROVAL WHERE app_num = ? AND temp = 0";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, app_num);
+			
+			pstmt.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 }

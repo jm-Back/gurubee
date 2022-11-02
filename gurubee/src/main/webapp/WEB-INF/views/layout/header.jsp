@@ -9,13 +9,17 @@
 	margin-left: 50px;
 }
 
+@font-face {
+	font-family: 'menuFont';
+	scr  : url(esanmaru Medium.ttf)
+}
+
 #main-menu {
-	
+	font-family: 'menuFont';
 	font-size: 15px;
     font-weight: 600;
     cursor: pointer;
-    color: white;
-    background-color: #cfffe5;
+    color: white;"C:/Users/A/Downloads/S-Core_Dream_OTF/SCDream5.otf"
     opacity: 90%;
     border: none;
 	border-radius: 20px;
@@ -31,10 +35,14 @@
 
 .menu:after{display:block; content:''; clear:both;}
 .menu > li{position:relative; float:left; margin-right:5px;}
-.menu > li > a{display:block; padding:0 15px; background:#cfffe5; height:40px; line-height:40px; color:#fff;}
+.menu > li > a{display:block; padding:0 15px; height:40px; line-height:40px; color:#fff;}
 .menu > li:hover .depth_1 {display:block;}
-.menu .depth_1{display:none; position:absolute; left:0; right:0; text-align:center; background:#cfffe5;}
-.menu .depth_1 a{display:block; padding:5px; background:#cfffe5; color:#5e6576;}
+.menu .depth_1{display:none; position:absolute; left:0; right:0; text-align:center; }
+.menu .depth_1 a{display:block; padding:5px; color:#5e6576;}
+
+.drop-downmenu {
+	color:#5e6576;
+}
 
 */
 </style>
@@ -52,7 +60,7 @@
 	
 </script>
 
-	<nav class="navbar navbar-expand-xl navbar-light" style="background-color: white;">
+	<nav class="navbar navbar-expand-xl navbar-light" style="background-color: white; font-family:esamanru Medinum; ">
 		<div class="container h-3 justify-content-start">
 		<div class="col justify-content-start">
 			<div>

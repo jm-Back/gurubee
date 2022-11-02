@@ -23,7 +23,7 @@
 
 .navbar .nav-item .nav-link:hover,
 .navbar .nav-item .nav-link.active {
-	color: #0092ff;
+	color: #5CFF87;
 	text-decoration: none;
 }
 
@@ -43,7 +43,7 @@
 
 .navbar .dropdown-item:hover {
 	background-color: #fcfafb;
-	color: #0092ff;
+	color: #5CFF87;
 	text-decoration: none;
 }
 
