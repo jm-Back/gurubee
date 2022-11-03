@@ -77,11 +77,11 @@
 #boardmenu ul:nth-child(4) {
 	list-style: none;
 	float: right;
-	color: #ccc
+	color: #01d6b7
 }
 
 #boardmenu ul li a:hover {
-	background: #98E0AD;
+	background: #01d6b7;
 	color: #fff;
 }
 
@@ -102,15 +102,15 @@
 }
 
 #infomenu div a:hover {
-	color: #98E0AD;
+	color: #01d6b7;
 }
 
 .header-top div a:hover {
-	color: #98E0AD;
+	color: #01d6b7;
 }
 
 #nav-item a:hover {
-	color: #98E0AD;
+	color: #01d6b7;
 }
 
 .main-div {
@@ -123,11 +123,11 @@
 }
 
 .profile {
-	width: 120px;
-	height: 120px;
+	width: 160px;
+	height: 160px;
 	object-fit: cover;
 	border-radius: 100%;
-	border: 5px solid #01d6b7;
+	border: 7px solid #01d6b7;
 	padding: 4px;
 }
 
@@ -135,8 +135,9 @@
 	overflow: visible;
 	text-align: center;
 	width: 100%;
-	height: 70%;
+	height: 200px;
 	padding-bottom: 10px;
+	padding-top: 30px;
 }
 
 .form-control[readonly] { background-color:#fff; }
@@ -162,11 +163,6 @@ textarea.form-control { height: 170px; resize : none; }
 	padding-top: 15px;
 }
 
-.div-info {
-	height: 300px;
-	padding-bottom: 10px;
-}
-
 .div-cal {
 	height: 300px;
 }
@@ -186,7 +182,10 @@ textarea.form-control { height: 170px; resize : none; }
 }
 
 .attbtn {
-	background-color: aquamarine;
+	background-color: #01d6b7;
+	width: 90px;
+	height: 50px;
+	font-size: 40px;
 }
 
 .div-tabmenu {
@@ -223,7 +222,7 @@ ul.tabs li.current {
 }
 
 .myboard {
-	width: 90%;
+	width: 90%;	
 	
 }
 
@@ -234,6 +233,78 @@ ul.tabs li.current {
 .div-container {
 	justify-content: center;
 }
+
+.profile__size {
+	height: 500px;
+}
+
+.doc__btn {
+	width: 62%;
+	font-size: 19px;
+	color: #fff;
+	font-weight: 600;
+	text-align: center;
+	height: 100px;
+	border-radius: 15px;
+	margin-right: 10px;
+	margin-left: -23px;
+	background: #01d6b7;
+	opacity: 80%;
+	padding-top: 33px;
+}
+
+.doc__btn2 {
+	width: 62%;
+	font-size: 19px;
+	color: #fff;
+	font-weight: 600;
+	text-align: center;
+	height: 100px;
+	border-radius: 15px;
+	margin-right: 1px;
+	vertical-align: middle;
+	background: #01d6b7;
+	opacity: 80%;
+	padding-top: 33px;
+}
+
+.doc__btn:hover, .doc__btn2:hover {
+	opacity: 100%;
+	cursor: pointer;
+}
+
+.size__btn {
+	width: 100%;
+	display: flex;
+
+}
+
+/*결제문서 갯수 카운트 영역*/
+.doc__count {
+	margin-top: 12px;
+	width: 108%;
+	border:  1px solid #eee;
+	border-radius: 10px;
+	margin-left: -20px;
+	height: 200px;
+	
+}
+
+.doc__count__title {
+	font-size: 20px;
+	padding-top: 10px;
+	padding-left: 15px;
+	font-weight: 600;
+}
+
+.doc__count__content {
+	padding-top: 20px;
+	padding-left: 15px;
+	font-size: 18px;
+	padding-bottom: 10px;
+}
+
+
 
 </style>
 
@@ -338,7 +409,7 @@ $(document).ready(
 <body>
 	<main>
 
-		<div class="py-4 main-div">
+		<div class="main-div">
 			<header class="pb-3 mb-4 border-bottom">
 				<jsp:include page="/WEB-INF/views/layout/header.jsp" />
 				<jsp:include page="/WEB-INF/views/layout/sidebar.jsp" />
@@ -346,16 +417,16 @@ $(document).ready(
 
 			<div class="row div-total div-container">
 				<!-- 사원 정보 -->
-				<div class="col-3 align-items-md-stretch layoutdivt">
-					<div class="row div-info" style="padding-bottom: 10px;">
-						<div class="row h-100 p-5 text-center border rounded-3 shadow"
+				<div class="col-2 align-items-md-stretch ">
+					<div class="row " style="padding-bottom: 10px;">
+						<div class="row p-1 text-center border rounded-3 shadow profile__size"
 							style="font-size: 13px;">
 							<div class="box_photo">
 								<img class="profile"
 									src="${pageContext.request.contextPath}/resources/images/profile.jpg">
 							</div>
-							<span class="fw-bold fs-6"> ${sessionScope.member.name}&nbsp;${sessionScope.member.pos_name}님</span> <span
-								class="fs-6">${sessionScope.member.dep_name}</span> <input type="hidden" value="" id="">
+							<span class="fw-bold fs-6 dept__size"> ${sessionScope.member.name}&nbsp;${sessionScope.member.pos_name}님</span> 
+							<span class="fs-6">${sessionScope.member.dep_name}</span> <input type="hidden" value="" id="">
 							<div class="text-center" style="padding-top: 10px;">
 								<button type="button" class="btn attbtn" data-bs-toggle="modal"
 									data-bs-target="#exampleModal">&nbsp;출&nbsp;근&nbsp;</button>
@@ -364,20 +435,28 @@ $(document).ready(
 							</div>
 						</div>
 					</div>
-
-					<div class="row div-cal">
-						<div class="row text-center border rounded-3 shadow"
-							style="font-size: 13px;">
-							<div class="div-title">&nbsp;일정</div>
-							<div>
-<<<<<<< HEAD
-								<jsp:include page="/WEB-INF/views/schedule/month.jsp" />
-=======
-								<jsp:include page="/WEB-INF/views/mini/minisch.jsp" />
->>>>>>> branch 'main' of https://github.com/jm-Back/gurubee.git
-							</div>
+					<div class="size__btn">
+						<div class="doc__btn shadow ">
+							결재문서 작성
+						</div>
+						<div class="doc__btn2 shadow">
+							새 프로젝트
+						</div>
+		
+					</div>
+					<div class="doc__count shadow">
+						<div class="doc__count__title  ">
+							(아이콘) 결재문서 리스트
+						</div>
+						<div class="doc__count__content">
+							결제문서 갯수 : (숫자자리)
+						</div>
+						<hr>
+						<div class="doc__count__content">
+							결제문서 갯수 : (숫자자리)
 						</div>
 					</div>
+					
 				</div>
 
 				<div class="col-4 align-items-md-stretch layoutdiv">
