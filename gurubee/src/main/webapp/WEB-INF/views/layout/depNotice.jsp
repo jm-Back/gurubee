@@ -47,7 +47,7 @@
 						<table class="table table-hover table-light " style="width: 100%;">
 							<c:forEach var="dto" items="${list}">
 								<tr>
-									<th id="title"><a href="${articleUrl}?num=${dto.num}" class="text-reset" style="font-weight: bold">${dto.notice_title}</a></th>
+									<th id="title"><a href="${articleUrl}?page=1&${dto.num}" class="text-reset" style="font-weight: bold">${dto.notice_title}</a></th>
 									<th>${dto.writer_name}</th>
 									<th>${dto.regdate}</th>
 								</tr>
