@@ -377,7 +377,26 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 }
 
 .modal__input__design {
-	width: 400px;
+	width: 300px;
+	border-radius: 8px;
+	border: 1px solid lightgray;
+	height: 30px;
+}
+
+.modal__textarea__design {
+	width: 350px;
+	height: 200px;
+	border-radius: 8px;
+	border: 1px solid lightgray;
+}
+
+.modal__date__design {
+	width: 200px;
+	height: 30px;
+	border-radius: 8px;
+	border: 1px solid lightgray;
+	padding: 3px 3px;
+	padding-left: 10px;
 }
 
 .click__icon {
@@ -956,15 +975,15 @@ $(function(){
 						<table class="table form-table">
 							<tr>
 							    <td><span>프로젝트 챕터명</span></td>
-							    <td><input type="text" name="pd_subject" id="m_pd_subject"><input class="modal__input__design" type="hidden" id="m_pd_code"></td>
+							    <td><input class="modal__input__design" type="text" name="pd_subject" id="m_pd_subject"><input  type="hidden" id="m_pd_code"></td>
 							</tr>
 							<tr>
 							    <td ><span>진행 기간</span></td>
-							    <td><input type="date" name="pd_sdate" id="m_pd_sdate"> ~ <input type="date" name="pd_edate" id="m_pd_edate"></td>
+							    <td><input class="modal__date__design" type="date" name="pd_sdate" id="m_pd_sdate"> ~ <input class="modal__date__design" type="date" name="pd_edate" id="m_pd_edate"></td>
 							</tr>
 							<tr>
 							    <td ><span>프로젝트 챕터 내용</span></td>
-							    <td><textarea name="pd_content" class="pd_content" id="m_pd_content"></textarea> </td>
+							    <td><textarea name="pd_content" class="pd_content modal__textarea__design" id="m_pd_content"></textarea> </td>
 							</tr>
 						</table>		
 			</div>

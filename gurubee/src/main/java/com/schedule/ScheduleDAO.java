@@ -182,7 +182,7 @@ public class ScheduleDAO {
 			sb.append(" 	, C.sc_color ");
 			sb.append(" FROM schedule S ");
 			sb.append(" JOIN schedule_color C ON S.sc_code = C.sc_code ");
-			sb.append(" WHERE id = ? AND ");
+			sb.append(" WHERE (id = ? OR 'GB10032002')  AND ");
 			sb.append("	  ( ");
 			sb.append("      ( ");
 			sb.append("			 TO_DATE(sch_sdate, 'YYYYMMDD') = TO_DATE(?, 'YYYYMMDD') ");
