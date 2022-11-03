@@ -119,6 +119,7 @@ public class ScheduleServlet extends MyServlet {
 			//스케쥴
 			String startDay = String.format("%04d%02d%02d", syear, smonth, sdate);
 			String endDay = String.format("%04d%02d%02d", eyear, emonth, edate);
+			
 			List<ScheduleDTO> list = dao.listMonth(startDay, endDay, info.getId());
 			
 			

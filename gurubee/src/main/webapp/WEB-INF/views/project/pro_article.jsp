@@ -558,7 +558,7 @@ $(function(){
 		query += "&pd_sdate="+pd_sdate;
 		query += "&pd_edate="+pd_edate;
 		
-		alert(url);
+
 		const fn = function(data){
 			if(data.state === "true"){
 				$("#detail__add").modal("hide");
@@ -891,7 +891,7 @@ $(function(){
 					<div class="profile__font"> ${dto.pro_master}</div>
 					<div class="profile__font2"><i class="fa-solid fa-circle-user"></i>&nbsp;${dto.pos_name} / ${dto.dep_name}</div>
 					<div class="profile__font2"><i class="fa-solid fa-phone"></i>&nbsp;${dto.pro_tel} (${dto.pro_phone})</div>
-					<div><button class="btn btn-primary master__call" type="button">쪽지 보내기</button></div>
+					<div><button class="btn btn-primary master__call" type="button" onclick="location.href='${pageContext.request.contextPath}/dep_notice/list.do'">부서 공지사항</button></div>
 				</div>
 				</div>
 			</div>

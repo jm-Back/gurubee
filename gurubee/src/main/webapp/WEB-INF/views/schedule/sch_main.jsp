@@ -166,6 +166,7 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 }
 
 
+
 </style>
 
 <script type="text/javascript">
@@ -372,7 +373,6 @@ $(function(){
 			
 		};
 		
-		alert(query);
 		ajaxFun(url, "post", query, "json", fn);	
 		
 	});
@@ -464,6 +464,19 @@ function check() {
 		$("#form-repeat_cycle").focus();
 		return false;
 	}
+	
+	if( ! $("#form-memo").val()) {
+		alert("일정 메모는 필수로 남겨주세요.")
+		return false;
+	}
+	
+	if( ! $("#form-repeat").val() ) {
+		alert("반복 일정 여부를 선택해주세요.")
+		$("#form-repeat").focus();
+		return false;
+	}
+	
+	
 	
 	return true;
 }
