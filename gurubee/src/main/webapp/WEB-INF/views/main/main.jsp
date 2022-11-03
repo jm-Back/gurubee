@@ -32,7 +32,6 @@
 
 .b-example-divider {
 	height: 3rem;
-	background-color: rgba(0, 0, 0, .1);
 	border: solid rgba(0, 0, 0, .15);
 	border-width: 1px 0;
 	box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em
@@ -135,11 +134,23 @@
 	padding-bottom: 10px;
 }
 
+.form-control[readonly] { background-color:#fff; }
+
+textarea.form-control { height: 170px; resize : none; }
+
+.form-select {
+	border: 1px solid #999; border-radius: 4px; background-color: #fff;
+	padding: 4px 5px; 
+	font-family: "맑은 고딕", 나눔고딕, 돋움, sans-serif;
+	vertical-align: baseline;
+}
+.form-select[readonly] { background-color:#fff; }
+
 .div-total {
 	
 }
 
-.layoutdiv {
+.main-div {
 	
 }
 
@@ -213,6 +224,10 @@ ul.tabs li.current {
 .myboard {
 	width: 90%;
 	
+}
+
+.shadow {
+	box-shadow: 3px 3px 3px;
 }
 
 </style>
@@ -328,7 +343,7 @@ $(document).ready(
 				<!-- 사원 정보 -->
 				<div class="col-3 align-items-md-stretch layoutdivt">
 					<div class="row div-info" style="padding-bottom: 10px;">
-						<div class="row h-100 p-5 text-center bg-light border rounded-3"
+						<div class="row h-100 p-5 text-center border rounded-3 shadow"
 							style="font-size: 13px;">
 							<div class="box_photo">
 								<img class="profile"
@@ -346,11 +361,11 @@ $(document).ready(
 					</div>
 
 					<div class="row div-cal">
-						<div class="row text-center bg-light border rounded-3"
+						<div class="row text-center border rounded-3 shadow"
 							style="font-size: 13px;">
 							<div class="div-title">&nbsp;일정</div>
 							<div>
-								<jsp:include page="/WEB-INF/views/member/mycalendar.jsp" />
+								일정
 							</div>
 						</div>
 					</div>
@@ -358,9 +373,9 @@ $(document).ready(
 
 				<div class="col-4 align-items-md-stretch layoutdiv">
 					<!-- 수신함 -->
-					<div class="row bg-light border rounded-3 div-edoc">
+					<div class="row border rounded-3 shadow div-edoc">
 						<div class="div-title">&nbsp;문서 수신함</div>
-						<table class="table table-hover table-light"
+						<table class="table table-hover"
 							style="table-layout: fixed; margin-top: 20px;">
 							<tr>
 								<th
@@ -391,9 +406,9 @@ $(document).ready(
 					</div>
 
 					<!-- 플젝 -->
-					<div class="row bg-light border rounded-3 div-project">
+					<div class="row border rounded-3 shadow div-project">
 						<div class="div-title">&nbsp;프로젝트 현황</div>
-						<table class="table table-hover table-light"
+						<table class="table table-hover"
 							style="table-layout: fixed; margin-top: 20px;">
 							<tr>
 								<th
@@ -426,7 +441,7 @@ $(document).ready(
 				</div>
 
 				<!-- 게시판 -->
-				<div class="col-4 bg-light border rounded-3 div-board">
+				<div class="col-4 border rounded-3 shadow div-board">
 					<div class="div-title">&nbsp;공지사항</div>
 					<div class="div-tabmenu">
 						<ul class="tabs">
