@@ -17,7 +17,7 @@
 	</div>
 </div>
 
-<table id="largeCalendar" class="table table-bordered" style="width: 100%;">
+<table id="largeCalendar" class="table table-bordered" style="width: 20%;">
 	<tr class="text-center bg-light">
 		<td class="text-danger" width="120">일</td>
 		<td width="120">월</td>

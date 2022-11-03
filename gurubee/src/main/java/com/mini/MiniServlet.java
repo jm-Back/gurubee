@@ -10,11 +10,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.login.SessionInfo;
-import com.schedule.ScheduleDTO;
 import com.util.MyServlet;
 
 @WebServlet("/mini/*")
 public class MiniServlet extends MyServlet {
+	private static final long serialVersionUID = 1L;
+
 
 	@Override
 	protected void execute(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -50,16 +51,13 @@ req.setCharacterEncoding("utf-8");
 		
 		//오늘 날짜 넘기기
 		req.setAttribute("today", today);
-		forward(req, resp, "/WEB-INF/views/mini/minisch.jsp");
+		forward(req, resp, "/WEB-INF/views/mini/mini_main.jsp");
 		
 	}
 
 
 	private void monthMini(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 미니 달력
-		
-		HttpSession session = req.getSession();
-		SessionInfo info = (SessionInfo) session.getAttribute("member");
 		
 		//오늘 날짜 기준으로 구할거니까 캘린더 구하기
 		Calendar cal = Calendar.getInstance();
@@ -120,10 +118,54 @@ req.setCharacterEncoding("utf-8");
 			}
 			
 			//해당년, 해당월 날짜 및 일정
+			int row = 0;
+			int n = 0;
 			
+			jump: for(row = 0; row < days.length; row ++) {
+				for(int i= week - 1; i<7; i++) {
+					n++;
+					s = String.format("%04d%02d%02d", year, month, n);
+					
+					if (i == 0) {
+						days[row][i] = "<span class='textDate sundayDate' data-date='" + s + "' >" + n + "</span>";
+					} else if (i == 6) {
+						days[row][i] = "<span class='textDate saturdayDate' data-date='" + s + "' >" + n + "</span>";
+					} else {
+						days[row][i] = "<span class='textDate nowDate' data-date='" + s + "' >" + n + "</span>";
+					}
+					
+
+					if(n== cal.getActualMaximum(Calendar.DATE)) {
+						week = i + 1;
+						break jump;
+					}
+				}
+				
+				week = 1;
+				
+			}
 			
+			if(week != 7) {
+				n = 0;
+				for(int i = week; i<7; i++) {
+					n++;
+					s = String.format("%04d%02d%02d", eyear, emonth, n);
+					days[row][i] = "<span class='textDate nextMonthDate' data-date='" + s + "' >" + n + "</span>";
+					
+
+				}
+			}
 			
+			String today = String.format("%04d%02d%02d", todayYear, todayMonth, todayDate);
 			
+			req.setAttribute("year", year);
+			req.setAttribute("month", month);
+			req.setAttribute("todayYear", todayYear);
+			req.setAttribute("todayMonth", todayMonth);
+			req.setAttribute("todayDate", todayDate);
+			req.setAttribute("today", today);
+			req.setAttribute("days", days);
+					
 			
 		} catch (Exception e) {
 			e.printStackTrace();
