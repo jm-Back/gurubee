@@ -66,7 +66,7 @@ public class LoginDAO {
 			  
 			  */
 			
-			 sql = "SELECT his.id, pwd, name, reg, mail, phone, tel, pos_name, dep_name,"
+			 sql = "SELECT his.id, pwd, name, reg, mail, phone, tel, pos_name, dep_name, dep_code,"
 			 		+ "	ori_filename, save_filename "
 			 		+ " FROM (SELECT his_no, date_iss, reason, id, pos_code, dep_code, division, "
 			 		+ "    now_working, type, startdate, enddate, "
@@ -101,6 +101,7 @@ public class LoginDAO {
 				
 				dto.setPos_name(rs.getString("pos_name"));
 				dto.setDep_name(rs.getString("dep_name"));
+				dto.setDep_code(rs.getString("dep_code"));
 			}
 			
 			
