@@ -3,7 +3,9 @@ package com.mypage;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -60,17 +62,12 @@ public class MypageServlet extends MyUploadServlet{
 			
 		
 		} else if(uri.indexOf("myatt_write.do") != -1) {
-			myattinsertForm(req, resp); // mypage 출근등록 [myatt_write.jsp (tab2에서 출력)]
+			myattinsertSubmit(req, resp); // mypage 출근등록 [myatt_write.jsp (tab2에서 출력)]
 			
-		} else if(uri.indexOf("myatt_write.do") != -1) {
-			myattupdateForm(req, resp); // mypage 퇴근등록 [myatt_write.jsp (tab2에서 출력)]
+		} else if(uri.indexOf("myatt_update.do") != -1) {
+			myattupdateSubmit(req, resp); // mypage 퇴근등록 완료
 			
-		} else if(uri.indexOf("myatt_ok.do") != -1) {
-			myattupdateOkSubmit(req, resp); // mypage 출퇴근등록 완료
-			
-		} else if(uri.indexOf("myatt_article.do") != -1) {
-			myattarticleForm(req, resp); // mypage 총근무시간 출력 [myatt_article.jsp (tab2에서 출력)]
-		}
+		} 
 	}
 	
 	private void selectemployee(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -204,15 +201,13 @@ public class MypageServlet extends MyUploadServlet{
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		
 		
 		forward(req, resp, "/WEB-INF/views/mypage/myatt.jsp");
 	}
 
 
 
-	private void myattinsertForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+	private void myattinsertSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
 		// 출근기록
 		MypageDAO dao = new MypageDAO();
 		
@@ -220,112 +215,80 @@ public class MypageServlet extends MyUploadServlet{
 		SessionInfo info = (SessionInfo) session.getAttribute("member");
 		
 		String state = "false";
-		
 		try {
+			
 			MypageDTO mdto = new MypageDTO();
 			
+			Calendar cal = Calendar.getInstance();
+			String s = String.format("$tF", cal) + " 09:00:00";
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date date = new Date();
+			Date date2 = sdf.parse(s);
+			
 			mdto.setId(info.getId());
-			mdto.setAtt_id(mdto.getAtt_id());
-			mdto.setAtt_start(req.getParameter("att_start"));
-			mdto.setAtt_end(req.getParameter("att_end"));
-			mdto.setAtt_ing(req.getParameter("att_ing"));
+			if(date.getTime() > date2.getTime()) {
+				mdto.setAtt_ing("지각");
+			} else {
+				mdto.setAtt_ing("출근");
+			}
 			
 			dao.attendanceInsert(mdto);
-			state = "true";
 			
+			state = "true";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		JSONObject job = new JSONObject();
 		job.put("state", state);
 		
 		resp.setContentType("text/html;charset=utf-8");
 		PrintWriter out = resp.getWriter();
 		out.print(job.toString());
-		
-		
 	}
 	
 	
-	private void myattupdateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+	private void myattupdateSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+		// 퇴근 기록
 		MypageDAO dao = new MypageDAO();
 		
 		HttpSession session = req.getSession();
 		SessionInfo info = (SessionInfo) session.getAttribute("member");
-		UserDTO dto = dao.selectemployee(info.getId());
 		
 		String state = "false";
 		try {
 			
 			MypageDTO mdto = new MypageDTO();
 			
-			dto.setId(req.getParameter("id"));
+			Calendar cal = Calendar.getInstance();
+			String s = String.format("$tF", cal) + " 18:00:00";
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date date = new Date();
+			Date date2 = sdf.parse(s);
+			
+			if(date.getTime() > date2.getTime()) {
+				mdto.setAtt_ing("퇴근");
+			} else {
+				mdto.setAtt_ing("조퇴");
+			}			
+				
+			mdto.setId(info.getId());
 			mdto.setAtt_id(req.getParameter("att_id"));
-			mdto.setAtt_start(req.getParameter("att_start").replaceAll("-", ""));
-			mdto.setAtt_end(req.getParameter("att_and").replaceAll("-", ""));
-			mdto.setAtt_ing(req.getParameter("att_ing"));
-			
-			System.out.println(mdto.getAtt_end());
-			
-			if(req.getParameter("allDay")!=null) {
-				mdto.setAtt_start("");
-				mdto.setAtt_end("");
-			}
-			
-			if(mdto.getAtt_start().length()==0 && mdto.getAtt_end().length()==0 && mdto.getAtt_start().equals(mdto.getAtt_end())) {
-				mdto.setAtt_end("");
-			}
 			
 			dao.attendanceupdate(mdto);
-			state = "true";
 			
+			state = "true";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
 		JSONObject job = new JSONObject();
 		job.put("state", state);
-
+		
 		resp.setContentType("text/html;charset=utf-8");
 		PrintWriter out = resp.getWriter();
 		out.print(job.toString());
-		
-
 	}
-	
-
-	private void myattupdateOkSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
-		MypageDAO dao = new MypageDAO();
-
-		HttpSession session = req.getSession();
-		SessionInfo info = (SessionInfo) session.getAttribute("member");
-		
-		String cp = req.getContextPath();
-		if (req.getMethod().equalsIgnoreCase("GET")) {
-			resp.sendRedirect(cp + "/mypage/Myatt.do");
-			return;
-		}
-		
-		String page = req.getParameter("page");
-		
-		try {
-			MypageDTO dto = new MypageDTO();
-			
-			dto.setAtt_id(req.getParameter("att_id"));
-			dto.setId(info.getId());
-
-			dao.attendanceupdate(dto);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		resp.sendRedirect(cp + "/mypage/myatt.do?page=" + page);
-	}
-	
-	private void myattarticleForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
-
-	}
-	
-	
 }

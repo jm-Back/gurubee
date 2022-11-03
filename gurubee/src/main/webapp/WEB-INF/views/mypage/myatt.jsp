@@ -67,8 +67,8 @@ $(function(){
 	<div class="col">
 		<div class="row">
 			<div class="col">
-				<button class="btn" style="background-color: aquamarine; color:white;" ${not empty todayAttendance.att_start ? "disabled='disabled'":""}>출근</button>
-				<button class="btn" style="background-color: aquamarine; color:white;" ${empty todayAttendance.att_start or not empty todayAttendance.att_end ? "disabled='disabled'":""}>퇴근</button>
+				<button class="btn btn-Attendance btn-in" data-att_id="${dto.att_id}" style="background-color: aquamarine; color:white;" ${not empty todayAttendance.att_start ? "disabled='disabled'":""}>출근</button>
+				<button class="btn btn-Attendance btn-out" data-att_id="${dto.att_id}" style="background-color: aquamarine; color:white;" ${empty todayAttendance.att_start or not empty todayAttendance.att_end ? "disabled='disabled'":""}>퇴근</button>
 			</div>
 		</div>		
 	</div>
@@ -108,17 +108,12 @@ $(function(){
 					</thead>
 					
 					<tbody>
-						<c:forEach var="dto" items="${list}" varStatus="status">
+						<c:forEach var="dto" items="${att_id}" varStatus="status">
 							<tr>
-								<td>${dataCount - (page-1) * size - status.index}</td>
-								<td class="left">
-									<c:forEach var="n" begin="1" end="${dto.depth }">&nbsp;&nbsp;</c:forEach>
-									<c:if test="${dto.depth!=0}">└&nbsp;</c:if>
-									<a href="${articleUrl}&boardNum=${dto.att_id}" class="text-reset">${dto.subject}</a>
-								</td>
-								<td>${dto.userName}</td>
-								<td>${dto.reg_date}</td>
-								<td>${dto.hitCount}</td>
+								<td>${systemdate}</td>
+								<td>${dto.att_start}</td>
+								<td>${dto.att_end}</td>
+								<td>${dto.att_ing}</td>
 							</tr>
 						</c:forEach>
 					</tbody>

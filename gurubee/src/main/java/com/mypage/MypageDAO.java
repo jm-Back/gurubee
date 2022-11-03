@@ -131,7 +131,7 @@ private Connection conn = DBConn.getConnection();
 			try {
 				sb.append(" SELECT att_id, att_start, att_end, att_ing, a.id");
 				sb.append("       TO_CHAR(reg_date, 'YYYY-MM-DD') reg_date ");
-				sb.append(" FROM attendece ");
+				sb.append(" FROM attendance ");
 				sb.append(" JOIN employee a ON a.id = id ");
 				sb.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
 
@@ -182,8 +182,8 @@ private Connection conn = DBConn.getConnection();
 
 			try {
 				sb.append(" SELECT att_id, TO_CHAR(att_start, 'HH24:MI:SS') att_start, TO_CHAR(att_end, 'HH24:MI:SS') att_end, att_ing, a.id");
-				sb.append(" FROM attendece ");
-				sb.append(" JOIN employee a ON a.id = id ");
+				sb.append(" FROM attendance a");
+				sb.append(" JOIN employee e ON a.id = e.id ");
 				sb.append(" WHERE a.id = ? AND TO_CHAR(att_start, 'YYYYMM') = ? ");
 				sb.append(" ORDER BY att_start ASC ");
 				
@@ -234,8 +234,8 @@ private Connection conn = DBConn.getConnection();
 
 		try {
 			sb.append(" SELECT att_id, TO_CHAR(att_start, 'HH24:MI:SS') att_start, TO_CHAR(att_end, 'HH24:MI:SS') att_end, att_ing, a.id");
-			sb.append(" FROM attendece ");
-			sb.append(" JOIN employee a ON a.id = id ");
+			sb.append(" FROM attendance a ");
+			sb.append(" JOIN employee e ON a.id = e.id ");
 			sb.append(" WHERE a.id = ? AND TO_CHAR(att_start, 'YYYYMMDD') = ? ");
 			
 			pstmt = conn.prepareStatement(sb.toString());
@@ -282,12 +282,10 @@ private Connection conn = DBConn.getConnection();
 		
 		try {
 			sql = " INSERT INTO attendance (att_id, att_start, att_end, att_ing, id) "
-					+ " VALUES (attendance_seq.NEXTVAL, SYSDATE, NULL, ?, ?, ?) ";
+					+ " VALUES (attendance_seq.NEXTVAL, SYSDATE, NULL, ?, ?) ";
 			
 			pstmt = conn.prepareStatement(sql);
 			
-			// pstmt.setString(1, mdto.getAtt_start());
-			// pstmt.setString(2, mdto.getAtt_end());
 			pstmt.setString(1, mdto.getAtt_ing());
 			pstmt.setString(2, mdto.getId());
 			
@@ -313,13 +311,11 @@ private Connection conn = DBConn.getConnection();
 
 		try {
 			sb.append("UPDATE attendance SET ");
-			sb.append("   att_end=SYSDATE, att_ing=? ");
+			sb.append("   att_end=SYSDATE, att_ing = att_ing || '/' || ? ");
 			sb.append("   WHERE att_id=? AND Id=?");
 			
 			pstmt = conn.prepareStatement(sb.toString());
-			
-			// pstmt.setString(1, mdto.getAtt_start());
-			// pstmt.setString(2, mdto.getAtt_end());
+
 			pstmt.setString(1, mdto.getAtt_ing());
 			pstmt.setString(2, mdto.getId());
 

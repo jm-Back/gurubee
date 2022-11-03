@@ -42,7 +42,7 @@ $(function(){
         } else if(tab==="2") { // 근태
         	url = "${pageContext.request.contextPath}/mypage/myatt.do";
         	$(selector).load(url);
-        }
+        } 
         
 		// alert(selector);
 		// $(selector).load("서버주소");
@@ -275,6 +275,7 @@ $(function() {
 				</form>	
 				</div>
 				<div class="tab-pane fade show active" id="nav-2" role="tabpanel" aria-labelledby="nav-tab-2"></div>
+					
 			</div>
 	
 		</div>

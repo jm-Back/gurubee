@@ -42,7 +42,7 @@ $(function(){
         } else if(tab==="2") { // 근태
         	url = "${pageContext.request.contextPath}/mypage/myatt.do";
         	$(selector).load(url);
-        }
+        } 
         
 		// alert(selector);
 		// $(selector).load("서버주소");
@@ -80,7 +80,7 @@ function changeMonth(year, month) {
 				</li>
 				<li class="nav-item" role="presentation">
 					<button class="nav-link" id="tab-2" data-bs-toggle="tab" data-bs-target="#nav-2" type="button" role="tab" aria-controls="2" aria-selected="true">근태관리</button>
-				</li>				
+				</li>
 			</ul>
 	
 			<div class="tab-content pt-5 " id="nav-tabContent">
