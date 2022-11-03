@@ -370,7 +370,11 @@ $(document).ready(
 							style="font-size: 13px;">
 							<div class="div-title">&nbsp;일정</div>
 							<div>
+<<<<<<< HEAD
 								<jsp:include page="/WEB-INF/views/schedule/month.jsp" />
+=======
+								<jsp:include page="/WEB-INF/views/mini/minisch.jsp" />
+>>>>>>> branch 'main' of https://github.com/jm-Back/gurubee.git
 							</div>
 						</div>
 					</div>
