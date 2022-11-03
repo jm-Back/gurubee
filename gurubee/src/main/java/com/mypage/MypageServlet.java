@@ -68,6 +68,8 @@ public class MypageServlet extends MyUploadServlet{
 		} else if(uri.indexOf("myatt_ok.do") != -1) {
 			myattupdateOkSubmit(req, resp); // mypage 출퇴근등록 완료
 			
+		} else if(uri.indexOf("myatt_article.do") != -1) {
+			myattarticleForm(req, resp); // mypage 총근무시간 출력 [myatt_article.jsp (tab2에서 출력)]
 		}
 	}
 	
