@@ -24,11 +24,21 @@
 }
 
 .card-bg {
-	background-color: aquamarine;
+	background-color: #00d1b3;
 	font-weight: 700;
+	opacity: 80%;
 }
 
+#title {
+	text-overflow:ellipsis; 
+	overflow:hidden; 
+	white-space:nowrap;
+}
+
+
+
 </style>
+
 
 </head>
 <body>
@@ -37,42 +47,22 @@
 				<div class="card border rounded-2">
 					<div class="card-header card-bg " id="boardmenu" style="width: 100%;">
 						<ul>
-							<li><i class="bi bi-clipboard-check"></i><a class="t" href="#">전사공지</a>
-							<li><a class="t" href="#">부서공지</a>
-							<li><a class="t" href="#">커뮤니티</a>
-							<li style="float: right;"><a class="" href="#"></a><img src="${pageContext.request.contextPath}/resources/images/icon-plus.png">
+							<li><i class="bi bi-clipboard-check"></i><a class="t" href="#">회사 공지사항</a>
+							<li style="float: right;"><a class="" href="${pageContext.request.contextPath}/comp_notice/list.do"><img src="${pageContext.request.contextPath}/resources/images/icon-plus.png"></a>
 						</ul>
 					</div>
-				
+					
 				
 					<!-- 게시글 최신 6개까지만 출력 -->
 					<div class="card-body" id="boardlist" style="height: 250px; overflow: auto;">
 						<table class="table table-hover table-light " style="width: 100%;">
-							<tr>
-								<th style="width: 60%;">[인사]채용_신규 입사자 공지</th>
-								<th>김자바</th>
-								<th>2022-10-16</th>
-							</tr>
-							<tr>
-								<th>[인사]채용_신규 입사자 공지</th>
-								<th>김자바</th>
-								<th>2022-10-16</th>
-							</tr>
-							<tr>
-								<th>[인사]채용_신규 입사자 공지</th>
-								<th>김자바</th>
-								<th>2022-10-16</th>
-							</tr>
-							<tr>
-								<th>[인사]채용_신규 입사자 공지</th>
-								<th>김자바</th>
-								<th>2022-10-16</th>
-							</tr>
-							<tr>
-								<th>[인사]채용_신규 입사자 공지</th>
-								<th>김자바</th>
-								<th>2022-10-16</th>
-							</tr>
+							<c:forEach var="dto" items="${list}">
+								<tr>
+									<th id="title"><a href="${articleUrl}?num=${dto.num}" class="text-reset" style="font-weight: bold">${dto.notice_title}</a></th>
+									<th>${dto.writer_name}</th>
+									<th>${dto.regdate}</th>
+								</tr>
+							</c:forEach>
 						</table>
 					</div>
 				</div>

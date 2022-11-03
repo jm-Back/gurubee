@@ -101,7 +101,9 @@ public class CommunityServlet extends MyUploadServlet {
 		} else if (uri.indexOf("insertBoardLike.do") != -1) {
 			// 게시물 공감 저장
 			insertBoardLike(req, resp);
-		}  
+		} else if(uri.indexOf("mainList.do") != -1) {
+			mainList(req, resp);
+		} 
 		
 	}
 	
@@ -927,5 +929,31 @@ public class CommunityServlet extends MyUploadServlet {
 			PrintWriter out = resp.getWriter();
 			out.print(job.toString());
 		}
-
+	
+	
+		protected void mainList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+			
+			try {
+				
+				String cp = req.getContextPath();
+				
+				String articleUrl = cp + "/community/article.do";
+				
+				CommunityDAO dao = new CommunityDAO();
+				
+				List<CommunityDTO> list = dao.mainList();
+				
+				req.setAttribute("list", list);
+				req.setAttribute("articleUrl", articleUrl);
+				
+				forward(req, resp, "/WEB-INF/views/layout/community.jsp");
+				return;
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			
+			resp.sendError(400);
+		}
 }

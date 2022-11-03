@@ -206,7 +206,7 @@ video { width: 100%; height:100vh; }
 					<div class="form-group">
 						<button type="button" class="btn btn-primary btn-block btn-lg" onclick="sendform();">로그인</button>
 					</div>
-					<p class="hint-text"><a href="#" onclick="location.href='${pageContext.request.contextPath}/member/password.do'">Forgot Password?</a></p>
+					<p class="hint-text"><a href="#" onclick="location.href='${pageContext.request.contextPath}/member/password.do'"></a></p>
 				</form>													
 			</div>
 			<div class="modal-footer"> 인사부 내선번호 ☎ 1004 </div>

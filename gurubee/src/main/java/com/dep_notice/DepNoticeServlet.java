@@ -91,6 +91,8 @@ public class DepNoticeServlet extends MyUploadServlet {
 			deleteReplyAnswer(req, resp);
 		} else if(uri.indexOf("countReplyAnswer.do") != -1) {
 			countReplyAnswer(req, resp);
+		} else if(uri.indexOf("mainList.do") != -1) {
+			mainList(req, resp);
 		} 
 		
 	}
@@ -799,5 +801,32 @@ public class DepNoticeServlet extends MyUploadServlet {
 		out.print(job.toString());
 		
 	}
+	
+	protected void mainList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		try {
+			
+			String cp = req.getContextPath();
+			
+			String articleUrl = cp + "/dep_notice/article.do";
+			
+			DepNoticeDAO dao = new DepNoticeDAO();
+			
+			List<DepNoticeDTO> list = dao.mainList();
+			
+			req.setAttribute("list", list);
+			req.setAttribute("articleUrl", articleUrl);
+			
+			forward(req, resp, "/WEB-INF/views/layout/depNotice.jsp");
+			return;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		resp.sendError(400);
+	}
+
 
 }
