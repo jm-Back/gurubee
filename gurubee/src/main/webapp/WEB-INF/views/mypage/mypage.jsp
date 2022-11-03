@@ -42,12 +42,6 @@ $(function(){
         } else if(tab==="2") { // 근태
         	url = "${pageContext.request.contextPath}/mypage/myatt.do";
         	$(selector).load(url);
-        } else if(tab==="3") { // 연차
-        	url = "${pageContext.request.contextPath}/mypage/myoff.do";
-        	$(selector).load(url);
-        } else if(tab==="4") {	// 급여
-        	//url = "${pageContext.request.contextPath}/mypage/mypay.do";
-        	//$(selector).load(url);
         }
         
 		// alert(selector);
@@ -86,12 +80,6 @@ function changeMonth(year, month) {
 				</li>
 				<li class="nav-item" role="presentation">
 					<button class="nav-link" id="tab-2" data-bs-toggle="tab" data-bs-target="#nav-2" type="button" role="tab" aria-controls="2" aria-selected="true">근태관리</button>
-				</li>
-				<li class="nav-item" role="presentation">
-					<button class="nav-link" id="tab-3" data-bs-toggle="tab" data-bs-target="#nav-3" type="button" role="tab" aria-controls="3" aria-selected="true">연차관리</button>
-				</li>
-				<li class="nav-item" role="presentation">
-					<button class="nav-link" id="tab-4" data-bs-toggle="tab" data-bs-target="#nav-4" type="button" role="tab" aria-controls="4" aria-selected="true">급여명세</button>
 				</li>				
 			</ul>
 	
@@ -177,9 +165,6 @@ function changeMonth(year, month) {
 				</form>	
 				</div>
 					<div class="tab-pane fade show active" id="nav-2" role="tabpanel" aria-labelledby="nav-tab-2"></div>
-					<div class="tab-pane fade show active" id="nav-3" role="tabpanel" aria-labelledby="nav-tab-3"></div>
-					<div class="tab-pane fade show active" id="nav-4" role="tabpanel" aria-labelledby="nav-tab-4"></div>
-					
 			</div>
 		</div>
 
