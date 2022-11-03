@@ -17,8 +17,8 @@
 .body-container {
 	max-width: 800px;
 	min-height: 800px;
-	margin-top: 70px;
-}
+	margin-top: 70px; 
+} 
 
 </style>
 
@@ -29,23 +29,23 @@ function check() {
 	const f = document.boardForm;
 	let str;
 	
-	str = f.com_title.value.trim();
+	str = f.notice_title.value.trim();
 	
 	if(!str) {
 		alert("제목을 입력하세요.");
-		f.com_title.focus();
+		f.notice_title.focus();
 		return false;
 	}
 	
-	str = f.com_contents.value.trim();
+	str = f.notice_content.value.trim();
 	
 	if(!str || str === "<p><br></p>") {
 		alert("내용을 입력하세요.");
-		f.com_contents.focus();
-		return false; 
+		f.notice_content.focus();
+		return false;
 	}
 	 
-	f.action = "${pageContext.request.contextPath}/community/${mode}_ok.do";
+	f.action = "${pageContext.request.contextPath}/comp_notice/${mode}_ok.do";
 	
 	return true;
 	
@@ -56,7 +56,7 @@ function check() {
 		if( !confirm("파일을 삭제하시겠습니까 ?") ) {
 			return;
 		}
-		let url = "${pageContext.request.contextPath}/community/deleteFile.do?num=" + num + "&page=${page}";
+		let url = "${pageContext.request.contextPath}/comp_notice/deleteFile.do?num=" + num + "&page=${page}";
 		location.href = url;
 	}
 </c:if>	
@@ -74,7 +74,7 @@ function check() {
 	<div class="container">
 		<div class="body-container">	
 			<div class="body-title">
-				<h3>익명 커뮤니티</h3>
+				<h3>회사 공지사항</h3>
 			</div>
 			
 			<div class="body-main">
@@ -84,10 +84,10 @@ function check() {
 						<tr>
 							<td class="table-light col-sm-2" scope="row">제 목</td>
 							<td>
-								<input type="text" name="com_title" class="form-control" value="${dto.com_title}">
+								<input type="text" name="notice_title" class="form-control" value="${dto.notice_title}">
 							</td>
 						</tr>
-	        			<!-- 
+	        			
 	        			<tr>
 							<td class="table-light col-sm-2" scope="row">공지여부</td>
 							<td>
@@ -95,18 +95,18 @@ function check() {
 								<label class="form-check-label" for="notice"> 공지</label>
 							</td>
 						</tr>
-	        			 -->
+	        			
 						<tr>
-							<td class="table-light col-sm-2" scope="row">커뮤니티</td>
+							<td class="table-light col-sm-2" scope="row">작성자명</td>
 	 						<td>
-								<p class="form-control-plaintext">익명보장</p>
+								<p class="form-control-plaintext">${sessionScope.member.name}</p>
 							</td>
 						</tr>
 	
 						<tr>
 							<td class="table-light col-sm-2" scope="row">내 용</td>
 							<td>
-								<textarea name="com_contents" id="ir1" class="form-control" style="width: 95%; height: 270px;">${dto.com_contents}</textarea>
+								<textarea name="notice_content" id="ir1" class="form-control" style="width: 95%; height: 270px;">${dto.notice_content}</textarea>
 							</td>
 						</tr>
 						
@@ -138,7 +138,7 @@ function check() {
 							<td class="text-center">
 								<button type="submit" class="btn btn-dark">${mode=='update'?'수정완료':'등록하기'}&nbsp;<i class="bi bi-check2"></i></button>
 								<button type="reset" class="btn btn-light">다시입력</button>
-								<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/community/list.do';">${mode=='update'?'수정취소':'등록취소'}&nbsp;<i class="bi bi-x"></i></button>
+								<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/comp_notice/list.do';">${mode=='update'?'수정취소':'등록취소'}&nbsp;<i class="bi bi-x"></i></button>
 								<c:if test="${mode=='update'}">
 									<input type="hidden" name="num" value="${dto.num}">
 									<input type="hidden" name="page" value="${page}">
@@ -165,13 +165,16 @@ nhn.husky.EZCreator.createInIFrame({
 });
 
 function submitContents(elClickedObj) {
+	
 	 oEditors.getById["ir1"].exec("UPDATE_CONTENTS_FIELD", []);
 	 try {
 		 
 		 // elClickedObj.form.submit();
 		 
 		return check();
+	
 	} catch(e) {
+		
 	}
 }
 
