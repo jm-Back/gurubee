@@ -220,7 +220,7 @@ public class CompNoticeServlet extends MyUploadServlet {
 	protected void writeForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
 		req.setAttribute("mode", "write");
-		String path = "/WEB-INF/views/comp_notice/write.jsp";
+		String path = "/WEB-INF/views/comp_notice/write2.jsp";
 		forward(req, resp, path);
 	}
 	
@@ -374,7 +374,7 @@ public class CompNoticeServlet extends MyUploadServlet {
 			req.setAttribute("dto", dto);
 			req.setAttribute("mode", "update");
 			
-			forward(req, resp, "/WEB-INF/views/comp_notice/write.jsp");
+			forward(req, resp, "/WEB-INF/views/comp_notice/write2.jsp");
 			return;
 			
 		} catch (Exception e) {
@@ -485,7 +485,7 @@ public class CompNoticeServlet extends MyUploadServlet {
 			req.setAttribute("dto", dto);
 			req.setAttribute("mode", "update");
 			
-			forward(req, resp, "/WEB-INF/views/comp_notice/write.jsp");
+			forward(req, resp, "/WEB-INF/views/comp_notice/write2.jsp");
 			return;
 			
 		} catch (Exception e) {

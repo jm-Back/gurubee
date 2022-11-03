@@ -8,7 +8,7 @@
 		<div class='answer-article-header'>
 			<div class='answer-left'>└</div>
 			<div class='answer-right'>
-				<div style='float: left;'><span class='bold'>${vo.reply_name}</span></div>
+				<div style='float: left;'><span class='bold'>${vo.reply_name}&nbsp;${vo.pos_name}</span></div>
 				<div style='float: right;'>
 					<span>${vo.rep_regdate}</span> |
 					

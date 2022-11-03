@@ -254,20 +254,21 @@ public class DepNoticeDAO {
 					+ " regdate, dep_name, pos_name "
 					+ " FROM noticeDept n "
 					+ " JOIN employee e ON n.id = e.id "
-					+ " JOIN noticeDeptFile nf ON n.notice_num = nf.notice_num "
-					+ " WHERE n.dep_name = ? ";
+					+ " JOIN noticeDeptFile nf ON n.notice_num = nf.notice_num ";
 			if(condition.equals("all")) {
-				sql += " WHERE INSTR(notice_title,?) >= 1 OR INSTR(notice_content,?) >= 1 ";
+				sql += " WHERE n.dep_name = ? AND INSTR(notice_title,?) >= 1 OR INSTR(notice_content,?) >= 1 ";
 			} else if(condition.equals("reg_date")) {
 				keyword = keyword.replaceAll("(\\.|\\-|\\/)", "");
-				sql += " WHERE TO_CHAR(regdate, 'YYYYMMDD') = ? ";
+				sql += " WHERE n.dep_name = ? AND TO_CHAR(regdate, 'YYYYMMDD') = ? ";
 			} else {
-				sql += " WHERE INSTR("+ condition + ",?) >= 1 ";
+				sql += " WHERE n.dep_name = ? AND INSTR("+ condition + ",?) >= 1 ";
 			}
 			sql += " ORDER BY notice_num DESC ";
 			sql += " OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ";
 			
 			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, dep_name);
 			
 			if(condition.equals("all")) {
 				pstmt.setString(1, dep_name);
@@ -702,7 +703,7 @@ public class DepNoticeDAO {
 		
 		try {
 			
-			sql = " INSERT INTO noticeDeptReply VALUES(noticeDeptReply_SEQ.NEXTVAL, ?,?,?,SYSDATE,?) ";
+			sql = " INSERT INTO noticeDeptReply VALUES(noticeDeptReply_SEQ.NEXTVAL, ?,?,?,SYSDATE,?,?) ";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -710,6 +711,8 @@ public class DepNoticeDAO {
 			pstmt.setString(2, dto.getReply_id());
 			pstmt.setString(3, dto.getRep_contents());
 			pstmt.setLong(4, dto.getAnswer());
+			pstmt.setString(5, dto.getPos_name());
+			
 			
 			pstmt.executeUpdate();
 			

@@ -223,7 +223,7 @@ function searchList() {
 							<div class="search">
 								<select name="condition" class="btn">
 									<option value="all" ${condition=="all"?"selected='selected'":""}>제목+내용</option>
-									<option value="name" ${condition=="name"?"selected='selected'":""}>작성부서</option>
+									<!-- <option value="name" ${condition=="name"?"selected='selected'":""}>작성부서</option> -->
 									<option value="reg_date" ${condition=="reg_date"?"selected='selected'":""}>등록일</option>
 									<option value="com_title" ${condition=="com_title"?"selected='selected'":""}>제목</option>
 									<option value="com_content" ${condition=="com_content"?"selected='selected'":""}>내용</option>
