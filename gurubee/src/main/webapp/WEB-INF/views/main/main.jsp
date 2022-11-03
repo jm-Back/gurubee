@@ -114,7 +114,12 @@
 }
 
 .main-div {
-	
+	width: 1800px;
+	height: 1000px;
+	margin-left: auto;
+	margin-right: auto;
+	padding-left: 50px;
+	justify-content: center;
 }
 
 .profile {
@@ -122,7 +127,7 @@
 	height: 120px;
 	object-fit: cover;
 	border-radius: 100%;
-	border: 5px solid aquamarine;
+	border: 5px solid #01d6b7;
 	padding: 4px;
 }
 
@@ -147,10 +152,6 @@ textarea.form-control { height: 170px; resize : none; }
 .form-select[readonly] { background-color:#fff; }
 
 .div-total {
-	
-}
-
-.main-div {
 	
 }
 
@@ -228,6 +229,10 @@ ul.tabs li.current {
 
 .shadow {
 	box-shadow: 3px 3px 3px;
+}
+
+.div-container {
+	justify-content: center;
 }
 
 </style>
@@ -333,13 +338,13 @@ $(document).ready(
 <body>
 	<main>
 
-		<div class="container py-4 main-div">
+		<div class="py-4 main-div">
 			<header class="pb-3 mb-4 border-bottom">
 				<jsp:include page="/WEB-INF/views/layout/header.jsp" />
 				<jsp:include page="/WEB-INF/views/layout/sidebar.jsp" />
 			</header>
 
-			<div class="container row div-total">
+			<div class="row div-total div-container">
 				<!-- 사원 정보 -->
 				<div class="col-3 align-items-md-stretch layoutdivt">
 					<div class="row div-info" style="padding-bottom: 10px;">
@@ -365,7 +370,7 @@ $(document).ready(
 							style="font-size: 13px;">
 							<div class="div-title">&nbsp;일정</div>
 							<div>
-								일정
+								<jsp:include page="/WEB-INF/views/schedule/month.jsp" />
 							</div>
 						</div>
 					</div>
