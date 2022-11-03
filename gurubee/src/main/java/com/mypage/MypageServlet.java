@@ -68,37 +68,7 @@ public class MypageServlet extends MyUploadServlet{
 		} else if(uri.indexOf("myatt_ok.do") != -1) {
 			myattupdateOkSubmit(req, resp); // mypage 출퇴근등록 완료
 			
-		} else if(uri.indexOf("myatt_article.do") != -1) {
-			myattarticleForm(req, resp); // mypage 총근무시간 출력 [myatt_article.jsp (tab2에서 출력)]
-			
-		} else if(uri.indexOf("myoff.do") != -1) {
-			myoffForm(req, resp); // mypage 연차관리 출력 [myoff.jsp (tab3)]
-				
-		} else if(uri.indexOf("myoff_use.do") != -1) {
-			myoffuseForm(req, resp); // mypage 연차사용현황 출력 [myoff_use.jsp (tab3에서 출력)]
-				
-		} else if(uri.indexOf("myoff_list.do") != -1) {
-			myofflistForm(req, resp); // mypage 연차신청내역 출력 [myoff_list.jsp (tab3에서 출력)]
-		
-		} else if(uri.indexOf("myoff_write.do") != -1) {
-			myoffwriteForm(req, resp); // mypage 연차/휴가신청 출력 [myoff_write.jsp (tab3에서 출력)]
-		
-		} else if(uri.indexOf("mypay.do") != -1) {
-			mypayForm(req, resp); // mypage 급여명세서 출력 [mypay.jsp (tab4)]
-		
-		} else if(uri.indexOf("mypay_article.do") != -1) {
-			mypayarticleForm(req, resp); // mypage  월별급여명세서조회 [mypay_article.jsp (tab4에서 출력)]
-		
-		} else if(uri.indexOf("mypay_list.do") != -1) {
-			mypaylistSubmit(req, resp); // mypage 급여명세서출력[mypay_article.jsp (tab4에서 출력)]
-		
-		} else if(uri.indexOf("mywork.do") != -1) {
-			myworkSubmit(req, resp); // mypage 재직증명서출력 [입사일 받아오기 (tab4에서 출력)]
-		
-		} 
-		
-		
-		
+		}
 	}
 	
 	private void selectemployee(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -352,47 +322,6 @@ public class MypageServlet extends MyUploadServlet{
 	}
 	
 	private void myattarticleForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
-
-	}
-	
-	private void myoffForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
-		// 연차관리
-		Calendar cal = Calendar.getInstance();
-		int year = cal.get(Calendar.YEAR);
-		int month = cal.get(Calendar.MONTH) + 1; // 0 ~ 11
-		int date = cal.get(Calendar.DATE);
-		
-		String today = String.format("%04d%02d%02d", year, month, date);
-		
-		req.setAttribute("today", today);
-		forward(req, resp, "/WEB-INF/views/mypage/myoff.jsp");
-	}
-	
-	private void myoffuseForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
-
-	}
-	
-	private void myofflistForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
-
-	}
-	
-	private void myoffwriteForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
-
-	}
-	
-	private void mypayForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
-		// 급여명세서
-	}
-	
-	private void mypayarticleForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
-
-	}
-	
-	private void mypaylistSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
-
-	}
-	
-	private void myworkSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
 
 	}
 	
