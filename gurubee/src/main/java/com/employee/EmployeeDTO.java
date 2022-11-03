@@ -33,6 +33,160 @@ public class EmployeeDTO {
 
 
 	
+	//급여정보
+	private String pay_date;  //지급날짜 
+
+	private long payment; //기본급 
+	private long meal_pay; //식대
+	private long benefit; //복리후생비 
+	private long etc_pay; //기타지급 
+	private long bonus; //상여금
+	private long  residence_tax; //주민세 
+	private long  medical_ins; //의료보험
+	private long employee_ins; //고용보험 
+	private long  safety_ins ; //산재보험 
+	private long  longterm_ins ; //고용보험
+	private long  tot;
+	
+	//연봉정보 
+	
+	private String sal_id;
+	public String getDep() {
+		return dep;
+	}
+	public void setDep(String dep) {
+		this.dep = dep;
+	}
+	public String getPos() {
+		return pos;
+	}
+	public void setPos(String pos) {
+		this.pos = pos;
+	}
+	public String getSal_no() {
+		return sal_no;
+	}
+	public void setSal_no(String sal_no) {
+		this.sal_no = sal_no;
+	}
+	public String getSal_end() {
+		return sal_end;
+	}
+	public void setSal_end(String sal_end) {
+		this.sal_end = sal_end;
+	}
+	private String dep;
+	private String pos;
+	private String sal_no; //연봉번호 
+	private String salary; //연봉 
+	private String sal_start; //연봉시작일 
+	private String sal_end; //연봉종료일 
+	private String sal_memo; 
+	public String getTel2() {
+		return tel2;
+	}
+	public void setTel2(String tel2) {
+		this.tel2 = tel2;
+	}
+	public String getPay_date() {
+		return pay_date;
+	}
+	public void setPay_date(String pay_date) {
+		this.pay_date = pay_date;
+	}
+	public long getPayment() {
+		return payment;
+	}
+	public void setPayment(long payment) {
+		this.payment = payment;
+	}
+	public long getMeal_pay() {
+		return meal_pay;
+	}
+	public void setMeal_pay(long meal_pay) {
+		this.meal_pay = meal_pay;
+	}
+	public long getBenefit() {
+		return benefit;
+	}
+	public void setBenefit(long benefit) {
+		this.benefit = benefit;
+	}
+	public long getEtc_pay() {
+		return etc_pay;
+	}
+	public void setEtc_pay(long etc_pay) {
+		this.etc_pay = etc_pay;
+	}
+	public long getBonus() {
+		return bonus;
+	}
+	public void setBonus(long bonus) {
+		this.bonus = bonus;
+	}
+	public long getResidence_tax() {
+		return residence_tax;
+	}
+	public void setResidence_tax(long residence_tax) {
+		this.residence_tax = residence_tax;
+	}
+	public long getMedical_ins() {
+		return medical_ins;
+	}
+	public void setMedical_ins(long medical_ins) {
+		this.medical_ins = medical_ins;
+	}
+	public long getEmployee_ins() {
+		return employee_ins;
+	}
+	public void setEmployee_ins(long employee_ins) {
+		this.employee_ins = employee_ins;
+	}
+	public long getSafety_ins() {
+		return safety_ins;
+	}
+	public void setSafety_ins(long safety_ins) {
+		this.safety_ins = safety_ins;
+	}
+	public long getLongterm_ins() {
+		return longterm_ins;
+	}
+	public void setLongterm_ins(long longterm_ins) {
+		this.longterm_ins = longterm_ins;
+	}
+	public long getTot() {
+		return tot;
+	}
+	public void setTot(long tot) {
+		this.tot = tot;
+	}
+	public String getSal_id() {
+		return sal_id;
+	}
+	public void setSal_id(String sal_id) {
+		this.sal_id = sal_id;
+	}
+	
+	public String getSalary() {
+		return salary;
+	}
+	public void setSalary(String salary) {
+		this.salary = salary;
+	}
+	public String getSal_start() {
+		return sal_start;
+	}
+	public void setSal_start(String sal_start) {
+		this.sal_start = sal_start;
+	}
+	
+	public String getSal_memo() {
+		return sal_memo;
+	}
+	public void setSal_memo(String sal_memo) {
+		this.sal_memo = sal_memo;
+	}
+	
 	public String getDivision() {
 		return division;
 	}
