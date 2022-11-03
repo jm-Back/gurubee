@@ -41,10 +41,22 @@
 .menu .depth_1 a{display:block; padding:5px; color:#5e6576;}
 
 .drop-downmenu {
-	color:#5e6576;
+	background-color: #78FF87;;
 }
 
 */
+
+.div-mynavbar {
+	color: #5CFF87;
+
+}
+
+.navbar .nav-item .nav-link:hover,
+.navbar .nav-item .nav-link.active {
+	color: #5CFF87;;
+	text-decoration: none;
+}
+
 </style>
 
 <script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -69,7 +81,7 @@
 				</a>
 			</div>
 		</div>
-			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<div class="collapse navbar-collapse div-mynavbar" id="navbarSupportedContent">
 				<ul id="main-menu" class="menu navbar-nav flex-nowrap align-middle" > <!-- ms-auto : 우측으로 정렬 -->
 					
 					<li class="nav-item">

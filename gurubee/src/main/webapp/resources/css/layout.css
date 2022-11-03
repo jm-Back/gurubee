@@ -23,7 +23,7 @@
 
 .navbar .nav-item .nav-link:hover,
 .navbar .nav-item .nav-link.active {
-	color: #5CFF87;
+	color: #5CFF87;;
 	text-decoration: none;
 }
 
