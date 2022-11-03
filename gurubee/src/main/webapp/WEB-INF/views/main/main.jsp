@@ -365,7 +365,7 @@ $(document).ready(
 							style="font-size: 13px;">
 							<div class="div-title">&nbsp;일정</div>
 							<div>
-								일정
+								<jsp:include page="/WEB-INF/views/mini/minisch.jsp" />
 							</div>
 						</div>
 					</div>
