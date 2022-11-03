@@ -55,7 +55,7 @@
 						<table class="table table-hover table-light " style="width: 100%;">
 							<c:forEach var="dto" items="${list}">
 								<tr>
-									<th id="title"><a href="${articleUrl}?num=${dto.num}" class="text-reset" style="font-weight: bold">${dto.com_title}</a></th>
+									<th id="title"><a href="${articleUrl}?num=${dto.num}&page=1" class="text-reset" style="font-weight: bold">${dto.com_title}</a></th>
 									<th>${dto.regdate}</th>
 								</tr>
 							</c:forEach>

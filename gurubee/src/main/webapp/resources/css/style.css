@@ -55,7 +55,7 @@ a:active, a:hover { color: #f28011; text-decoration: underline; }
 	font-family: "맑은 고딕", 나눔고딕, 돋움, sans-serif;
 	vertical-align: baseline;
 }
-.form-control[readonly] { background-color:#f8f9fa; }
+.form-control[readonly] { background-color:#fff; }
 
 textarea.form-control { height: 170px; resize : none; }
 

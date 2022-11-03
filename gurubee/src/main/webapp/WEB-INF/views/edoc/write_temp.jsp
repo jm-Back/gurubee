@@ -107,6 +107,14 @@ function sendOk() {
   	f.submit();
 }
 
+function deleteOk() {
+	const f = document.writeForm;
+	
+ 	f.action = "${pageContext.request.contextPath}/edoc/deleteTemp.do";
+ 
+  	f.submit();
+}
+
 $(function(){
 	// 작성일자
 	$('input[name=date]').attr('value', year+"-"+month+"-"+day);
@@ -368,6 +376,8 @@ function deleteFile(fileNum, app_num) {
 					<div style="text-align: center;">
 						<button type="button" onclick="sendOk();" class="btn btn-success"
 							style="font-size: 20px;">작성하기</button>
+						<button type="button" onclick="deleteOk();" class="btn btn-success"
+							style="font-size: 20px;">삭제하기</button>
 					</div>
 					<input type="hidden" name="app_num" value="${dto.app_num}">
 					<input type="hidden" name="page" value="${page}">

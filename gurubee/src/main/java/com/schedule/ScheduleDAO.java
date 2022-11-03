@@ -19,12 +19,13 @@ public class ScheduleDAO {
 		StringBuilder sb =  new StringBuilder();
 		
 		try {
+			
 			sb.append(" SELECT sch_num, S.sc_code, sch_name, sch_content, sch_sdate, ");
 			sb.append(" 	sch_edate, sch_stime, sch_etime, sch_repeat, sch_repeat_c, sch_reg_date ");
 			sb.append(" 	, C.sc_color ");
 			sb.append(" FROM schedule S ");
 			sb.append(" JOIN schedule_color C ON S.sc_code = C.sc_code ");
-			sb.append(" WHERE id = ? AND ");
+			sb.append(" WHERE id= ? AND ");
 			sb.append("	  ( ");
 			sb.append("      ( ");
 			sb.append("			( TO_DATE(sch_sdate, 'YYYYMMDD') >= TO_DATE(?, 'YYYYMMDD') ");
@@ -39,6 +40,7 @@ public class ScheduleDAO {
 			sb.append("			)");
 			sb.append("	 )   ");
 			sb.append(" ORDER BY sch_sdate ASC, sch_num DESC ");
+
 			
 			pstmt = conn.prepareStatement(sb.toString());
 			
@@ -182,7 +184,7 @@ public class ScheduleDAO {
 			sb.append(" 	, C.sc_color ");
 			sb.append(" FROM schedule S ");
 			sb.append(" JOIN schedule_color C ON S.sc_code = C.sc_code ");
-			sb.append(" WHERE (id = ? OR 'GB10032002')  AND ");
+			sb.append(" WHERE id = ?  AND ");
 			sb.append("	  ( ");
 			sb.append("      ( ");
 			sb.append("			 TO_DATE(sch_sdate, 'YYYYMMDD') = TO_DATE(?, 'YYYYMMDD') ");
