@@ -122,9 +122,6 @@
                     <a href="${pageContext.request.contextPath}/main.do" class="side_nav__link active">
                        <i class="fa-solid fa-house-chimney  side_nav__icon"></i>
                     </a>
-                    <a href="${pageContext.request.contextPath}/mypage/myatt.do" class="side_nav__link active">
-                       <i class="fa-solid fa-clipboard-user size__big"></i>
-                    </a>
                     <a href="${pageContext.request.contextPath}/mypage/mypage.do" style="float: left" class="side_nav__link">
                        <i class="fa-regular fa-user side_nav__icon"></i>
                     </a>
