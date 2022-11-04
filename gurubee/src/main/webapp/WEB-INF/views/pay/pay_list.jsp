@@ -46,8 +46,7 @@ font-size :20px
 	color: #fff;
 	border: none;
 	padding: 10px 20px;
-	
-	
+
 }
 
 .listform {
@@ -87,18 +86,14 @@ border-radius : 10px;
 
 <script type="text/javascript">
 
-//수정하기
-function update(id) {
-	location.href="${pageContext.request.contextPath}/employee/update.do?id="+id;
-}
-
-
-
-
 function searchList() {
 	const f = document.searchForm;
 	f.submit();
 }
+
+function selectemployee()
+
+
 </script>
 </head>
 <body>
@@ -117,34 +112,19 @@ function searchList() {
 
 	<div class="container mt-5 pt-4 pb-3">
 	<div class="body-title">
-				<h3>사원통합관리 </h3>
+				<h3>  <i class="bi bi-coin"></i> 급여 정보관리 </h3>
    </div>
 		
 			
 			<div class="body-main">
 			        <div class="search_form">
 		            <div class="col-auto">&nbsp;</div>
-		              <div class="row board-list-header">
-		            <div class="col-auto me-auto"></div>
-		            </div>
+
 		         </div>  
-					<div class="col-6 text-center">
-						<form class="row" name="searchForm" action="" method="post">
-							<div class="col-auto p-1">
-	
-							</div>
-							<div class="col-auto p-1">
-								<input type="text" name="keyword" value="${keyword}" class="form-control">
-								</div>
-							<div class="col-auto p-1">
-								<button type="button" class="btn btn-light" onclick="searchList()">검색</button>
-							</div>
-						</form>
-						   </div>
-						   </div>
+
 				 <div class="col-12  text-end ">
-		           <button class="btn btn-primary btn-sm end__btn__design shadow-sm" type="button" onclick=""><i class="bi bi-printer"></i>&nbsp;인사정보인쇄</button>
-		           <button class="btn btn-primary btn-sm end__btn__design shadow-sm" type="button"  type="button" onclick="location.href='${pageContext.request.contextPath}/employee/write.do';"> 신입사원등록 &nbsp; <i class="bi bi-person-plus"></i></button>
+		           <button class="btn btn-outline-warning btn-sm shadow-sm" type="button" onclick=""><i class="bi bi-printer"></i>&nbsp;인사정보인쇄</button>
+		           <button class="btn btn-outline-warning btn-sm shadow-sm" type="button" onclick="location.href='${pageContext.request.contextPath}/pay/pay_write.do';"> <i class="bi bi-arrow-bar-left"></i>리스트 &nbsp;</button>
 		            </div>
 		         </div>
 		         
@@ -154,45 +134,50 @@ function searchList() {
 				<table class="table table-hover board-list">
 					<thead class="table-light" style="">
 						<tr class= "title">
-							<th class="num">선택</th>
-							<th class="type">직원구분</th>
 							<th class="id">사번</th>
+							<th class="name">이름</th>
 							<th class="dept">부서</th>
-							<th class="name">사원명</th>
-							<th class="pos">직책</th>
-							<th class="startdate">입사일자</th>
-							<th class="phone">휴대전화</th>
-							<th class="mail">이메일</th>
-							<th class="tel">내선번호</th>
-							<th class="date_iss">최종발령일</th>
-							<th class="update">수정</th>
+							<th class="post">직책</th>
+							<th class="pay_date">지급날짜</th>
+							<th class="payment">기본급</th>
+							<th class="meal_pay">식대</th>
+							<th class="benefit">복리후생비</th>
+							<th class="bonus">상여금</th>
+							<th class="residence_tax">주민세</th>
+							<th class="medical_ins">의료보험</th>
+							<th class="safety_ins">산재보험</th>
+							<th class="longterm_ins">고용보험</th>
+							<th class="tot"> 총 지급금액 </th>
 						</tr>
 					</thead>
 					
 		            <thead class="table-light">
 					<tbody>
-						<c:forEach var="dto" items="${list}" varStatus="status">
+						<c:forEach var="dto" items="${plist}" varStatus="status">
 							<tr>
-								<td><input type='checkbox' name='check' value='selectemployee'></td>
-								<td>${dto.type}</td>
-								<td>${dto.id}</td>
-								<td>${dto.dept_name}</td>
+								<td>${dto.pay_id}</td>
 								<td>${dto.name}</td>
-								<td>${dto.pos_name}</td>
-								<td>${dto.startdate}</td>
-								<td>${dto.phone}</td>
-								<td>${dto.email}</td>
-								<td>${dto.tel}</td>
-								<td>${dto.date_iss}</td>
-								<td><button class="btn btn-primary btn-sm end__btn__design shadow-sm" type="button" onclick="update('${dto.id}')">수정</button></td>
-			
-				
+								<td>${dto.pos}</td>
+								<td>${dto.dep}</td>
+								<td>${dto.pay_date}</td>
+								<td>${dto.payment}</td>
+								<td>${dto.meal_pay}</td>
+								<td>${dto.benefit}</td>
+								<td>${dto.bonus}</td>
+								<td>${dto.residence_tax}</td>
+								<td>${dto.medical_ins}</td>
+								<td>${dto.safety_ins}</td>
+								<td>${dto.longterm_ins}</td>
+								<td>${dto.tot}</td> 
+					
+	
 							</tr>
 						</c:forEach>
 					  </tbody>
 					 
 				</table>
 				</div>
+		    </div>
 
 
 </main>

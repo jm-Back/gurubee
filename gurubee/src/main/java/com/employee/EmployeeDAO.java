@@ -149,7 +149,7 @@ public class EmployeeDAO {
 			String sql;
 			
 			try {  sql ="SELECT * From ( "
-				 	+ " SELECT e.id, name, mail, phone,reg,tel, his.dep_code,his.pos_code,type, now_working, division,TO_CHAR(startdate, 'YYYY-MM-DD') startdate ,TO_CHAR(date_iss, 'YYYY-MM-DD') date_iss, "
+				 	+ " SELECT e.id, name, mail, phone,reg,tel, his.dep_code,his.pos_code,type, now_working, division,TO_CHAR(startdate, 'YYYY-MM-DD') startdate ,TO_CHAR(date_iss, 'YYYY-MM-DD') date_iss, ori_filename, "
 				 	+ " rank() over (partition by e.id order by startdate desc) rank "
 				 	+ " FROM ( SELECT his_no, date_iss, reason, id, pos_code, dep_code, division, now_working, type, startdate, enddate, "
 				 	+ " ROW_NUMBER() OVER (PARTITION by id ORDER BY pos_code desc) as now "
@@ -199,9 +199,10 @@ public class EmployeeDAO {
 					dto.setNow_working(rs.getString("now_working"));
 					dto.setDivision(rs.getString("division"));
 					dto.setStartdate(rs.getString("startdate"));
+					dto.setOri_filename(rs.getString("ori_filename"));
 					
 				
-					}
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			} finally {

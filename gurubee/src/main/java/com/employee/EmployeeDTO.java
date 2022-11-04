@@ -13,6 +13,14 @@ public class EmployeeDTO {
 	private String pos_name; //직급이름 
 	private String dept_name; //부서이름
 	private String dep_code; //부서코드
+	private String ori_filename; //사진 
+	
+	public String getOri_filename() {
+		return ori_filename;
+	}
+	public void setOri_filename(String ori_filename) {
+		this.ori_filename = ori_filename;
+	}
 	public String getPos_name() {
 		return pos_name;
 	}
@@ -51,6 +59,7 @@ public class EmployeeDTO {
 	//연봉정보 
 	
 	private String sal_id;
+	
 	public String getDep() {
 		return dep;
 	}
@@ -339,7 +348,6 @@ public class EmployeeDTO {
 	public void setTe2(String te2) {
 		this.tel2 = te2;
 	}
-
 
 	
 	

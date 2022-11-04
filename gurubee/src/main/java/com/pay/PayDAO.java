@@ -186,8 +186,8 @@ public class PayDAO {
 	
 ///특정사원 급여출력 
 	
-	public PayDTO readpayList(String Id) {
-		PayDTO dto = null;
+	public  List<PayDTO> readpayList(String Id) {
+		List<PayDTO> pList = new ArrayList<>();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String sql;
@@ -196,11 +196,11 @@ public class PayDAO {
 		try {   sql = " SELECT e.id, e.name, d.dep_name, p.pos_name, pay_Date,"
 				+ " NVL(payment,0)payment, NVL(meal_pay,0)meal_pay, NVL(benefit,0)benefit,NVL(etc_pay,0)etc_pay, "
 				+ " NVL(bonus,0)bonus,NVL(medical_ins,0)medical_ins, NVL(employee_ins,0)employee_ins,"
-				+ " NVL(safety_ins ,0) safety_ins , NVL(longterm_ins,0)longterm_ins, NVL(residence_tax,0)residence_tax"
+				+ " NVL(safety_ins ,0) safety_ins , NVL(longterm_ins,0)longterm_ins, NVL(residence_tax,0)residence_tax "
 				+ " FROM employee_history his JOIN Employee e ON e.id = his.id JOIN department d ON d.dep_code = his.dep_code"
 				+ " JOIN position p ON p.pos_code = his.pos_code RIGHT OUTER JOIN Pay ON pay.id = his.id"
 				+ " JOIN department d ON d.dep_code = his.dep_code"
-				+ " where now_working ='재직' and id = ?  ";
+				+ " where now_working ='재직' and e.id = ?  ";
 		
 			
 			pstmt = conn.prepareStatement(sql);
@@ -214,8 +214,8 @@ public class PayDAO {
 				PayDTO paydto = new PayDTO();
 				paydto.setPay_id(rs.getString("id"));
 				paydto.setName(rs.getString("name"));
-				paydto.setDep(rs.getString("dep"));
-				paydto.setPos(rs.getString("pos"));
+				paydto.setDep(rs.getString("dep_name"));
+				paydto.setPos(rs.getString("pos_name"));
 			
 				paydto.setPayment(rs.getLong("payment"));
 				paydto.setMeal_pay(rs.getLong("meal_pay"));
@@ -258,7 +258,7 @@ public class PayDAO {
 			}
 		}
 		
-		return dto;
+		return  pList ;
 	}	
 
 	

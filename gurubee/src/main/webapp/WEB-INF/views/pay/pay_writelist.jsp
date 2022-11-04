@@ -87,12 +87,24 @@ border-radius : 10px;
 
 <script type="text/javascript">
 
-//수정하기
-function update(id) {
-	location.href="${pageContext.request.contextPath}/employee/update.do?id="+id;
+//급여 등록하기
+
+function writePay(id) {
+	location.href="${pageContext.request.contextPath}/pay/pay_update.do?id="+id;
+}
+
+//연봉 등록하기 
+function writeSal(id) {
+	location.href="${pageContext.request.contextPath}/pay/sal_update.do?id="+id;
 }
 
 
+//사원급여상세리스트 
+
+function detailpay(id){
+	
+	location.href="${pageContext.request.contextPath}/pay/pay_list.do?id="+id;
+}
 
 
 function searchList() {
@@ -117,7 +129,7 @@ function searchList() {
 
 	<div class="container mt-5 pt-4 pb-3">
 	<div class="body-title">
-				<h3>사원통합관리 </h3>
+				<h3> <i class="bi bi-coin"></i> 급여 및 연봉등록 </h3>
    </div>
 		
 			
@@ -125,27 +137,13 @@ function searchList() {
 			        <div class="search_form">
 		            <div class="col-auto">&nbsp;</div>
 		              <div class="row board-list-header">
-		            <div class="col-auto me-auto"></div>
 		            </div>
 		         </div>  
-					<div class="col-6 text-center">
-						<form class="row" name="searchForm" action="" method="post">
-							<div class="col-auto p-1">
 	
-							</div>
-							<div class="col-auto p-1">
-								<input type="text" name="keyword" value="${keyword}" class="form-control">
-								</div>
-							<div class="col-auto p-1">
-								<button type="button" class="btn btn-light" onclick="searchList()">검색</button>
-							</div>
-						</form>
+					<div class="col-12 text-end">
+						<button class="btn btn-outline-warning btn-sm shadow-sm" type="button" onclick="detailpay('${dto.id}')"> 급여 상세정보 </button>
 						   </div>
 						   </div>
-				 <div class="col-12  text-end ">
-		           <button class="btn btn-primary btn-sm end__btn__design shadow-sm" type="button" onclick=""><i class="bi bi-printer"></i>&nbsp;인사정보인쇄</button>
-		           <button class="btn btn-primary btn-sm end__btn__design shadow-sm" type="button"  type="button" onclick="location.href='${pageContext.request.contextPath}/employee/write.do';"> 신입사원등록 &nbsp; <i class="bi bi-person-plus"></i></button>
-		            </div>
 		         </div>
 		         
 	<!-- 사원리스트 -->
@@ -165,7 +163,8 @@ function searchList() {
 							<th class="mail">이메일</th>
 							<th class="tel">내선번호</th>
 							<th class="date_iss">최종발령일</th>
-							<th class="update">수정</th>
+							<th class="update">급여등록</th>
+							<th class="update">연봉등록</th>
 						</tr>
 					</thead>
 					
@@ -173,9 +172,9 @@ function searchList() {
 					<tbody>
 						<c:forEach var="dto" items="${list}" varStatus="status">
 							<tr>
-								<td><input type='checkbox' name='check' value='selectemployee'></td>
+								<td><input type='radio' name='selectemployee' value='employee' onclick="checkemployee(id)"></td>
 								<td>${dto.type}</td>
-								<td>${dto.id}</td>
+								<td onclick="location.href='${pageContext.request.contextPath}/pay/pay_list.do?id=${dto.id}';">${dto.id}</td>
 								<td>${dto.dept_name}</td>
 								<td>${dto.name}</td>
 								<td>${dto.pos_name}</td>
@@ -184,7 +183,8 @@ function searchList() {
 								<td>${dto.email}</td>
 								<td>${dto.tel}</td>
 								<td>${dto.date_iss}</td>
-								<td><button class="btn btn-primary btn-sm end__btn__design shadow-sm" type="button" onclick="update('${dto.id}')">수정</button></td>
+								<td><button class="btn btn-outline-warning btn-sm shadow-sm" type="button" onclick="writePay('${dto.id}')">급여 등록</button></td>
+								<td><button class="btn btn-outline-warning btn-sm shadow-sm" type="button" onclick="writeSal('${dto.id}')">연봉 등록</button></td>
 			
 				
 							</tr>

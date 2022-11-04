@@ -122,11 +122,11 @@ li > a:link,  li > a:visited {
 			<h4>인사관리</h4>
 			<ul>
 			   <li><a href="${pageContext.request.contextPath}/employee/write.do">신입사원 등록</a></li>
-			   <li><a href="${pageContext.request.contextPath}/employee/update.do">사원통합관리</a></li>
-			   <li><a href="${pageContext.request.contextPath}/payment/write.do">급여정보 등록</a></li>
-			   <li><a href="${pageContext.request.contextPath}/payment/list.do">급여정보 리스트</a></li>
-			   <li><a href="${pageContext.request.contextPath}/salary/sal_write.do">연봉정보 등록</a></li>
-			   <li><a href="${pageContext.request.contextPath}/salary/sal_list.do">연봉정보 리스트</a></li>
+			   <li><a href="${pageContext.request.contextPath}/employee/list.do">사원통합관리</a></li>
+			   <li><a href="${pageContext.request.contextPath}/pay/pay_write.do">급여정보 등록</a></li>
+			   <li><a href="${pageContext.request.contextPath}/pay/pay_list.do">급여정보 리스트</a></li>
+			   <li><a href="${pageContext.request.contextPath}/pay/sal_pay_main.do">연봉정보 등록</a></li>
+			   <li><a href="${pageContext.request.contextPath}/pay/sal_list.do">연봉정보 리스트</a></li>
 			</ul>   
 		</div> 	
 	</div>

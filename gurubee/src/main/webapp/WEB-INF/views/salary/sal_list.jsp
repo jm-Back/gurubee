@@ -46,8 +46,7 @@ font-size :20px
 	color: #fff;
 	border: none;
 	padding: 10px 20px;
-	
-	
+
 }
 
 .listform {
@@ -87,14 +86,6 @@ border-radius : 10px;
 
 <script type="text/javascript">
 
-//수정하기
-function update(id) {
-	location.href="${pageContext.request.contextPath}/employee/update.do?id="+id;
-}
-
-
-
-
 function searchList() {
 	const f = document.searchForm;
 	f.submit();
@@ -117,55 +108,32 @@ function searchList() {
 
 	<div class="container mt-5 pt-4 pb-3">
 	<div class="body-title">
-				<h3>사원통합관리 </h3>
+				<h3>  <i class="bi bi-coin"></i> 연봉정보관리 </h3>
    </div>
 		
 			
 			<div class="body-main">
 			        <div class="search_form">
-		            <div class="col-auto">&nbsp;</div>
 		              <div class="row board-list-header">
 		            <div class="col-auto me-auto"></div>
 		            </div>
-		         </div>  
-					<div class="col-6 text-center">
-						<form class="row" name="searchForm" action="" method="post">
-							<div class="col-auto p-1">
-	
-							</div>
-							<div class="col-auto p-1">
-								<input type="text" name="keyword" value="${keyword}" class="form-control">
-								</div>
-							<div class="col-auto p-1">
-								<button type="button" class="btn btn-light" onclick="searchList()">검색</button>
-							</div>
-						</form>
-						   </div>
-						   </div>
-				 <div class="col-12  text-end ">
-		           <button class="btn btn-primary btn-sm end__btn__design shadow-sm" type="button" onclick=""><i class="bi bi-printer"></i>&nbsp;인사정보인쇄</button>
-		           <button class="btn btn-primary btn-sm end__btn__design shadow-sm" type="button"  type="button" onclick="location.href='${pageContext.request.contextPath}/employee/write.do';"> 신입사원등록 &nbsp; <i class="bi bi-person-plus"></i></button>
-		            </div>
+		         </div> 
 		         </div>
 		         
-	<!-- 사원리스트 -->
+	<!-- 전체연봉 리스트 -->
 		     <div class="col-auto">&nbsp;</div>
 			<div class="container">
 				<table class="table table-hover board-list">
 					<thead class="table-light" style="">
 						<tr class= "title">
-							<th class="num">선택</th>
-							<th class="type">직원구분</th>
 							<th class="id">사번</th>
-							<th class="dept">부서</th>
-							<th class="name">사원명</th>
-							<th class="pos">직책</th>
-							<th class="startdate">입사일자</th>
-							<th class="phone">휴대전화</th>
-							<th class="mail">이메일</th>
-							<th class="tel">내선번호</th>
-							<th class="date_iss">최종발령일</th>
-							<th class="update">수정</th>
+							<th class="name">이름</th>
+							<th class="dept_name">부서</th>
+							<th class="pos_name">직책</th>
+							<th class="salary">연봉금액</th>
+							<th class="sal_start">연봉시작일</th>
+							<th class="sal_end">연봉종료일</th>
+							<th class="sal_memo">비고</th>
 						</tr>
 					</thead>
 					
@@ -173,20 +141,14 @@ function searchList() {
 					<tbody>
 						<c:forEach var="dto" items="${list}" varStatus="status">
 							<tr>
-								<td><input type='checkbox' name='check' value='selectemployee'></td>
-								<td>${dto.type}</td>
-								<td>${dto.id}</td>
-								<td>${dto.dept_name}</td>
-								<td>${dto.name}</td>
-								<td>${dto.pos_name}</td>
-								<td>${dto.startdate}</td>
-								<td>${dto.phone}</td>
-								<td>${dto.email}</td>
-								<td>${dto.tel}</td>
-								<td>${dto.date_iss}</td>
-								<td><button class="btn btn-primary btn-sm end__btn__design shadow-sm" type="button" onclick="update('${dto.id}')">수정</button></td>
-			
-				
+								<td>${dto.sal_id}</td>
+								<td>${dto.sal_name}</td>
+								<td>${dto.dep}</td>
+								<td>${dto.pos}</td>
+								<td>${dto.salary}</td>
+								<td>${dto.sal_start}</td>
+								<td>${dto.sall_end}</td>
+								<td>${dto.sal_memo}</td>
 							</tr>
 						</c:forEach>
 					  </tbody>

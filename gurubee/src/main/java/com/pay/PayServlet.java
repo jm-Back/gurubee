@@ -196,15 +196,16 @@ public class PayServlet extends MyServlet {
 	private void payList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
 		PayDAO dao = new PayDAO();
-
+		String id = req.getParameter("id");
+        System.out.println("oo");
 			
 			try {
 				
-				// 월별 사원리스트 
-				List<PayDTO> list =dao.monthpaylist("pay_date");
+				// 사원별 급여 리스트 
+				List<PayDTO> list = dao.readpayList(id);
 				
-				req.setAttribute("list", list);
-				req.setAttribute("pay_date", dao);
+				System.out.println(list.size());
+				req.setAttribute("list",list);
 				 
 				forward(req,resp, "/WEB-INF/views/pay/pay_list.jsp");
 				return;
