@@ -226,7 +226,7 @@ function searchList() {
 									<!-- <option value="name" ${condition=="name"?"selected='selected'":""}>작성부서</option> -->
 									<option value="reg_date" ${condition=="reg_date"?"selected='selected'":""}>등록일</option>
 									<option value="com_title" ${condition=="com_title"?"selected='selected'":""}>제목</option>
-									<option value="com_content" ${condition=="com_content"?"selected='selected'":""}>내용</option>
+									<option value="com_contents" ${condition=="com_content"?"selected='selected'":""}>내용</option>
 								</select>
 								<input id="keyword" class="btn" type="text" name="keyword" value="${keyword}">
 								<button type="button" class="btn btn-light" onclick="searchList()"><i class="fa-solid fa-magnifying-glass"></i></button>

@@ -137,9 +137,9 @@ public class DepNoticeServlet extends MyUploadServlet {
 			// 공지사항 갯수
 			int dataCount;
 			if(keyword.length() == 0) {
-				dataCount = dao.dataCount();
+				dataCount = dao.dataCount(info.getDep_name());
 			} else {
-				dataCount = dao.dataCount(condition, keyword);
+				dataCount = dao.dataCount(condition, keyword, info.getDep_name());
 			}
 			
 			// 전체 페이지수
@@ -289,6 +289,9 @@ public class DepNoticeServlet extends MyUploadServlet {
 		String page = req.getParameter("page");
 		String query = "page=" + page;
 		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		
 		try {
 			
 			long num = Long.parseLong(req.getParameter("num"));
@@ -323,8 +326,8 @@ public class DepNoticeServlet extends MyUploadServlet {
 			}
 			
 			// 이전글, 다음글
-			DepNoticeDTO preReadDto = dao.preReadBoard(dto.getNum(), condition, keyword);
-			DepNoticeDTO nextReadDto = dao.nextReadBoard(dto.getNum(), condition, keyword);
+			DepNoticeDTO preReadDto = dao.preReadBoard(dto.getNum(), condition, keyword, info.getDep_name());
+			DepNoticeDTO nextReadDto = dao.nextReadBoard(dto.getNum(), condition, keyword, info.getDep_name());
 			
 			// 뷰로 전달할 속성
 			
@@ -646,6 +649,9 @@ public class DepNoticeServlet extends MyUploadServlet {
 		
 		DepNoticeDAO dao = new DepNoticeDAO();
 		MyUtil util = new MyUtilBootstrap();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
 		
 		try {
 			

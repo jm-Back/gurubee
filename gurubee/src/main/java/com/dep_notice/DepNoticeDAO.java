@@ -71,7 +71,7 @@ public class DepNoticeDAO {
 		}
 	}
 	
-	public int dataCount() {
+	public int dataCount(String dep_name) {
 		int result = 0;
 		String sql;
 		PreparedStatement pstmt = null;
@@ -79,9 +79,12 @@ public class DepNoticeDAO {
 		
 		try {
 			
-			sql = "SELECT COUNT(*) FROM noticeDept ";
+			sql = "SELECT COUNT(*) FROM noticeDept "
+					+ " WHERE dep_name = ? ";
 			
 			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, dep_name);
 			
 			rs = pstmt.executeQuery();
 			
@@ -114,7 +117,7 @@ public class DepNoticeDAO {
 	}
 	
 	// 검색할 때 조회 데이터 갯수
-	public int dataCount(String condition, String keyword) {
+	public int dataCount(String condition, String keyword, String dep_name) {
 		int result = 0;
 		String sql;
 		PreparedStatement pstmt = null;
@@ -137,12 +140,17 @@ public class DepNoticeDAO {
 				sql += " WHERE INSTR(" + condition + ", ?) >= 1 ";
 			}
 			
+			sql += " AND dep_name = ? ";
+			
 			pstmt = conn.prepareStatement(sql);
 			
 			pstmt.setString(1, keyword);
 			
 			if(condition.equals("all")) {
 				pstmt.setString(2, keyword);
+				pstmt.setString(3, dep_name);
+			} else {
+				pstmt.setString(2, dep_name);
 			}
 			
 			rs = pstmt.executeQuery();
@@ -419,7 +427,7 @@ public class DepNoticeDAO {
 	}
 	
 	// 이전 글
-	public DepNoticeDTO preReadBoard(long num, String condition, String keyword) {
+	public DepNoticeDTO preReadBoard(long num, String condition, String keyword, String dep_name) {
 		DepNoticeDTO dto = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -443,6 +451,7 @@ public class DepNoticeDAO {
 					sb.append(" AND ( INSTR(" + condition + ", ?) >= 1 ) ");
 				}
 				
+				sb.append(" AND ( dep_name = ? ) ");
 				sb.append(" ORDER BY notice_num ASC ");
 				sb.append(" FETCH FIRST 1 ROWS ONLY ");
 				
@@ -453,6 +462,9 @@ public class DepNoticeDAO {
 				
 				if(condition.equals("all")) {
 					pstmt.setString(3, keyword);
+					pstmt.setString(4, dep_name);
+				} else {
+					pstmt.setString(3, dep_name);
 				}
 			// 검색 안했을 경우	
 			} else {
@@ -460,12 +472,14 @@ public class DepNoticeDAO {
 				sb.append(" SELECT notice_num, notice_title ");
 				sb.append(" FROM noticeDept ");
 				sb.append(" WHERE notice_num > ? ");
+				sb.append(" AND ( dep_name = ? ) ");
 				sb.append(" ORDER BY notice_num ASC ");
 				sb.append(" FETCH FIRST 1 ROWS ONLY ");
 				
 				pstmt = conn.prepareStatement(sb.toString());
 				
 				pstmt.setLong(1, num);
+				pstmt.setString(2, dep_name);
 				
 			}
 			
@@ -505,7 +519,7 @@ public class DepNoticeDAO {
 	}
 	
 	// 다음 글
-	public DepNoticeDTO nextReadBoard(long num, String condition, String keyword) {
+	public DepNoticeDTO nextReadBoard(long num, String condition, String keyword, String dep_name) {
 		DepNoticeDTO dto = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -529,6 +543,7 @@ public class DepNoticeDAO {
 					sb.append("   AND ( INSTR(" + condition + ", ?) >= 1 ) ");
 				}
 				
+				sb.append(" AND ( dep_name = ? ) ");
 				sb.append(" ORDER BY notice_num DESC ");
 				sb.append(" FETCH FIRST 1 ROWS ONLY ");
 			
@@ -539,6 +554,9 @@ public class DepNoticeDAO {
 				
 				if(condition.equals("all")) {
 					pstmt.setString(3, keyword);
+					pstmt.setString(4, dep_name);
+				} else {
+					pstmt.setString(3, dep_name);
 				}
 			// 검색 안했을 경우
 			} else {
@@ -546,12 +564,14 @@ public class DepNoticeDAO {
 				sb.append(" SELECT notice_num, notice_title ");
 				sb.append(" FROM noticeDept ");
 				sb.append(" WHERE notice_num < ? ");
+				sb.append(" AND ( dep_name = ? ) ");
 				sb.append(" ORDER BY notice_num DESC ");
 				sb.append(" FETCH FIRST 1 ROWS ONLY ");
 				
 				pstmt = conn.prepareStatement(sb.toString());
 				
 				pstmt.setLong(1, num);
+				pstmt.setString(2, dep_name);
 				
 			}
 			
