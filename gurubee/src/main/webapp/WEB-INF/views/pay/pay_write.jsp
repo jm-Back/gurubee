@@ -70,10 +70,23 @@ border-radius: 10px; /*스크롤바 트랙 라운드*/
 	margin-top: 10px;
 }
 
+.box_photo {
+	overflow: visible;
+	text-align: center;
+	width: 100%;
+	height: 200px;
+	padding-bottom: 10px;
+	padding-top: 30px;
+}
 
 
-.sal_profile {
-	padding : 20p;'
+.profile {
+	width: 160px;
+	height: 160px;
+	object-fit: cover;
+	border-radius: 100%;
+	border: 7px solid #01d6b7;
+	padding: 4px;
 }
 
 form .img-viewer {
@@ -147,10 +160,12 @@ function payOk(){
 			   <div class="p-3 mb-4 profile_form_box p-1 rounded">
 			    <div class= "row">
 			     <div class="col-mid-3">
+
 			       <div class = "d-flex justify-content-center">
-			       <div class="img-viewer mx-5"></div>
-					<img class="profile" src="${pageContext.request.contextPath}/uploads/profile/${dto.ori_filename}">
-				
+		            <div class="box-photo">
+					<img class="profile border rounded-3 " src="${pageContext.request.contextPath}/uploads/profile/${dto.ori_filename}">
+				     </div>
+				 
   				  </div>
 			     </div>
 			   </div>
