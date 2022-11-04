@@ -52,6 +52,14 @@ li > a:link,  li > a:visited {
 	margin: 70px 0;
 }
 
+.flexx {
+	display: flex;
+	justify-content: left;
+	margin: 70px 0;
+}
+
+
+
 .site {
 	width: 900px;
 	margin: 0 auto;
@@ -94,7 +102,7 @@ li > a:link,  li > a:visited {
 <body>
 <div class="site">
 	<h2 id="title">사이트 맵</h2>
-	<div class="flex">
+	<div class="flexx">
 		<div class="main-menu">
 			<h4>일정관리</h4>
 			<ul>
@@ -117,18 +125,6 @@ li > a:link,  li > a:visited {
 			   <li><a href="${pageContext.request.contextPath}/edoc/list_temp.do">결재문서 임시보관함</a></li>
 			</ul>  
 		</div> 
-
-		<div class="main-menu">	
-			<h4>인사관리</h4>
-			<ul>
-			   <li><a href="${pageContext.request.contextPath}/employee/write.do">신입사원 등록</a></li>
-			   <li><a href="${pageContext.request.contextPath}/employee/list.do">사원통합관리</a></li>
-			   <li><a href="${pageContext.request.contextPath}/pay/pay_write.do">급여정보 등록</a></li>
-			   <li><a href="${pageContext.request.contextPath}/pay/pay_list.do">급여정보 리스트</a></li>
-			   <li><a href="${pageContext.request.contextPath}/pay/sal_pay_main.do">연봉정보 등록</a></li>
-			   <li><a href="${pageContext.request.contextPath}/pay/sal_list.do">연봉정보 리스트</a></li>
-			</ul>   
-		</div> 	
 	</div>
 	<div class="flex">
 		<div class="main-menu">
