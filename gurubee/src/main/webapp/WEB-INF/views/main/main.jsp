@@ -813,7 +813,7 @@ $(document).ready(
 					</div>
 
 					<!-- 플젝 -->
-					<div class="row  rounded-3 shadow" style="margin-top: 30px;">
+					<div class="row border  rounded-3 shadow" style="margin-top: 30px;">
 					<div class="div-project ">
 						<div class="div-title">&nbsp;프로젝트 현황</div>
 						<div class="div-tabmenu">

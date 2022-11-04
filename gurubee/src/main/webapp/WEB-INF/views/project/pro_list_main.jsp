@@ -5,7 +5,7 @@
 
 <div class="row size__cont">
 		<c:forEach var="dto" items="${list}" varStatus="status">
-				<div onclick="location.href='${pageContext.request.contextPath}/project/article.do?pro_code=${dto.pro_code}&pd_code=${dto.pd_code}&id_p=${dto.id_p}'" class="card p-3 mb-4 pointer shadow p-1 rounded">
+				<div onclick="location.href='${pageContext.request.contextPath}/project/article.do?pro_code=${dto.pro_code}&pd_code=${dto.pd_code}&id_p=${dto.id_p}'" class=" p-3 mb-4 pointer  p-1 rounded">
 					<div class="d-flex justify-content-between">
 						<div class="d-flex flex-row align-items-center">
 							<div class="p_photo"></div>
