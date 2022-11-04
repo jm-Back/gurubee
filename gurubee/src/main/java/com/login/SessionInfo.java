@@ -13,7 +13,15 @@ public class SessionInfo {
 	
 	private String dep_name; // 부서명
 	private String pos_name; // 직급명
+	private String dep_code;
 	
+	
+	public String getDep_code() {
+		return dep_code;
+	}
+	public void setDep_code(String dep_code) {
+		this.dep_code = dep_code;
+	}
 	public String getId() {
 		return id;
 	}

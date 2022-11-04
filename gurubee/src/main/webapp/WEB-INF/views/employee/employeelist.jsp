@@ -46,7 +46,8 @@ font-size :20px
 	color: #fff;
 	border: none;
 	padding: 10px 20px;
-
+	
+	
 }
 
 .listform {
@@ -86,6 +87,14 @@ border-radius : 10px;
 
 <script type="text/javascript">
 
+//수정하기
+function update(id) {
+	location.href="${pageContext.request.contextPath}/employee/update.do?id="+id;
+}
+
+
+
+
 function searchList() {
 	const f = document.searchForm;
 	f.submit();
@@ -116,18 +125,16 @@ function searchList() {
 			        <div class="search_form">
 		            <div class="col-auto">&nbsp;</div>
 		              <div class="row board-list-header">
-		            <div class="col-auto me-auto">${dataCount}개(${page}/${total_page} 페이지)</div>
+		            <div class="col-auto me-auto"></div>
 		            </div>
 		         </div>  
 					<div class="col-6 text-center">
 						<form class="row" name="searchForm" action="" method="post">
 							<div class="col-auto p-1">
 								<select name="condition" class="form-select">
-									<option value="all" ${condition=="all"?"selected='selected'":""}>제목+내용</option>
-									<option value="userName" ${condition=="userName"?"selected='selected'":""}>작성자</option>
-									<option value="reg_date" ${condition=="reg_date"?"selected='selected'":""}>등록일</option>
-									<option value="subject" ${condition=="subject"?"selected='selected'":""}>제목</option>
-									<option value="content" ${condition=="content"?"selected='selected'":""}>내용</option>
+									<option value="dep_code" ${condition=="dep_code"?"selected='selected'":""}>부서</option>
+									<option value="post_code" ${condition=="pos_code"?"selected='selected'":""}>직급</option>
+									<option value="name" ${condition=="name"?"selected='selected'":""}>이름</option>
 								</select>
 							</div>
 							<div class="col-auto p-1">
@@ -140,8 +147,8 @@ function searchList() {
 						   </div>
 						   </div>
 				 <div class="col-12  text-end ">
-		            <button class="btn btn-primary btn-sm end__btn__design shadow-sm" type="button" onclick=""><i class="bi bi-printer"></i>&nbsp;인사정보인쇄</button>
-		            <button class="btn btn-primary btn-sm end__btn__design shadow-sm" type="button" > 신입사원등록 &nbsp; <i class="bi bi-person-plus"></i></button>
+		           <button class="btn btn-primary btn-sm end__btn__design shadow-sm" type="button" onclick=""><i class="bi bi-printer"></i>&nbsp;인사정보인쇄</button>
+		           <button class="btn btn-primary btn-sm end__btn__design shadow-sm" type="button"  type="button" onclick="location.href='${pageContext.request.contextPath}/employee/write.do';"> 신입사원등록 &nbsp; <i class="bi bi-person-plus"></i></button>
 		            </div>
 		         </div>
 		         
@@ -181,7 +188,7 @@ function searchList() {
 								<td>${dto.email}</td>
 								<td>${dto.tel}</td>
 								<td>${dto.date_iss}</td>
-								<td><button type="button" class="btn btn-primary btn-sm end__btn__design" onclick="update()">수정</button></td>
+								<td><button class="btn btn-primary btn-sm end__btn__design shadow-sm" type="button" onclick="update('${dto.id}')">수정</button></td>
 			
 				
 							</tr>
