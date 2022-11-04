@@ -30,6 +30,13 @@ public class PayServlet extends MyServlet {
 			resp.sendRedirect(cp+"/member/login.do");;
 			return;
 	    }
+		
+		if(! info.getDep_code().equals("100")) {
+			 String cp = req.getContextPath();
+				resp.sendRedirect(cp+"/main.do");;
+				return;
+		 }
+		
 	 
 		String uri = req.getRequestURI();
         System.out.println(uri);
