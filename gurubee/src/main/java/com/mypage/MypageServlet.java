@@ -59,7 +59,6 @@ public class MypageServlet extends MyUploadServlet{
 						
 		} else if(uri.indexOf("myatt.do") != -1) {
 			myattForm(req, resp); // mypage 근태관리 [myatt.jsp (tab2)]
-			
 		
 		} else if(uri.indexOf("myatt_write.do") != -1) {
 			myattinsertSubmit(req, resp); // mypage 출근등록 [myatt_write.jsp (tab2에서 출력)]
@@ -220,7 +219,7 @@ public class MypageServlet extends MyUploadServlet{
 			MypageDTO mdto = new MypageDTO();
 			
 			Calendar cal = Calendar.getInstance();
-			String s = String.format("$tF", cal) + " 09:00:00";
+			String s = String.format("%tF", cal) + " 09:00:00";
 			
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date date = new Date();
@@ -262,7 +261,7 @@ public class MypageServlet extends MyUploadServlet{
 			MypageDTO mdto = new MypageDTO();
 			
 			Calendar cal = Calendar.getInstance();
-			String s = String.format("$tF", cal) + " 18:00:00";
+			String s = String.format("%tF", cal) + " 18:00:00";
 			
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date date = new Date();
@@ -291,4 +290,5 @@ public class MypageServlet extends MyUploadServlet{
 		PrintWriter out = resp.getWriter();
 		out.print(job.toString());
 	}
+
 }

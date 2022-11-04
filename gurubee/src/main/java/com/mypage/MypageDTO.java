@@ -8,6 +8,7 @@ public class MypageDTO {
 	private String att_start; // 출근시간
 	private String att_end; // 퇴근시간
 	private String att_ing; // 출근 퇴근 외출
+	private String att_date;
 	
 	public String getAtt_id() {
 		return att_id;
@@ -38,5 +39,11 @@ public class MypageDTO {
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+	public String getAtt_date() {
+		return att_date;
+	}
+	public void setAtt_date(String att_date) {
+		this.att_date = att_date;
 	}
 }
