@@ -228,7 +228,7 @@ public class MypageServlet extends MyUploadServlet{
 			
 			if(todayAttendance == null) {
 				MypageDTO mdto = new MypageDTO();
-				s = String.format("%tF", cal) + " 09:00:00";
+				s = String.format("%tF", cal) + " 09:00:01";
 				
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				Date date = new Date();
