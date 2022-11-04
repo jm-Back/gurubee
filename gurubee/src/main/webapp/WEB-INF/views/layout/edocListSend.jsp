@@ -35,11 +35,17 @@
 	white-space:nowrap;
 }
 
+.pt__style {
+	padding-top: 12px;
+}
+
+
+
 </style>
 
 </head>
 <body>
-		<div class="container pt-3">
+		<div class="container pt__style">
 			<div class="">
 				<div class="card border rounded-2">
 					<div class="card-header card-bg " id="boardmenu" style="width: 100%;">

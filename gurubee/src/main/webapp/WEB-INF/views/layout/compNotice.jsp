@@ -42,7 +42,7 @@
 
 </head>
 <body>
-		<div class="container">
+		<div class="container ">
 			<div class="">
 				<div class="card border rounded-2">
 					<div class="card-header card-bg " id="boardmenu" style="width: 100%;">

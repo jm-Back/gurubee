@@ -24,15 +24,21 @@
 }
 
 .card-bg {
-	background-color: #00d1b3;
+	background-color: #01d6b7;
 	font-weight: 700;
 	opacity: 80%;
+	color: #fff;
+	font-size: 20px;
 }
 
 .card_body {
 	text-overflow:ellipsis; 
 	overflow:hidden; 
 	white-space:nowrap;
+}
+
+.title__padding {
+	padding-left: -40px;
 }
 
 </style>
@@ -44,7 +50,7 @@
 				<div class="card border rounded-2">
 					<div class="card-header card-bg " id="boardmenu" style="width: 100%;">
 						<ul>
-							<li><i class="bi bi-clipboard-check"></i>&nbsp;익명 커뮤니티
+							<li><i class="bi bi-clipboard-check title__padding"></i>&nbsp;익명 커뮤니티
 							<li style="float: right;"><a href="${pageContext.request.contextPath}/community/list.do"><img src="${pageContext.request.contextPath}/resources/images/icon-plus.png"></a>
 						</ul>
 					</div>

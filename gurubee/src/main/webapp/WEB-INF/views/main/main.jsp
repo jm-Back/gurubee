@@ -114,8 +114,8 @@
 }
 
 .main-div {
-	width: 1800px;
-	height: 1100px;
+	width: 1850px;
+	height: 1200px;
 	margin-left: auto;
 	margin-right: auto;
 	padding-right: 23px;
@@ -158,7 +158,7 @@ textarea.form-control { height: 170px; resize : none; }
 
 .div-title {
 	font-weight: 600;
-	font-size: 17px;
+	font-size: 21px;
 	font: bold;
 	padding-top: 15px;
 }
@@ -170,16 +170,19 @@ textarea.form-control { height: 170px; resize : none; }
 .div-edoc {
 	margin-bottom: 10px;
 	height: 400px;
+	margin-top: -30px;
 }
 
 .div-project {
-	height: 410px;
+	height: 380px;
+	margin-top: 30px;
 }
 
 .div-board {
 	margin-left: 10px;
 	width: 500px;
-}
+	height: 1050px;
+}	
 
 .attbtn {
 	background-color: #01d6b7;
@@ -189,7 +192,7 @@ textarea.form-control { height: 170px; resize : none; }
 }
 
 .div-tabmenu {
-	padding-top: 20px;
+	padding-top: 29px;
 }
 
 ul.tabs {
@@ -227,7 +230,8 @@ ul.tabs li.current {
 }
 
 .myedoc {
-	width: 80%;	
+	margin-top: -10px;
+	width: 100%;	
 	
 }
 
@@ -240,7 +244,7 @@ ul.tabs li.current {
 }
 
 .profile__size {
-	height: 500px;
+	height: 448px;
 }
 
 .doc__btn {
@@ -291,7 +295,7 @@ ul.tabs li.current {
 	border:  1px solid #eee;
 	border-radius: 10px;
 	margin-left: -20px;
-	height: 200px;
+	height: 250px;
 	
 }
 
@@ -308,6 +312,55 @@ ul.tabs li.current {
 	font-size: 18px;
 	padding-bottom: 10px;
 }
+
+.input__style {
+	border: none;
+	font-size: 30px;
+	color: orange;
+	font-weight: 600;
+}
+
+/*a 태그 수정하기 */
+.a__style {
+	color: #fff;
+}
+
+.attIn-btn {
+	width: 120px;
+	height: 50px;
+	border-radius: 10px;
+	border: 1px solid #eee;
+	background: #fff;
+	font-size: 17px;
+	font-weight: 600;
+}
+
+.attOut-btn {
+	width: 120px;
+	height: 50px;
+	border-radius: 10px;
+	border: 1px solid #eee;
+	background: #fff;
+	font-size: 17px;
+	font-weight: 600;
+}
+
+.sch__btn {
+	margin-left: -20px;
+	background: #01d6b7;
+	width: 930px;
+	height: 80px;
+	margin-top: 20px;
+	font-size: 23px;
+	vertical-align: middle;
+	border-radius: 10px;
+	color: #fff;
+	padding-top: 20px;
+	padding-left: 20px;
+	font-weight: 600;
+}
+
+
 
 
 
@@ -512,52 +565,60 @@ $(document).ready(
 							style="font-size: 13px;">
 							<div class="box_photo">
 								<img class="profile"
-									src="${pageContext.request.contextPath}/resources/images/profile.jpg">
+									src="${pageContext.request.contextPath}/uploads/profile/${dto.ori_filename}">
 							</div>
 							<span class="fw-bold fs-6 dept__size"> ${sessionScope.member.name}&nbsp;${sessionScope.member.pos_name}님</span> 
 							<span class="fs-6">${sessionScope.member.dep_name}</span> <input type="hidden" value="" id="">
 							<div class="text-center" style="padding-top: 10px;">
-								<button type="button" class="btn attIn-btn" 
+								<button type="button" class="attIn-btn shadow" 
 									${not empty todayAttendance.att_start ? "disabled='disabled'":""}>&nbsp;출&nbsp;근&nbsp;</button>
-								<button type="button" class="btn attOut-btn"
+								<button type="button" class="attOut-btn shadow"
 								    data-att_id="${todayAttendance.att_id}"
 									${empty todayAttendance.att_start or not empty todayAttendance.att_end ? "disabled='disabled'":""}>&nbsp;퇴&nbsp;근&nbsp;</button>
 							</div>
 						</div>
 					</div>
 					<div class="size__btn">
-						<div class="doc__btn shadow"><a href="${pageContext.request.contextPath}/edoc/write.do">결재문서 작성</a>
+						<div class="doc__btn shadow"><a class="a__style" href="${pageContext.request.contextPath}/edoc/write.do">결재문서 작성</a>
 							
 						</div>
-						<div class="doc__btn2 shadow">
-							새 프로젝트
+						<div class="doc__btn2 shadow"><a class="a__style" href="${pageContext.request.contextPath}/project/write.do">새 프로젝트</a>
 						</div>
 		
 					</div>
 					<div class="doc__count shadow">
 						<div class="doc__count__title  ">
-							(아이콘) 결재문서 리스트
+							&nbsp;<i class="fa-solid fa-file-signature"></i> 결재문서 리스트
 						</div>
 						<div class="doc__count__content"> 
-							결제 대기 문서 : <div style="display: inline;"><input type="text" id="countAppReadyEdoc" value="" readonly="readonly" style="width: 20px;"></input></div>
+							결제 대기 문서 : <div style="display: inline;"><input class="input__style" type="text" id="countAppReadyEdoc" value="" readonly="readonly" style="width: 20px;"></input></div>
 						</div>
 						<hr>
 						<div class="doc__count__content">
-							오늘 요청된 문서 : <div style="display: inline;"><input type="text" id="countAppTodayEdoc" value="" readonly="readonly" style="width: 20px;"></input></div>
+							오늘 요청된 문서 : <div style="display: inline;"><input class="input__style" type="text" id="countAppTodayEdoc" value="" readonly="readonly" style="width: 20px;"></input></div>
 						</div>
+					</div>
+					<div class="sch__btn shadow">
+					 	<div><i class="fa-regular fa-calendar-check "></i>&nbsp; 내 일정 보러가기</div>
 					</div>
 					
 				</div>
 
-				<div class="col-4 align-items-md-stretch layoutdiv">
+				<div class=" col-4 align-items-md-stretch ">
 					<!-- 수신함 -->
-					<div class="row border rounded-3 shadow div-edoc">
+				
+					<div class="row border rounded-3 shadow">
+					<div class="div-edoc">
 						<div class="div-title">&nbsp;문서 발신함</div>
+						<div class="div-tabmenu">
+						</div>
 						<div class="myedoc" id="mainSendList" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"></div>
+					</div>
 					</div>
 
 					<!-- 플젝 -->
-					<div class="row border rounded-3 shadow div-project">
+					<div class="row border rounded-3 shadow mt-3">
+					<div class="div-project">
 						<div class="div-title">&nbsp;프로젝트 현황</div>
 						<table class="table table-hover"
 							style="table-layout: fixed; margin-top: 20px;">
@@ -589,19 +650,13 @@ $(document).ready(
 						</table>
 
 					</div>
+				</div>	
 				</div>
 
 				<!-- 게시판 -->
 				<div class="col-4 border rounded-3 shadow div-board">
 					<div class="div-title">&nbsp;공지사항</div>
 					<div class="div-tabmenu">
-					<!-- 
-						<ul class="tabs">
-							<li class="tab-link current" data-tab="board1">전체</li>
-							<li class="tab-link" data-tab="board2">부서</li>
-							<li class="tab-link" data-tab="board3">커뮤니티</li>
-						</ul>
-					 -->
 					</div>
 					<div>
 						<!-- 부서:board2, 공지:board3-->
