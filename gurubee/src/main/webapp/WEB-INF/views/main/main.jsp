@@ -192,6 +192,7 @@ textarea.form-control { height: 170px; resize : none; }
 .div-project {
 	height: 450px;
 	margin-top: 30px;
+	margin-left: 30px;
 }
 
 .div-board {
@@ -522,7 +523,7 @@ h6 {
 
 
 .location__btn {
-	float: right;
+	float: right;	
 }
 
 .main__board {
@@ -531,7 +532,9 @@ h6 {
 }
 
 .size__cont {
-	width: 90%;
+	width: 97%;
+	
+
 }
 
 
