@@ -99,7 +99,8 @@ public class LoginServlet extends MyServlet {
 	         // 세션에 member이라는 이름으로 저장
 	         session.setAttribute("member", info);
 
-	         forward(req, resp, "/WEB-INF/views/main/main.jsp");
+	         // forward(req, resp, "/WEB-INF/views/main/main.jsp");
+	         resp.sendRedirect(cp+"/main.do");
 	         return;
 
 		}
@@ -117,8 +118,9 @@ public class LoginServlet extends MyServlet {
 		// 세션에 저장된 모든 정보를 지우고 세션을 초기화 한다.
 		session.invalidate();
 
-		String path = "/WEB-INF/views/member/login.jsp";
-		forward(req, resp, path);
+		// String path = "/WEB-INF/views/member/login.jsp";
+		// forward(req, resp, path);
+		resp.sendRedirect(cp+"/member/login.do");
 		return;
 	}
 	

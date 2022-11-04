@@ -120,8 +120,8 @@ $(function(){
 		
 		let url = "${pageContext.request.contextPath}/mypage/myatt_write.do";
 		let query = null;
-		let year = $(this).attr("data-year");
-		let month = $(this).attr("data-month");
+		// let year = $(this).attr("data-year");
+		// let month = $(this).attr("data-month");
 		
 		const fn = function(data){
 			url = "${pageContext.request.contextPath}/mypage/myatt.do?tmp="+new Date().getTime();
@@ -142,8 +142,8 @@ $(function(){
 		let att_id = $(this).attr("data-att_id");
 		let url = "${pageContext.request.contextPath}/mypage/myatt_update.do";
 		let query = "att_id="+att_id;
-		let year = $(this).attr("data-year");
-		let month = $(this).attr("data-month");
+		// let year = $(this).attr("data-year");
+		// let month = $(this).attr("data-month");
 		
 		const fn = function(data){
 			url = "${pageContext.request.contextPath}/mypage/myatt.do?tmp="+new Date().getTime();

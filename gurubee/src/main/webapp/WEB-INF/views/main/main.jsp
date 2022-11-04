@@ -314,8 +314,6 @@ ul.tabs li.current {
 </style>
 
 <script type="text/javascript">
-
-
 function ajaxFun(url, method, query, dataType, fn) {
 	$.ajax({
 		type:method, // ex) GET, POST
@@ -452,6 +450,47 @@ $(document).ready(
 		})
 
 	});
+	
+	$(function(){
+		$("body").on("click", ".attIn-btn", function(){
+			if(! confirm("출근 처리를 진행하시겠습니까 ? ")) {
+				return false;
+			}
+			
+			let url = "${pageContext.request.contextPath}/mypage/myatt_write.do";
+			let query = null;
+
+			const fn = function(data){
+				if(data.state == "true") {
+					$(".attIn-btn").prop("disabled", true);
+					$(".attOut-btn").prop("disabled", false);
+					
+					let att_id = data.att_id;
+					$(".attOut-btn").attr("data-att_id", att_id);
+				}
+			};
+			ajaxFun(url, "post", query, "json", fn);
+			
+		});
+		
+		$("body").on("click", ".attOut-btn", function(){
+			if(! confirm("퇴근 처리를 진행하시겠습니까 ? ")) {
+				return false;
+			}
+			
+			let url = "${pageContext.request.contextPath}/mypage/myatt_update.do";
+			let query = "att_id="+$(".attOut-btn").attr("data-att_id");
+			let year = "${year}";
+			let month = "${month}";
+			
+			const fn = function(data){
+				$(".attOut-btn").prop("disabled", true);			
+			};
+			
+			ajaxFun(url, "post", query, "json", fn);
+			
+		});	
+	});
 </script>
 
 
@@ -478,10 +517,11 @@ $(document).ready(
 							<span class="fw-bold fs-6 dept__size"> ${sessionScope.member.name}&nbsp;${sessionScope.member.pos_name}님</span> 
 							<span class="fs-6">${sessionScope.member.dep_name}</span> <input type="hidden" value="" id="">
 							<div class="text-center" style="padding-top: 10px;">
-								<button type="button" class="btn attbtn" data-bs-toggle="modal"
-									data-bs-target="#exampleModal">&nbsp;출&nbsp;근&nbsp;</button>
-								<button type="button" class="btn attbtn" data-bs-toggle="modal"
-									data-bs-target="#exampleModal">&nbsp;퇴&nbsp;근&nbsp;</button>
+								<button type="button" class="btn attIn-btn" 
+									${not empty todayAttendance.att_start ? "disabled='disabled'":""}>&nbsp;출&nbsp;근&nbsp;</button>
+								<button type="button" class="btn attOut-btn"
+								    data-att_id="${todayAttendance.att_id}"
+									${empty todayAttendance.att_start or not empty todayAttendance.att_end ? "disabled='disabled'":""}>&nbsp;퇴&nbsp;근&nbsp;</button>
 							</div>
 						</div>
 					</div>

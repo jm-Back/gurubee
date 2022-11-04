@@ -214,33 +214,48 @@ public class MypageServlet extends MyUploadServlet{
 		SessionInfo info = (SessionInfo) session.getAttribute("member");
 		
 		String state = "false";
+		String att_id = "";
 		try {
 			
-			MypageDTO mdto = new MypageDTO();
+			String s;
 			
 			Calendar cal = Calendar.getInstance();
-			String s = String.format("%tF", cal) + " 09:00:00";
+			int y = cal.get(Calendar.YEAR);
+			int m = cal.get(Calendar.MONTH) + 1;
+			int d = cal.get(Calendar.DATE);			
+			s = String.format("%4d%02d%02d", y, m, d);
+			MypageDTO todayAttendance = dao.readAttendance(s, info.getId());
 			
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			Date date = new Date();
-			Date date2 = sdf.parse(s);
-			
-			mdto.setId(info.getId());
-			if(date.getTime() > date2.getTime()) {
-				mdto.setAtt_ing("지각");
-			} else {
-				mdto.setAtt_ing("출근");
+			if(todayAttendance == null) {
+				MypageDTO mdto = new MypageDTO();
+				s = String.format("%tF", cal) + " 09:00:00";
+				
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				Date date = new Date();
+				Date date2 = sdf.parse(s);
+				
+				mdto.setId(info.getId());
+				if(date.getTime() > date2.getTime()) {
+					mdto.setAtt_ing("지각");
+				} else {
+					mdto.setAtt_ing("출근");
+				}
+				
+				dao.attendanceInsert(mdto);
+				
+				s = String.format("%4d%02d%02d", y, m, d);
+				todayAttendance = dao.readAttendance(s, info.getId());
+				att_id = todayAttendance.getAtt_id();
+				
+				state = "true";
 			}
-			
-			dao.attendanceInsert(mdto);
-			
-			state = "true";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		JSONObject job = new JSONObject();
 		job.put("state", state);
+		job.put("att_id", att_id);
 		
 		resp.setContentType("text/html;charset=utf-8");
 		PrintWriter out = resp.getWriter();
