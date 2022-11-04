@@ -591,7 +591,7 @@ $(document).ready(
 							&nbsp;<i class="fa-solid fa-file-signature"></i> 결재문서 리스트
 						</div>
 						<div class="doc__count__content"> 
-							결제 대기 문서 : <div style="display: inline;"><input class="input__style" type="text" id="countAppReadyEdoc" value="" readonly="readonly" style="width: 20px;"></input></div>
+							결제 대기 문서 : <div style="display: inline;"><input class="input__style" type="text" id="countAppReadyEdoc" value="" readonly="readonly" style="width: 50px;"></input></div>
 						</div>
 						<hr>
 						<div class="doc__count__content">

@@ -86,8 +86,6 @@ public class EdocServlet extends MyUploadServlet {
 			download(req, resp);
 		} else if(uri.indexOf("deleteFile.do") != -1) {
 			deleteFile(req, resp);
-		} else if(uri.indexOf("beforeUpdateChk.do") != -1) {
-			updateCheck(req, resp);
 		} else if(uri.indexOf("countTodayEdoc.do") != -1) {
 			countTodayEdoc(req, resp);
 		} else if(uri.indexOf("mainListSend.do") != -1) {
@@ -584,8 +582,7 @@ public class EdocServlet extends MyUploadServlet {
 			b2 = dao.readEdocResult(app_num);
 			
 			if(b2==false || b1==false) {
-				String updateErrorMsg = "결재된 문서는 수정할 수 없습니다.";
-				resp.sendRedirect(cp+"/edoc/list_send.do?page="+page+"&updateErrorMsg"+updateErrorMsg);
+				resp.sendRedirect(cp+"/edoc/list_send.do?page="+page);
 				return;
 			}	
 			
@@ -869,7 +866,6 @@ public class EdocServlet extends MyUploadServlet {
 			//// 내 사번이 있는 모든 결재문서 가져오기  dao.listEApproverReceiver(apperId);
 			
 			cnt = list.size();
-			
 			
 			state = "true";
 		} catch (Exception e) {

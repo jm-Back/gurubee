@@ -252,6 +252,12 @@ function deleteFile(fileNum, app_num) {
 
 	<main>
 		<div class="container py-4">
+			<div class="body-title">
+				<h3>
+					<i class="bi bi-envelope-paper"></i>&nbsp;임시문서 작성
+				</h3>
+			</div>
+			
 			<div>
 				<form method="post" name="writeForm" enctype="multipart/form-data">
 					<table class="table table-border table-form">

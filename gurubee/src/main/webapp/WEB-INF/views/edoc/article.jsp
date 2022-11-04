@@ -61,38 +61,94 @@ function ajaxFun(url, method, query, dataType, fn) {
 	});
 }
 
-
-function updateOk() { 
-	alert('실행이다');
+// 문서 제출
+function update() {
+  	const f = document.writeForm;
+  	
+	let edoc = f.edocSelect.value.trim(); // 문서구분
+	let content = oEditors.getById["ir1"].getIR(); // 문서폼
+	let title = f.title.value.trim(); // 문서제목
+	let id_array = [f.empId1.value, f.empId2.value, f.empId3.value, f.empId4.value];
 	
-	// f.action = "${pageContext.request.contextPath}/edoc/write_save.do";
-	  
-  	// f.submit();
+	// 결재자 사번 빈 값 없애기 
+	const id_apper_array = id_array.filter(
+		(element) => true		
+	);
+	
+	console.log(id_array);
+  	
+  	if(! edoc.trim()) {
+      	alert("문서구분을 선택하세요. ");
+  	    return false;
+ 	}
+  	
+  	if(! title.trim()) {
+      	alert("제목을 선택하세요. ");
+  	    return false;
+ 	}
+  
+ 	if(!content || content==="<p><br></p>") {
+    	alert("상세내용을 입력하세요. ");
+    	$("#content").focus();
+    	return false;
+  	}
+  
+ 	if(id_apper_array.length < 1) {
+ 		alert("수신자는 1명 이상 선택하세요. ");
+ 		return false;
+ 	}
+ 	
+ 	f.action = "${pageContext.request.contextPath}/edoc/update_ok.do";
+  
+  	f.submit();
+}
+
+// 문서 임시저장
+function saveOk() {
+	alert('임시작성');
+	
+	const f = document.writeForm;
+	
+	let edoc = f.edocSelect.value.trim(); // 문서구분
+	let content = oEditors.getById["ir1"].getIR(); // 문서폼
+	let title = f.title.value.trim(); // 문서제목
+	let id_array = [f.empId1.value, f.empId2.value, f.empId3.value, f.empId4.value];
+	
+	// 결재자 사번 빈 값 없애기 
+	const id_apper_array = id_array.filter(
+		(element) => true		
+	);
+	
+	console.log(id_array);
+  	
+  	if(! edoc.trim()) {
+      	alert("문서구분을 선택하세요. ");
+  	    return false;
+ 	}
+  	
+  	if(! title.trim()) {
+      	alert("제목을 선택하세요. ");
+  	    return false;
+ 	}
+  
+ 	if(!content || content==="<p><br></p>") {
+    	alert("상세내용을 입력하세요. ");
+    	$("#content").focus();
+    	return false;
+  	}
+  
+ 	if(id_apper_array.length < 1) {
+ 		alert("수신자는 1명 이상 선택하세요. ");
+ 		return false;
+ 	}
+ 	
+ 	f.action = "${pageContext.request.contextPath}/edoc/write_save.do";
+  
+  	f.submit();
 }
 
 $(function(){
-	
-	// 문서수정 버튼 클릭 - 결재된 문서인지 확인
-	$(function() {
-		$("form button[name=updateBtn]").click(function() {
-			let app_num = "${dto.app_num}";
 
-			let url = "${pageContext.request.contextPath}/edoc/updateCheck.do";
-			let query = "app_num=" + app_num;
-			
-			const fn = function(data) {
-				if(data.state=="false") {
-					alert("jjjjjj");
-				} else {
-					updateOk();
-				}
-			}
-			
-			ajaxFun(url, "post", query, "json", fn);
-		});
-	});
-
-	
 	// 결재하기 모달 클릭
 	$("form button[name=btnApproval]").click(function() {
 		$("#approvalModal").modal("show");
@@ -117,10 +173,8 @@ $(function(){
 		
 		ajaxFun(url, "post", query, "json", fn);
 	});
-	
     
 });
-
 
 
 </script>
@@ -193,7 +247,8 @@ $(function(){
 										</c:when>
 										<c:otherwise>
 											<button type="button" class="btn btn-success"
-												style="font-size: 20px;" id="updateBtn" name="updateBtn">문서수정</button>
+												style="font-size: 20px;"
+												onclick="location.href='${pageContext.request.contextPath}/edoc/update.do?app_num=${dto.app_num}&page=${page}';">문서수정</button>
 										</c:otherwise>
 									</c:choose>
 								</c:when>
@@ -222,7 +277,6 @@ $(function(){
 						<input type="hidden" name="app_num" value="${dto.app_num }">
 						<input type="hidden" name="page" value="${page}"> <input
 							type="hidden" name="temp" value="${dto.temp}">
-						<input type="hidden" name="updateErrorMsg" value="${updateErrorMsg}">
 					</form>
 				</div>
 			</div>

@@ -296,7 +296,7 @@ function deleteFile(fileNum, app_num) {
 		<div class="container py-4">
 			<div class="body-title">
 				<h3>
-					<i class="bi bi-envelope-paper"></i>&nbsp;문서 발신함
+					<i class="bi bi-envelope-paper"></i>&nbsp;문서 작성
 				</h3>
 			</div>
 			<div>

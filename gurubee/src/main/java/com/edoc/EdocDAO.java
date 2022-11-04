@@ -1878,7 +1878,7 @@ public class EdocDAO {
 						+ "    ) er "
 						+ "    ON er.app_num = al.app_num "
 						+ " JOIN EMPLOYEE e ON e.id=al.id "
-						+ " WHERE (temp=1 OR temp=-1) AND INSTR(idList, ?) > 0 AND app_date = SYSDATE "
+						+ " WHERE (temp=1 OR temp=-1) AND INSTR(idList, ?) > 0 AND TO_CHAR(app_date,'YYYY-MM-DD') = TO_CHAR(SYSDATE,'YYYY-MM-DD') "
 						+ "  ORDER BY al.app_num DESC ";
 
 				pstmt = conn.prepareStatement(sql);
