@@ -99,6 +99,12 @@ function writeSal(id) {
 }
 
 
+//연봉리스트로 이동 
+function sallist() {
+	location.href="${pageContext.request.contextPath}/pay/sal_list.do"
+}
+
+
 //사원급여상세리스트 
 
 function detailpay(id){
@@ -141,7 +147,7 @@ function searchList() {
 		         </div>  
 	
 					<div class="col-12 text-end">
-						<button class="btn btn-outline-warning btn-sm shadow-sm" type="button" onclick="detailpay('${dto.id}')"> 급여 상세정보 </button>
+						<button class="btn btn-outline-warning btn-sm shadow-sm" type="button" onclick="sallist()"> 전체사원 연봉 리스트 보기 </button>
 						   </div>
 						   </div>
 		         </div>
