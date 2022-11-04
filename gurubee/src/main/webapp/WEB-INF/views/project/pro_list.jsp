@@ -10,7 +10,7 @@
 					<div class="d-flex justify-content-between">
 						<div class="d-flex flex-row align-items-center">
 							<div class="p_photo"></div>
-								<div><img class="profile__small" src="${pageContext.request.contextPath}/resources/images/${dto.pro_profile}"></div>
+								<div><img class="profile__small" src="${pageContext.request.contextPath}/uploads/profile/${sessionScope.member.ori_filename}"></div>
 							<div class="side__place" >
 								<div class="ms-2 p-details">
 									<input type="hidden" value="${dto.pro_code}" id="pro_code"> 

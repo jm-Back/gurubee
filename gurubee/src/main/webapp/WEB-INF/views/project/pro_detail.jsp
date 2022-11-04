@@ -14,7 +14,7 @@
 						<i class="fa-solid fa-circle-check edit__icon clear__detail ${deo.pd_ing > 0 ? 'change__color' : ''}" data-pd_code="${deo.pd_code}"></i>
 						<i class="fa-regular fa-pen-to-square edit__icon" data-bs-toggle="dropdown" aria-expanded="false"></i>
 						<ul class="dropdown-menu">
-							<li class="dropdown-item update__detail" data-pd_code="${deo.pd_code}">프로젝트 챕터 수정</li>
+							<li class="dropdown-item updaprofile__project__detailte__detail" data-pd_code="${deo.pd_code}">프로젝트 챕터 수정</li>
 							<li><hr></li>
 							<li class="dropdown-item delete__detail" id="delete__detail" data-pd_code="${deo.pd_code}" data-pro_code="${deo.pro_code}">프로젝트 챕터 삭제</li>
 						</ul>
