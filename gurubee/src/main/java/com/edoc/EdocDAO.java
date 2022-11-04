@@ -1693,7 +1693,7 @@ public class EdocDAO {
 					+ "    ) er "
 					+ "    ON er.app_num = al.app_num "
 					+ " JOIN EMPLOYEE e ON e.id=al.id "
-					+ " WHERE (temp=1 OR temp=-1) AND INSTR(idList, ?) > 0 "
+					+ " WHERE (temp=1) AND INSTR(idList, ?) > 0 "
 					+ "  ORDER BY al.app_num DESC ";
 
 			pstmt = conn.prepareStatement(sql);
@@ -1704,7 +1704,7 @@ public class EdocDAO {
 			
 			while(rs.next()) {
 				EdocDTO edocdto = new EdocDTO();
-				String[] rr, aa, ii;
+				String[] rr, aa, ii, tt;
 				
 				edocdto.setApp_num(rs.getInt("app_num"));
 				edocdto.setApp_doc(rs.getString("app_doc"));
@@ -1729,14 +1729,19 @@ public class EdocDAO {
 							edocdto.setResult((Arrays.asList(rr).indexOf("0")+1)+"차대기");
 							edocdto.setResult_name(aa[Arrays.asList(rr).indexOf("0")]);
 							edocdto.setResult_id(ii[Arrays.asList(rr).indexOf("0")]);
-							if((Arrays.asList(rr).indexOf("0")+1)==1) {
-								cnt++;
-							}
-							
 						}
 					}
 				}
-				
+				if(edocdto.getResult().indexOf("대기")!=-1 && edocdto.getResult_id().equals(apperId)) {
+					cnt++;
+				}
+				/*
+				if(edocdto.getResult().equals("1")) {
+					if(edocdto.getResult_id().equals(apperId)) {
+						cnt++;
+					}
+				}
+				*/
 				
 			}
 			
