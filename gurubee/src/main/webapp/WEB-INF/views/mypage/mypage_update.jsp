@@ -54,20 +54,13 @@ function sendOk() {
 	const f = document.myForm;
 	let str;
 
-	 str = f.pwd.value;
-	    if( !str ) {
-	        alert("패스워드를 입력하세요. ");
-	        f.pwd.focus();
-	        return;
-	    }
-	/*
 	str = f.pwd.value;
 	if( !/^(?=.*[a-z])(?=.*[!@#$%^*+=-]|.*[0-9]).{5,10}$/i.test(str) ) { 
 		alert("패스워드를 다시 입력 하세요. ");
 		f.pwd.focus();
 		return;
 	}
-	*/
+
 	
 	if( str !== f.pwd2.value ) {
         alert("패스워드가 일치하지 않습니다. ");
