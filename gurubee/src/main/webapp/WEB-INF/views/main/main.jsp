@@ -565,7 +565,7 @@ $(document).ready(
 							style="font-size: 13px;">
 							<div class="box_photo">
 								<img class="profile"
-									src="${pageContext.request.contextPath}/uploads/profile/${dto.ori_filename}">
+									src="${pageContext.request.contextPath}/uploads/profile/${sessionScope.member.ori_filename}">
 							</div>
 							<span class="fw-bold fs-6 dept__size"> ${sessionScope.member.name}&nbsp;${sessionScope.member.pos_name}님</span> 
 							<span class="fs-6">${sessionScope.member.dep_name}</span> <input type="hidden" value="" id="">
