@@ -113,14 +113,12 @@
 							인사관리
 						</a>
 						<ul class="depth_1 dropdown-menu" aria-labelledby="navbarDropdown">
-						<li><a class="dropdown-item" href="${pageContext.request.contextPath}/eattendance/write.do">근태 등록</a></li>
 							<li><a class="dropdown-item" href="${pageContext.request.contextPath}/employee/write.do">신입사원 등록</a></li>
 							<li><a class="dropdown-item" href="${pageContext.request.contextPath}/employee/update.do">사원 통합관리</a></li>
 							<li><a class="dropdown-item" href="${pageContext.request.contextPath}/payment/list.do">급여 정보</a></li>
 							<li><a class="dropdown-item" href="${pageContext.request.contextPath}/salary/sal_list.do">연봉 정보</a></li>
 						</ul>
 					</li>
-
 					<li class="nav-item dropdown">
 						<a style="margin-top: -1px;" class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 							커뮤니티

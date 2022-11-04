@@ -47,7 +47,7 @@
 				<div class="card border rounded-2">
 					<div class="card-header card-bg " id="boardmenu" style="width: 100%;">
 						<ul>
-							<li><i class="bi bi-clipboard-check"></i><a class="t" href="#">회사 공지사항</a>
+							<li><i class="bi bi-clipboard-check"></i>&nbsp;회사 공지사항
 							<li style="float: right;"><a class="" href="${pageContext.request.contextPath}/comp_notice/list.do"><img src="${pageContext.request.contextPath}/resources/images/icon-plus.png"></a>
 						</ul>
 					</div>

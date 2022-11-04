@@ -1090,7 +1090,7 @@ public class CompNoticeDAO {
 						+ " FROM noticeAll n "
 						+ " JOIN employee e ON n.id = e.id "
 						+ " ORDER BY notice_num DESC  "
-						+ " FETCH FIRST 6 ROWS ONLY ";
+						+ " FETCH FIRST 5 ROWS ONLY ";
 				
 				pstmt = conn.prepareStatement(sql);
 				

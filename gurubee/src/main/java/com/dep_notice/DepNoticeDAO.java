@@ -1100,7 +1100,7 @@ public class DepNoticeDAO {
 			return list;
 		}
 	
-		public List<DepNoticeDTO> mainList() {
+		public List<DepNoticeDTO> mainList(String dep_name) {
 			List<DepNoticeDTO> list = new ArrayList<>();
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
@@ -1111,10 +1111,13 @@ public class DepNoticeDAO {
 				sql = " SELECT notice_num, notice_title, TO_CHAR(regdate, 'YYYY-MM-DD') regdate, name "
 						+ " FROM noticeDept n "
 						+ " JOIN employee e ON n.id = e.id "
+						+ " WHERE dep_name = ? "
 						+ " ORDER BY notice_num DESC  "
-						+ " FETCH FIRST 6 ROWS ONLY ";
+						+ " FETCH FIRST 5 ROWS ONLY ";
 				
 				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, dep_name);
 				
 				rs = pstmt.executeQuery();
 				

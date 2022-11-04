@@ -812,7 +812,11 @@ public class DepNoticeServlet extends MyUploadServlet {
 			
 			DepNoticeDAO dao = new DepNoticeDAO();
 			
-			List<DepNoticeDTO> list = dao.mainList();
+			HttpSession session = req.getSession();
+			SessionInfo info = (SessionInfo) session.getAttribute("member");
+			
+			
+			List<DepNoticeDTO> list = dao.mainList(info.getDep_name());
 			
 			req.setAttribute("list", list);
 			req.setAttribute("articleUrl", articleUrl);
