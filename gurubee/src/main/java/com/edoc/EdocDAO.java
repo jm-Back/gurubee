@@ -9,7 +9,6 @@ import java.util.List;
 
 import com.util.DBConn;
 
-import oracle.jdbc.proxy.annotation.Pre;
 
 public class EdocDAO {
 	private Connection conn = DBConn.getConnection();
@@ -891,7 +890,7 @@ public class EdocDAO {
 	}
 
 	
-	// 수신자 문서 개수 카운트
+	// 수신자 문서 개수 카운트 (패이징처리)
 	public int edocCountReceiver(String apperId, String edoc, String myDate) {
 		int r = 0;
 		PreparedStatement pstmt = null;
@@ -1667,5 +1666,367 @@ public class EdocDAO {
 		}
 		
 	}
+	
+	
+	// 내가 수신자인(내 사번 있는) 결대 대기중인 문서 리스트 (메인)
+	public int listReadyEApproverReceiver(String apperId) {
+		List<EdocDTO> list = new ArrayList<>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		int cnt = 0;
+		
+		try {
+			sql = "select al.app_num, al.app_doc, TO_CHAR(al.app_date,'YYYY-MM-DD')app_date, al.id, "
+					+ "    name, al.title, resultList, apperList, idList, al.temp "
+					+ " FROM E_APPROVAL al "
+					+ " JOIN "
+					+ "    (SELECT app_num, LISTAGG(app_result, ',') WITHIN GROUP(ORDER BY app_level) "
+					+ "        AS resultList, "
+					+ "        LISTAGG(e.name, ',') WITHIN GROUP(ORDER BY app_level)  "
+					+ "        AS apperList, "
+					+ "        LISTAGG(er.id, ',') WITHIN GROUP(ORDER BY app_level)  "
+					+ "        AS idList "
+					+ "     FROM E_APPROVER er "
+					+ "     LEFT OUTER JOIN EMPLOYEE e ON er.id=e.id "
+					+ "     GROUP BY app_num "
+					+ "    ) er "
+					+ "    ON er.app_num = al.app_num "
+					+ " JOIN EMPLOYEE e ON e.id=al.id "
+					+ " WHERE (temp=1 OR temp=-1) AND INSTR(idList, ?) > 0 "
+					+ "  ORDER BY al.app_num DESC ";
+
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, apperId);
+	
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				EdocDTO edocdto = new EdocDTO();
+				String[] rr, aa, ii;
+				
+				edocdto.setApp_num(rs.getInt("app_num"));
+				edocdto.setApp_doc(rs.getString("app_doc"));
+				
+				// 여기선 아이디만
+				rr = rs.getString("resultList").split(",");
+				aa = rs.getString("apperList").split(",");
+				ii = rs.getString("idList").split(",");
+				
+				for(int i=0; i<rr.length; i++) {
+					if(rs.getString("resultList").contains("-1")) {
+						edocdto.setResult((Arrays.asList(rr).indexOf("-1")+1)+"차반려");
+						edocdto.setResult_name(aa[Arrays.asList(rr).indexOf("-1")]);
+						edocdto.setResult_id(ii[Arrays.asList(rr).indexOf("-1")]);
+					} else {
+						if(! rs.getString("resultList").contains("0")) {
+							edocdto.setResult("승인");
+							edocdto.setResult_name(aa[rr.length-1]);
+							edocdto.setResult_id(ii[rr.length-1]); 
+						}
+						else {
+							edocdto.setResult((Arrays.asList(rr).indexOf("0")+1)+"차대기");
+							edocdto.setResult_name(aa[Arrays.asList(rr).indexOf("0")]);
+							edocdto.setResult_id(ii[Arrays.asList(rr).indexOf("0")]);
+							if((Arrays.asList(rr).indexOf("0")+1)==1) {
+								cnt++;
+							}
+							
+						}
+					}
+				}
+				
+				
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if( rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e2) {
+				}
+			}
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+				}
+			}
+		}
+
+		return cnt;
+	}
+	
+
+	// 내가 수신자인(내 사번 있는) 결재 문서 수신 리스트 (메인)
+	public List<EdocDTO> listEApproverReceiver(String apperId) {
+		List<EdocDTO> list = new ArrayList<>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			sql = "select al.app_num, al.app_doc, TO_CHAR(al.app_date,'YYYY-MM-DD')app_date, al.id, "
+					+ "    name, al.title, resultList, apperList, idList, al.temp "
+					+ " FROM E_APPROVAL al "
+					+ " JOIN "
+					+ "    (SELECT app_num, LISTAGG(app_result, ',') WITHIN GROUP(ORDER BY app_level) "
+					+ "        AS resultList, "
+					+ "        LISTAGG(e.name, ',') WITHIN GROUP(ORDER BY app_level)  "
+					+ "        AS apperList, "
+					+ "        LISTAGG(er.id, ',') WITHIN GROUP(ORDER BY app_level)  "
+					+ "        AS idList "
+					+ "     FROM E_APPROVER er "
+					+ "     LEFT OUTER JOIN EMPLOYEE e ON er.id=e.id "
+					+ "     GROUP BY app_num "
+					+ "    ) er "
+					+ "    ON er.app_num = al.app_num "
+					+ " JOIN EMPLOYEE e ON e.id=al.id "
+					+ " WHERE (temp=1 OR temp=-1) AND INSTR(idList, ?) > 0 "
+					+ "  ORDER BY al.app_num DESC ";
+
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, apperId);
+	
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				System.out.println(rs.getInt("app_num"));
+				EdocDTO edocdto = new EdocDTO();
+				String[] rr, aa;
+				
+				edocdto.setApp_num(rs.getInt("app_num"));
+				edocdto.setApp_doc(rs.getString("app_doc"));
+				
+				// 여기선 아이디만
+				rr = rs.getString("resultList").split(",");
+				aa = rs.getString("apperList").split(",");
+				
+				for(int i=0; i<rr.length; i++) {
+					if(rs.getString("resultList").contains("-1")) {
+						edocdto.setResult((Arrays.asList(rr).indexOf("-1")+1)+"차반려");
+						edocdto.setResult_name(aa[Arrays.asList(rr).indexOf("-1")]);
+					} else {
+						if(! rs.getString("resultList").contains("0")) {
+							edocdto.setResult("승인");
+							edocdto.setResult_name(aa[rr.length-1]);
+						}
+						else {
+							edocdto.setResult((Arrays.asList(rr).indexOf("0")+1)+"차대기");
+							edocdto.setResult_name(aa[Arrays.asList(rr).indexOf("0")]);
+							
+						}
+					}
+				}
+				
+				
+				edocdto.setId_write(rs.getString("id"));
+				edocdto.setName_write(rs.getString("name"));
+				edocdto.setTitle(rs.getString("title"));
+				edocdto.setApp_date(rs.getString("app_date"));
+				edocdto.setTemp(rs.getInt("temp"));
+				
+				list.add(edocdto);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if( rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e2) {
+				}
+			}
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+				}
+			}
+		}
+
+		return list;
+	}
+
+	
+	// 내가 수신자인(내 사번 있는) 오늘 작성된 문서 리스트 (메인)
+		public List<EdocDTO> listTodayEApproverReceiver(String apperId) {
+			List<EdocDTO> list = new ArrayList<>();
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql;
+			
+			try {
+				sql = "select al.app_num, al.app_doc, TO_CHAR(al.app_date,'YYYY-MM-DD')app_date, al.id, "
+						+ "    name, al.title, resultList, apperList, idList, al.temp "
+						+ " FROM E_APPROVAL al "
+						+ " JOIN "
+						+ "    (SELECT app_num, LISTAGG(app_result, ',') WITHIN GROUP(ORDER BY app_level) "
+						+ "        AS resultList, "
+						+ "        LISTAGG(e.name, ',') WITHIN GROUP(ORDER BY app_level)  "
+						+ "        AS apperList, "
+						+ "        LISTAGG(er.id, ',') WITHIN GROUP(ORDER BY app_level)  "
+						+ "        AS idList "
+						+ "     FROM E_APPROVER er "
+						+ "     LEFT OUTER JOIN EMPLOYEE e ON er.id=e.id "
+						+ "     GROUP BY app_num "
+						+ "    ) er "
+						+ "    ON er.app_num = al.app_num "
+						+ " JOIN EMPLOYEE e ON e.id=al.id "
+						+ " WHERE (temp=1 OR temp=-1) AND INSTR(idList, ?) > 0 AND app_date = SYSDATE "
+						+ "  ORDER BY al.app_num DESC ";
+
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, apperId);
+		
+				rs = pstmt.executeQuery();
+				
+				while(rs.next()) {
+					EdocDTO edocdto = new EdocDTO();
+					String[] rr, aa;
+					
+					edocdto.setApp_num(rs.getInt("app_num"));
+					edocdto.setApp_doc(rs.getString("app_doc"));
+					
+					rr = rs.getString("resultList").split(",");
+					aa = rs.getString("apperList").split(",");
+					
+					for(int i=0; i<rr.length; i++) {
+						if(rs.getString("resultList").contains("-1")) {
+							edocdto.setResult((Arrays.asList(rr).indexOf("-1")+1)+"차반려");
+							edocdto.setResult_name(aa[Arrays.asList(rr).indexOf("-1")]);
+						} else {
+							if(! rs.getString("resultList").contains("0")) {
+								edocdto.setResult("승인");
+								edocdto.setResult_name(aa[rr.length-1]); 
+							}
+							else {
+								edocdto.setResult((Arrays.asList(rr).indexOf("0")+1)+"차대기");
+								edocdto.setResult_name(aa[Arrays.asList(rr).indexOf("0")]);
+							}
+						}
+					}
+					
+					edocdto.setId_write(rs.getString("id"));
+					edocdto.setName_write(rs.getString("name"));
+					edocdto.setTitle(rs.getString("title"));
+					edocdto.setApp_date(rs.getString("app_date"));
+					edocdto.setTemp(rs.getInt("temp"));
+					
+					list.add(edocdto);
+				}
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if( rs != null) {
+					try {
+						rs.close();
+					} catch (Exception e2) {
+					}
+				}
+				if(pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (Exception e2) {
+					}
+				}
+			}
+
+			return list;
+		}
+		
+	// 문서 발신 리스트 (메인)	
+	public List<EdocDTO> listMyEApproval(String writeId) {
+		List<EdocDTO> list = new ArrayList<>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+			
+		try {
+				
+			sql = "select al.app_num, al.app_doc, TO_CHAR(al.app_date,'YYYY-MM-DD')app_date, al.id, "
+					+ "	al.title, resultList, apperList, al.temp "
+					+ " FROM E_APPROVAL al "
+					+ " LEFT OUTER JOIN "
+					+ "    (SELECT app_num, LISTAGG(app_result, ',') WITHIN GROUP(ORDER BY app_level) "
+					+ "        AS resultList, "
+					+ "        LISTAGG(e.name, ',') WITHIN GROUP(ORDER BY app_level) "
+					+ "        AS apperList "
+					+ "     FROM E_APPROVER er "
+					+ "     LEFT OUTER JOIN EMPLOYEE e ON er.id=e.id "
+					+ "     GROUP BY app_num "
+					+ "    ) er "
+					+ "    ON er.app_num = al.app_num "
+					+ " WHERE (temp=1 OR temp=-1) AND al.id = ? "
+					+ " ORDER BY al.app_num DESC ";
+				
+			pstmt = conn.prepareStatement(sql);
+				
+			pstmt.setString(1, writeId);
+				
+			rs = pstmt.executeQuery();
+				
+			while(rs.next()) {
+				EdocDTO edocdto = new EdocDTO();
+				String[] rr, aa;
+					
+				edocdto.setApp_num(rs.getInt("app_num"));
+				edocdto.setApp_doc(rs.getString("app_doc"));
+				if(rs.getString("resultList")==null) {
+					break;
+				}
+				rr = rs.getString("resultList").split(",");
+				aa = rs.getString("apperList").split(",");
+					
+				for(int i=0; i<rr.length; i++) {
+					if(rs.getString("resultList").contains("-1")) {
+						edocdto.setResult((Arrays.asList(rr).indexOf("-1")+1)+"차반려");
+						edocdto.setResult_name(aa[Arrays.asList(rr).indexOf("-1")]);
+					} else {
+						if(! rs.getString("resultList").contains("0")) {
+							edocdto.setResult("승인");
+							edocdto.setResult_name(aa[rr.length-1]); 
+						}
+						else {
+							edocdto.setResult((Arrays.asList(rr).indexOf("0")+1)+"차대기");
+							edocdto.setResult_name(aa[Arrays.asList(rr).indexOf("0")]);
+						}
+					}
+				}
+					
+				edocdto.setTitle(rs.getString("title"));
+				edocdto.setApp_date(rs.getString("app_date"));
+				edocdto.setTemp(rs.getInt("temp"));
+				
+				list.add(edocdto);
+			}
+				
+		} catch (Exception e) {
+				e.printStackTrace();
+		} finally {
+			if( rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e2) {
+				}
+			}
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+				}
+			}
+		}
+
+		return list;
+	}
+				
 	
 }

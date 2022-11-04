@@ -86,8 +86,16 @@ public class EdocServlet extends MyUploadServlet {
 			download(req, resp);
 		} else if(uri.indexOf("deleteFile.do") != -1) {
 			deleteFile(req, resp);
+		} else if(uri.indexOf("beforeUpdateChk.do") != -1) {
+			updateCheck(req, resp);
+		} else if(uri.indexOf("countTodayEdoc.do") != -1) {
+			countTodayEdoc(req, resp);
+		} else if(uri.indexOf("mainListSend.do") != -1) {
+			mainListSend(req, resp);
+		} else if(uri.indexOf("countAppReadyEdoc.do") != -1) {
+			countAppReadyEdoc(req, resp);
 		}
-		
+			
 	}
 	
 	protected void writeForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -105,6 +113,7 @@ public class EdocServlet extends MyUploadServlet {
 		HttpSession session = req.getSession();
 		SessionInfo info = (SessionInfo) session.getAttribute("member");
 		String cp = req.getContextPath();
+		
 		if(req.getMethod().equalsIgnoreCase("GET")) {
 			resp.sendRedirect(cp + "/edoc/list_send.do");
 			return;
@@ -520,6 +529,37 @@ public class EdocServlet extends MyUploadServlet {
 		
 	}
 	
+	// AJAX
+	protected void updateCheck(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		EdocDAO dao = new EdocDAO();
+		
+		
+		String state="true";
+		try {		
+			int app_num = Integer.parseInt(req.getParameter("app_num"));
+			
+			boolean b2 = false;
+			
+			// 모든 결재결과 0:대기 인지 확인
+			b2 = dao.readEdocResult(app_num);
+			
+			if(b2==false) {
+				state = "false";
+			}	
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		JSONObject job = new JSONObject();
+		job.put("state", state);
+		
+		resp.setContentType("text/html; charset=utf-8");
+		PrintWriter out = resp.getWriter();
+		out.print(job.toString());
+	}
+	
 	// 문서 수정 폼
 	protected void updateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		EdocDAO dao = new EdocDAO();
@@ -544,13 +584,13 @@ public class EdocServlet extends MyUploadServlet {
 			b2 = dao.readEdocResult(app_num);
 			
 			if(b2==false || b1==false) {
-				resp.sendRedirect(cp+"/edoc/list_send.do?page="+page);
+				String updateErrorMsg = "결재된 문서는 수정할 수 없습니다.";
+				resp.sendRedirect(cp+"/edoc/list_send.do?page="+page+"&updateErrorMsg"+updateErrorMsg);
 				return;
 			}	
 			
 			filedto = dao.listEdocFile(app_num);
 			
-
 			req.setAttribute("dto", edocdto);
 			req.setAttribute("listFile", filedto);
 			req.setAttribute("page", page);
@@ -810,6 +850,92 @@ public class EdocServlet extends MyUploadServlet {
 		}
 		
 		// resp.sendRedirect(cp+"/edoc/list_send.do");
+
+	}
+	
+	// 메인. AJAX-JSON 오늘 작성된 결재문서 수신 카운트
+	protected void countTodayEdoc(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		EdocDAO dao = new EdocDAO();
+		
+		int cnt = 0;
+		String state = "false";
+
+		try {
+			
+			String apperId = req.getParameter("apperId");
+			
+			// 내 사번이 있는 오늘 작성된 결재문서 가져오기
+			List<EdocDTO> list = dao.listTodayEApproverReceiver(apperId);
+			//// 내 사번이 있는 모든 결재문서 가져오기  dao.listEApproverReceiver(apperId);
+			
+			cnt = list.size();
+			
+			
+			state = "true";
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		JSONObject job = new JSONObject();
+		job.put("state", state);
+		job.put("cnt", cnt);
+		
+		resp.setContentType("text/html; charset=utf-8");
+		PrintWriter out = resp.getWriter();
+		out.print(job.toString());
+
+	}
+	
+	// 메인. AJAX-JSON 결재대기인 문서 카운트
+	protected void countAppReadyEdoc(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		EdocDAO dao = new EdocDAO();
+		
+		int cnt = 0;
+		String state = "false";
+
+		try {
+			HttpSession session = req.getSession();
+			SessionInfo info = (SessionInfo) session.getAttribute("member");
+			
+			String apperId = info.getId();
+			
+			// 내 사번이 있는 결재대기중인 모든 결재문서 가져오기
+			cnt = dao.listReadyEApproverReceiver(apperId);
+			
+			state = "true";
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		JSONObject job = new JSONObject();
+		job.put("state", state);
+		job.put("cnt", cnt);
+		
+		resp.setContentType("text/html; charset=utf-8");
+		PrintWriter out = resp.getWriter();
+		out.print(job.toString());
+
+	}	
+	// 메인. AJAX-HTML 발신 문서 리스트 가져오기
+	protected void mainListSend(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		EdocDAO dao = new EdocDAO();
+			
+		String cp = req.getContextPath();
+		String articleUrl = cp + "/edoc/article.do";	
+
+		try {	
+			String apperId = req.getParameter("apperId");
+				
+			// 내 사번이 있는 모든 결재문서 가져오기
+			List<EdocDTO> list = dao.listMyEApproval(apperId);
+			
+			req.setAttribute("list", list);
+			req.setAttribute("articleUrl", articleUrl);
+			
+			forward(req, resp, "/WEB-INF/views/layout/edocListSend.jsp");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 	

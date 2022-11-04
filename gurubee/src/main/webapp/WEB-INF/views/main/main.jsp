@@ -169,11 +169,11 @@ textarea.form-control { height: 170px; resize : none; }
 
 .div-edoc {
 	margin-bottom: 10px;
-	height: 290px;
+	height: 400px;
 }
 
 .div-project {
-	height: 300px;
+	height: 410px;
 }
 
 .div-board {
@@ -223,6 +223,11 @@ ul.tabs li.current {
 
 .myboard {
 	width: 100%;	
+	
+}
+
+.myedoc {
+	width: 80%;	
 	
 }
 
@@ -386,6 +391,51 @@ $(document).ready(
 
 	});
 	
+$(document).ready(
+		function listSendEdoc() {
+			let apperId = "${sessionScope.member.id}";
+			let url = "${pageContext.request.contextPath}/edoc/mainListSend.do";
+			let query = "apperId="+encodeURIComponent(apperId);
+			
+			let selector = "#mainSendList"; 
+			
+			const fn = function(data) {
+				$(selector).html(data);
+			};
+			ajaxFun(url, "get", query, "html", fn);
+
+	});
+
+$(document).ready(
+		function listSendEdoc() {
+			let apperId = "${sessionScope.member.id}";
+			let url = "${pageContext.request.contextPath}/edoc/countTodayEdoc.do";
+			let query = "apperId="+encodeURIComponent(apperId);
+			// 오늘 수신된
+			let selector = "#countAppTodayEdoc"; 
+			
+			const fn = function(data) {
+				$(selector).val(data.cnt);
+			};
+			ajaxFun(url, "get", query, "json", fn);
+
+	});
+
+$(document).ready(
+		function listSendEdoc() {
+			let apperId = "${sessionScope.member.id}";
+			let url = "${pageContext.request.contextPath}/edoc/countAppReadyEdoc.do";
+			let query = "apperId="+encodeURIComponent(apperId);
+			// 결재 대기 중인
+			let selector = "#countAppReadyEdoc"; 
+			
+			const fn = function(data) {
+				$(selector).val(data.cnt);
+			};
+			ajaxFun(url, "get", query, "json", fn);
+
+	});
+	
 	// 탭메뉴 
 	$(function() {
 		$(document).ready(function() {
@@ -436,8 +486,8 @@ $(document).ready(
 						</div>
 					</div>
 					<div class="size__btn">
-						<div class="doc__btn shadow ">
-							결재문서 작성
+						<div class="doc__btn shadow"><a href="${pageContext.request.contextPath}/edoc/write.do">결재문서 작성</a>
+							
 						</div>
 						<div class="doc__btn2 shadow">
 							새 프로젝트
@@ -448,12 +498,12 @@ $(document).ready(
 						<div class="doc__count__title  ">
 							(아이콘) 결재문서 리스트
 						</div>
-						<div class="doc__count__content">
-							결제문서 갯수 : (숫자자리)
+						<div class="doc__count__content"> 
+							결제 대기 문서 : <div style="display: inline;"><input type="text" id="countAppReadyEdoc" value="" readonly="readonly" style="width: 20px;"></input></div>
 						</div>
 						<hr>
 						<div class="doc__count__content">
-							결제문서 갯수 : (숫자자리)
+							오늘 요청된 문서 : <div style="display: inline;"><input type="text" id="countAppTodayEdoc" value="" readonly="readonly" style="width: 20px;"></input></div>
 						</div>
 					</div>
 					
@@ -462,35 +512,8 @@ $(document).ready(
 				<div class="col-4 align-items-md-stretch layoutdiv">
 					<!-- 수신함 -->
 					<div class="row border rounded-3 shadow div-edoc">
-						<div class="div-title">&nbsp;문서 수신함</div>
-						<table class="table table-hover"
-							style="table-layout: fixed; margin-top: 20px;">
-							<tr>
-								<th
-									style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
-									안녕하세요 사원님 9월 콘텐츠 촬영 소품 구매 건으로 쪽지드립니다.</th>
-							</tr>
-							<tr>
-								<th
-									style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
-									안녕하세요 사원님 9월 콘텐츠 촬영 소품 구매 건으로 쪽지드립니다.</th>
-							</tr>
-							<tr>
-								<th
-									style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
-									안녕하세요 사원님 9월 콘텐츠 촬영 소품 구매 건으로 쪽지드립니다.</th>
-							</tr>
-							<tr>
-								<th
-									style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
-									안녕하세요 사원님 9월 콘텐츠 촬영 소품 구매 건으로 쪽지드립니다.</th>
-							</tr>
-							<tr>
-								<th
-									style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
-									안녕하세요 사원님 9월 콘텐츠 촬영 소품 구매 건으로 쪽지드립니다.</th>
-							</tr>
-						</table>
+						<div class="div-title">&nbsp;문서 발신함</div>
+						<div class="myedoc" id="mainSendList" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"></div>
 					</div>
 
 					<!-- 플젝 -->

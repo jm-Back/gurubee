@@ -145,7 +145,7 @@ function conditionSubmit() {
 									<select id="edocSelect" name="edocSelect" class="form-select">
 										<option selected value="">문서구분</option>
 										<option value="휴가신청서" data-edoc="휴가신청서">휴가신청서</option>
-										<option value="접근권한신청서" data-edoc="접근권한신청서">DB접근권한신청서</option>
+										<option value="DB접근권한신청서" data-edoc="DB접근권한신청서">DB접근권한신청서</option>
 										<option value="구매요청의뢰서" data-edoc="구매요청의뢰서">구매요청의뢰서</option>
 										<option value="재택근무신청서" data-edoc="재택근무신청서">재택근무신청서</option>
 										<option value="법인카드지출의뢰서" data-edoc="법인카드지출의뢰서">법인카드지출의뢰서</option>

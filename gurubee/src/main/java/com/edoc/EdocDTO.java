@@ -19,6 +19,7 @@ public class EdocDTO {
 	
 	private String result; // 현재 처리결과. 0:대기, 1:승인, -1:반려
 	private String result_name; // 현재 처리 결재자 이름
+	private String result_id; // 현재 처리 결재자 사번
 	
 	private int fileNum;
 	private String saveFilename;
@@ -140,6 +141,12 @@ public class EdocDTO {
 	}
 	public void setFileNum(int fileNum) {
 		this.fileNum = fileNum;
+	}
+	public String getResult_id() {
+		return result_id;
+	}
+	public void setResult_id(String result_id) {
+		this.result_id = result_id;
 	}
 	
 }

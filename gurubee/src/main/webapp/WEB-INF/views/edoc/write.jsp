@@ -110,8 +110,6 @@ function sendOk() {
 
 // 문서 임시저장
 function saveOk() {
-	alert('임시작성');
-	
 	const f = document.writeForm;
 	
 	let edoc = f.edocSelect.value.trim(); // 문서구분
@@ -141,7 +139,7 @@ function saveOk() {
     	return false;
   	}
   
- 	if(id_apper_array.length < 1) {
+ 	if(id_array.length < 1) {
  		alert("수신자는 1명 이상 선택하세요. ");
  		return false;
  	}
@@ -154,6 +152,8 @@ function saveOk() {
  	f.action = "${pageContext.request.contextPath}/edoc/write_save.do";
   
   	f.submit();
+  	
+  	alert('임시작성');
 }
 
 $(function(){
