@@ -38,7 +38,7 @@
 				<div class="card border rounded-2">
 					<div class="card-header card-bg " id="boardmenu" style="width: 100%;">
 						<ul>
-							<li><i class="bi bi-clipboard-check"></i><a class="t" href="#">부서 공지시항</a>
+							<li><i class="bi bi-clipboard-check"></i>&nbsp;부서 공지시항
 							<li style="float: right;"><a href="${pageContext.request.contextPath}/dep_notice/list.do"><img src="${pageContext.request.contextPath}/resources/images/icon-plus.png"></a>
 						</ul>
 					</div>

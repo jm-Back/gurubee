@@ -115,10 +115,10 @@
 
 .main-div {
 	width: 1800px;
-	height: 1000px;
+	height: 1100px;
 	margin-left: auto;
 	margin-right: auto;
-	padding-left: 50px;
+	padding-right: 23px;
 	justify-content: center;
 }
 
@@ -222,7 +222,7 @@ ul.tabs li.current {
 }
 
 .myboard {
-	width: 90%;	
+	width: 100%;	
 	
 }
 
@@ -532,15 +532,19 @@ $(document).ready(
 				<div class="col-4 border rounded-3 shadow div-board">
 					<div class="div-title">&nbsp;공지사항</div>
 					<div class="div-tabmenu">
+					<!-- 
 						<ul class="tabs">
 							<li class="tab-link current" data-tab="board1">전체</li>
 							<li class="tab-link" data-tab="board2">부서</li>
 							<li class="tab-link" data-tab="board3">커뮤니티</li>
 						</ul>
+					 -->
 					</div>
 					<div>
 						<!-- 부서:board2, 공지:board3-->
-						<div class="myboard" id="board"></div>
+						<div class="myboard" id="board" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"></div>
+						<div class="myboard" id="board2" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"></div>
+						<div class="myboard" id="board3" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"></div>
 					</div>
 				</div>
 				

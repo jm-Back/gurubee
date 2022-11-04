@@ -1393,7 +1393,7 @@ public class CommunityDAO {
 						+ " FROM community c "
 						+ " JOIN employee e ON c.id = e.id "
 						+ " ORDER BY com_num DESC  "
-						+ " FETCH FIRST 6 ROWS ONLY ";
+						+ " FETCH FIRST 5 ROWS ONLY ";
 				
 				pstmt = conn.prepareStatement(sql);
 				
