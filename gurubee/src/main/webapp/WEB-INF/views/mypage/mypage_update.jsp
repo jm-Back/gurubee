@@ -213,7 +213,7 @@ $(function() {
 						<div class="row mb-3 pt-3" >
 							<label class="col-sm-6 fs-6 fw-semibold col-form-label" for="pwd">패스워드</label>
 							<div class="col-sm-2">
-				            	<input type="password"  style="width: 200%;" name="pwd" id="pwd" class="form-control" autocomplete="off" placeholder="5~10자/하나 이상의 숫자, 특수문자">
+				            	<input type="password"  style="width: 200%;" name="pwd" id="pwd" class="form-control" autocomplete="off" placeholder="5~10자/하나 이상의 문자, 특수문자">
 				        	</div>
 				    	</div>
 				    
