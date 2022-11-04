@@ -31,6 +31,8 @@ body {
 	font-family: 'Pretendard-Regular', sans-serif;
 }
 
+
+
 </style>
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board2.css" type="text/css">

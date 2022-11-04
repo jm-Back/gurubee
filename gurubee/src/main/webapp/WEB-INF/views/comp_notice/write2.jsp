@@ -14,11 +14,45 @@
 
 <style type="text/css">
 
+body {
+	font-family: 'Pretendard-Regular', sans-serif;
+}
+
+#title {
+	font-family: 'Pretendard-Regular', sans-serif;
+}
+
 .body-container {
 	max-width: 800px;
 	min-height: 800px;
 	margin-top: 70px; 
 } 
+
+.body-title h3 {
+	border-bottom: 3px solid #00d1b3;
+	color : #00d1b3;
+}
+
+.btn {
+	background-color: #00d1b3;
+	color: white;
+	border: 0px;
+}
+
+.btn:hover {
+	background-color: #00d1b3;
+	color: white;
+	font-weight: bold;
+}
+
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+
 
 </style>
 
@@ -74,7 +108,7 @@ function check() {
 	<div class="container">
 		<div class="body-container">	
 			<div class="body-title">
-				<h3>회사 공지사항</h3>
+				<h3 id="title">회사 공지사항</h3>
 			</div>
 			
 			<div class="body-main">

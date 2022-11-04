@@ -20,6 +20,8 @@
 	margin-top: 70px;
 }
 
+
+
 </style>
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board2.css" type="text/css">

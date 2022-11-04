@@ -94,6 +94,27 @@
 	margin-top: 4px;
 }
 
+.float{
+	position:fixed;
+	width:60px;
+	height:60px;
+	bottom:40px;
+	right:40px;
+	background-color:#00d1b3;
+	color:#FFF;
+	border-radius:50px;
+	text-align:center;
+	box-shadow: 2px 2px 3px #999;
+}
+
+.float:hover {
+	font-weight: bold;
+}
+
+.my-float{
+	margin-top:22px;
+}
+
 </style>
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board2.css" type="text/css">
@@ -208,6 +229,7 @@ function searchList() {
 					</div>
 				</div>
 			</div>
+			<a href='${pageContext.request.contextPath}/comp_notice/write.do' class="float"><i class="fa fa-plus my-float"></i></a>
 		</div>
 	</div>
 </main>
