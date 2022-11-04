@@ -23,18 +23,17 @@ public class MainServlet extends MyServlet {
 		req.setCharacterEncoding("utf-8");
 		String uri=req.getRequestURI();
 		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		String cp = req.getContextPath();
+		
+		if(info == null) {
+			resp.sendRedirect(cp + "/member/login.do");
+			return;
+		}
+		
 		if(uri.indexOf("main.do") != -1) {
-			
-			HttpSession session = req.getSession();
-			SessionInfo info = (SessionInfo)session.getAttribute("member");
-			
-			String cp = req.getContextPath();
-			
-			if(info == null) {
-				resp.sendRedirect(cp + "/");
-				return;
-			}
-			
 			Calendar cal = Calendar.getInstance();
 			int year = cal.get(Calendar.YEAR);
 			int month = cal.get(Calendar.MONTH)+ 1;
