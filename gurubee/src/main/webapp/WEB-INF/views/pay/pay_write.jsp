@@ -149,7 +149,7 @@ function payOk(){
 			     <div class="col-mid-3">
 			       <div class = "d-flex justify-content-center">
 			       <div class="img-viewer mx-5"></div>
-					<img class="profile" src="${pageContext.request.contextPath}/${dto.ori_filename}">
+					<img class="profile" src="${pageContext.request.contextPath}/uploads/profile/${dto.ori_filename}">
 				
   				  </div>
 			     </div>
