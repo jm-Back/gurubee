@@ -118,7 +118,7 @@ public class PayDAO {
 		
 		try {
 
-			     sql = " SELECT e.id, e.name, d.dep_name, p.pos_name, pay_Date,"
+			     sql = " SELECT e.id, e.name, d.dep_name, p.pos_name, ,TO_CHAR(pay_Date, 'YYYY-MM-DD') pay_Date,"
 							+ " NVL(payment,0)payment, NVL(meal_pay,0)meal_pay, NVL(benefit,0)benefit,NVL(etc_pay,0)etc_pay, "
 							+ " NVL(bonus,0)bonus,NVL(medical_ins,0)medical_ins, NVL(employee_ins,0)employee_ins,"
 							+ " NVL(safety_ins ,0) safety_ins , NVL(longterm_ins,0)longterm_ins, NVL(residence_tax,0)residence_tax"
@@ -193,14 +193,14 @@ public class PayDAO {
 		String sql;
 		long tot;
 		
-		try {   sql = " SELECT e.id, e.name, d.dep_name, p.pos_name, pay_Date,"
+		try {   sql = " SELECT * FROM ( SELECT e.id, e.name, d.dep_name, p.pos_name, pay_Date,"
 				+ " NVL(payment,0)payment, NVL(meal_pay,0)meal_pay, NVL(benefit,0)benefit,NVL(etc_pay,0)etc_pay, "
 				+ " NVL(bonus,0)bonus,NVL(medical_ins,0)medical_ins, NVL(employee_ins,0)employee_ins,"
 				+ " NVL(safety_ins ,0) safety_ins , NVL(longterm_ins,0)longterm_ins, NVL(residence_tax,0)residence_tax "
 				+ " FROM employee_history his JOIN Employee e ON e.id = his.id JOIN department d ON d.dep_code = his.dep_code"
 				+ " JOIN position p ON p.pos_code = his.pos_code RIGHT OUTER JOIN Pay ON pay.id = his.id"
 				+ " JOIN department d ON d.dep_code = his.dep_code"
-				+ " where now_working ='재직' and e.id = ?  ";
+				+ " where now_working ='재직' and e.id = ?  ORDER BY date_iss DESC ) WHERE ROWNUM= 1";
 		
 			
 			pstmt = conn.prepareStatement(sql);
@@ -210,7 +210,7 @@ public class PayDAO {
 			rs = pstmt.executeQuery();
 
 			
-			while(rs.next()) {
+			if(rs.next()) {
 				PayDTO paydto = new PayDTO();
 				paydto.setPay_id(rs.getString("id"));
 				paydto.setName(rs.getString("name"));
@@ -237,7 +237,7 @@ public class PayDAO {
 				     - paydto.getResidence_tax() - paydto.getMedical_ins() - paydto.getEmployee_ins() - paydto.getSafety_ins() + paydto.getLongterm_ins() ;
 				paydto.setTot(tot);
 				
-				
+				pList.add(paydto);
 			}
 
 		} catch (SQLException e) {

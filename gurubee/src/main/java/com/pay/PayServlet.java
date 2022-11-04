@@ -202,10 +202,10 @@ public class PayServlet extends MyServlet {
 			try {
 				
 				// 사원별 급여 리스트 
-				List<PayDTO> list = dao.readpayList(id);
+				List<PayDTO> plist = dao.readpayList(id);
 				
-				System.out.println(list.size());
-				req.setAttribute("list",list);
+				System.out.println(plist.size());
+				req.setAttribute("plist",plist);
 				 
 				forward(req,resp, "/WEB-INF/views/pay/pay_list.jsp");
 				return;
