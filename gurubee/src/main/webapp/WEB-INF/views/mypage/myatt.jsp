@@ -4,43 +4,12 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <script>
-function showClock() {
-	let now = new Date();
-	
-	/*
-	let y = now.getFullYear();
-	let m = now.getMonth() + 1;
-	let d = now.getDate();
-	if(m < 10) m = "0" + m;
-	if(d < 10) d = "0" + d;
-	*/
-	
-	let hr = now.getHours();
-	let mn = now.getMinutes();
-	let sc = now.getSeconds();
-	if(hr < 10) hr = "0" + hr;
-	if(mn < 10) mn = "0" + mn;
-	if(sc < 10) sc = "0" + sc;
-	
-	let s = hr + ":" + mn + ":" + sc;
-	
-	document.querySelector('.currentTime').innerHTML = s;
-	
-	setTimeout("showClock()", 1000);
-}
-
 $(function(){
 	showClock();
 });
-
-$(function(){
-	$(".btn-Attendance").click(function(){
-		
-	});
-});
 </script>
 
-	<h3><i class=" bi bi-person-badge-fill"></i> | 근태관리</h3>
+	<h3><i class=" bi bi-person-badge-fill"></i> 근태관리</h3>
 	<hr class="container mb-2 pt-3" style="width : 95%">
 <div class="row mt-4 mb-2">
 	<div class="col text-start">
@@ -67,14 +36,14 @@ $(function(){
 	<div class="col">
 		<div class="row">
 			<div class="col">
-				<button class="btn btn-Attendance btn-in" data-att_id="${dto.att_id}" style="background-color: aquamarine; color:white;" ${not empty todayAttendance.att_start ? "disabled='disabled'":""}>출근</button>
-				<button class="btn btn-Attendance btn-out" data-att_id="${dto.att_id}" style="background-color: aquamarine; color:white;" ${empty todayAttendance.att_start or not empty todayAttendance.att_end ? "disabled='disabled'":""}>퇴근</button>
+				<button class="btn btn-Attendance btn-in" data-att_id="${todayAttendance.att_id}" data-year="${year}" data-month="${month}" style="background-color: aquamarine; color:white;" ${not empty todayAttendance.att_start ? "disabled='disabled'":""}>출근</button>
+				<button class="btn btn-Attendance btn-out" data-att_id="${todayAttendance.att_id}" data-year="${year}" data-month="${month}" style="background-color: aquamarine; color:white;" ${empty todayAttendance.att_start or not empty todayAttendance.att_end ? "disabled='disabled'":""}>퇴근</button>
 			</div>
 		</div>		
 	</div>
 	<div class="col">
 		<div class="row">
-			<div class="col-6"></div>		
+			<div class="col-6"></div>			
 			<div class="col">
 				<label>출근시간 : ${todayAttendance.att_start}</label>
 			</div>
@@ -91,39 +60,40 @@ $(function(){
 <div class="container">
 		<div class="body-container">	
 			<div class="body-title">
-				<h3><i class="bi bi-calendar4"></i> | 월별근태현황</h3>
+				<h3> ${month}월 근태현황</h3>
 			</div>
 			
-			<div class="body-main">
-				
+			<div class="body-main att-list">
 				<table class="table table-hover board-list">
 					<thead class="table-light">
 						<tr>
-							<th class="att_id">근태번호</th>
-							<th class="date">날짜</th>
-							<th class="att_start">출근</th>
-							<th class="att_end">퇴근</th>
+							<th class="att_id">번호</th>
+							<th class="att_date">날짜</th>
+							<th class="att_start">출근시간</th>
+							<th class="att_end">퇴근시간</th>
+							<th class="att_ing">구분</th>
 							<th class="att_ing">비고</th>
 						</tr>
 					</thead>
 					
 					<tbody>
-						<c:forEach var="dto" items="${att_id}" varStatus="status">
+						<c:forEach var="dto" items="${list}" varStatus="status">
 							<tr>
-								<td>${systemdate}</td>
+								<td>${status.count}</td>
+								<td>${dto.att_date}</td>
 								<td>${dto.att_start}</td>
 								<td>${dto.att_end}</td>
 								<td>${dto.att_ing}</td>
+								<td>&nbsp;</td>
 							</tr>
 						</c:forEach>
 					</tbody>
 				</table>
-				
+		
 				<div class="page-navigation">
 					${dataCount == 0 ? "근태기록이 없습니다." : paging}
 				</div>
-
-
+			
 			</div>
 		</div>
 	</div>

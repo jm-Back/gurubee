@@ -57,7 +57,107 @@ function changeMonth(year, month) {
 	$("#nav-2").load(url+"?"+query);
 }
 
+function showClock() {
+	let now = new Date();
+	
+	/*
+	let y = now.getFullYear();
+	let m = now.getMonth() + 1;
+	let d = now.getDate();
+	if(m < 10) m = "0" + m;
+	if(d < 10) d = "0" + d;
+	*/
+	
+	let hr = now.getHours();
+	let mn = now.getMinutes();
+	let sc = now.getSeconds();
+	if(hr < 10) hr = "0" + hr;
+	if(mn < 10) mn = "0" + mn;
+	if(sc < 10) sc = "0" + sc;
+	
+	let s = hr + ":" + mn + ":" + sc;
+	
+	document.querySelector('.currentTime').innerHTML = s;
+	
+	setTimeout("showClock()", 1000);
+}
+
+function login() {
+	location.href="${pageContext.request.contextPath}/member/login.do";
+}
+
+function ajaxFun(url, method, query, dataType, fn) {
+	$.ajax({
+		type:method,
+		url:url,
+		data:query,
+		dataType:dataType,
+		success:function(data) {
+			fn(data);
+		},
+		beforeSend:function(jqXHR) {
+			jqXHR.setRequestHeader("AJAX", true);
+		},
+		error:function(jqXHR) {
+			if(jqXHR.status === 403) {
+				login();
+				return false;
+			} else if(jqXHR.status === 400) {
+				alert("요청 처리가 실패 했습니다.");
+				return false;
+			}
+	    	
+			console.log(jqXHR.responseText);
+		}
+	});
+}
+
+$(function(){
+	$("body").on("click", ".btn-in", function(){
+		if(! confirm("출근 처리를 진행하시겠습니까 ? ")) {
+			return false;
+		}
+		
+		let url = "${pageContext.request.contextPath}/mypage/myatt_write.do";
+		let query = null;
+		let year = $(this).attr("data-year");
+		let month = $(this).attr("data-month");
+		
+		const fn = function(data){
+			url = "${pageContext.request.contextPath}/mypage/myatt.do?tmp="+new Date().getTime();
+        	$("#nav-2").load(url);
+			
+			$(".btn-in").prop("disabled", true);
+			$(".btn-out").prop("disabled", false);
+		};
+		ajaxFun(url, "post", query, "json", fn);
+		
+	});
+	
+	$("body").on("click", ".btn-out", function(){
+		if(! confirm("퇴근 처리를 진행하시겠습니까 ? ")) {
+			return false;
+		}
+		
+		let att_id = $(this).attr("data-att_id");
+		let url = "${pageContext.request.contextPath}/mypage/myatt_update.do";
+		let query = "att_id="+att_id;
+		let year = $(this).attr("data-year");
+		let month = $(this).attr("data-month");
+		
+		const fn = function(data){
+			url = "${pageContext.request.contextPath}/mypage/myatt.do?tmp="+new Date().getTime();
+        	$("#nav-2").load(url);
+			
+			$(".btn-out").prop("disabled", true);			
+		};
+		
+		ajaxFun(url, "post", query, "json", fn);
+		
+	});	
+});
 </script>
+
 </head>
 <body>
 

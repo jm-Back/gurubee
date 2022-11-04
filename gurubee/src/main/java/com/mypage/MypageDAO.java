@@ -149,7 +149,7 @@ private Connection conn = DBConn.getConnection();
 					dto.setAtt_start(rs.getString("att_start"));
 					dto.setAtt_end(rs.getString("att_end"));
 					dto.setAtt_ing(rs.getString("att_ing"));
-					dto.setId(rs.getString("Id"));
+					dto.setId(rs.getString("id"));
 					
 					list.add(dto);
 				}
@@ -181,7 +181,7 @@ private Connection conn = DBConn.getConnection();
 			StringBuilder sb = new StringBuilder();
 
 			try {
-				sb.append(" SELECT att_id, TO_CHAR(att_start, 'HH24:MI:SS') att_start, TO_CHAR(att_end, 'HH24:MI:SS') att_end, att_ing, a.id");
+				sb.append(" SELECT att_id, TO_CHAR(att_start, 'MM\"월\" DD\"일\"') att_date, TO_CHAR(att_start, 'HH24:MI:SS') att_start, TO_CHAR(att_end, 'HH24:MI:SS') att_end, att_ing, a.id");
 				sb.append(" FROM attendance a");
 				sb.append(" JOIN employee e ON a.id = e.id ");
 				sb.append(" WHERE a.id = ? AND TO_CHAR(att_start, 'YYYYMM') = ? ");
@@ -199,6 +199,7 @@ private Connection conn = DBConn.getConnection();
 					MypageDTO dto = new MypageDTO();
 
 					dto.setAtt_id(rs.getString("att_id"));
+					dto.setAtt_date(rs.getString("att_date"));
 					dto.setAtt_start(rs.getString("att_start"));
 					dto.setAtt_end(rs.getString("att_end"));
 					dto.setAtt_ing(rs.getString("att_ing"));
@@ -308,16 +309,19 @@ private Connection conn = DBConn.getConnection();
 	public void attendanceupdate(MypageDTO mdto) throws SQLException {
 		PreparedStatement pstmt = null;
 		StringBuilder sb = new StringBuilder();
+		// String sql;
 
 		try {
-			sb.append("UPDATE attendance SET ");
-			sb.append("   att_end=SYSDATE, att_ing = att_ing || '/' || ? ");
-			sb.append("   WHERE att_id=? AND Id=?");
+			 sb.append("UPDATE attendance SET ");
+			 sb.append("   att_end=SYSDATE, att_ing = att_ing || '/' || ? ");
+			 sb.append("   WHERE att_id=? AND id=?");
 			
-			pstmt = conn.prepareStatement(sb.toString());
-
+			 pstmt = conn.prepareStatement(sb.toString());
+			
+			
 			pstmt.setString(1, mdto.getAtt_ing());
-			pstmt.setString(2, mdto.getId());
+			pstmt.setString(2, mdto.getAtt_id());
+			pstmt.setString(3, mdto.getId());
 
 			pstmt.executeUpdate();
 
