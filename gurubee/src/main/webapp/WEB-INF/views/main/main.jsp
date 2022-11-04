@@ -16,6 +16,22 @@
 	type="text/css">
 
 <style>
+::-webkit-scrollbar { 
+	width: 15px;
+} 
+
+::-webkit-scrollbar-thumb { 
+background: linear-gradient(#01d6b7, #ffe498);
+background-clip: padding-box;
+border: 3px solid transparent;
+border-radius: 10px; /*스크롤바 라운드*/}
+
+::-webkit-scrollbar-track { 
+background-color: #fff; /*스크롤바 트랙 색상*/ 
+border-radius: 10px; /*스크롤바 트랙 라운드*/ 
+ /*스크롤바 트랙 안쪽 그림자*/}
+
+
 .bd-placeholder-img {
 	font-size: 1.125rem;
 	text-anchor: middle;
@@ -174,7 +190,7 @@ textarea.form-control { height: 170px; resize : none; }
 }
 
 .div-project {
-	height: 380px;
+	height: 450px;
 	margin-top: 30px;
 }
 
@@ -233,6 +249,11 @@ ul.tabs li.current {
 	margin-top: -10px;
 	width: 100%;	
 	
+}
+
+.mypro {
+	width: 100%;
+	margin-top: -10px;
 }
 
 .shadow {
@@ -350,7 +371,7 @@ ul.tabs li.current {
 	background: #01d6b7;
 	width: 930px;
 	height: 80px;
-	margin-top: 20px;
+	margin-top: 86px;
 	font-size: 23px;
 	vertical-align: middle;
 	border-radius: 10px;
@@ -361,6 +382,157 @@ ul.tabs li.current {
 }
 
 
+/*프로젝트 디자인 */
+.btn_projectAdd {
+	border-radius: 60px;
+	font-size: 23px;
+	font-weight:600;
+	cursor: pointer;
+	color: white;
+	background-color: #01d6b7;
+	opacity: 80%;
+	width: 300px;
+	height: 80px;
+	border: none;
+
+};
+
+.btn_projectAdd:hover {
+	opacity: 100%;
+}
+
+.card {
+	border: none;
+	border-radius: 10px;
+};
+
+.p-details span {
+	font-weight: 300;
+	font-size: 13px;
+};
+
+
+.p_photo {
+    width: 50px;
+    height: 50px;
+    background-color: #eee;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 39px
+};
+
+.p_state {
+    background-color: #fffbec;
+    width: 60px;
+    height: 25px;
+    padding-bottom: 3px;
+    padding-right: 5px;
+    border-radius: 5px;
+    display: flex;
+    color: #fed85d;
+    justify-content: center;
+    align-items: center;
+};
+
+.progress {
+    height: 10px;
+    border-radius: 10px
+}
+
+.progress__design {
+	margin-top: 20px;
+	height: 30px;
+	width: 100%;
+	border-radius: 30px;
+	margin-right: 30px;
+	
+}
+
+.progress__color {
+	background: linear-gradient(to right ,#01d6b7, #ffe498);
+	margin: 7px;
+	border-radius: 30px;
+}
+
+.text1 {
+    font-size: 14px;
+    font-weight: 600
+}
+
+.text2 {
+    color: #a5aec0
+}
+
+.pointer {
+ 	cursor: pointer;
+}
+
+.clear__state {
+	padding: 2px 14px;
+	display: inline-block;
+	border: 3px solid  #ffd980 ;
+	outline: none;
+	border-radius: 10px;
+	font-size: 19px;
+	font-weight: 600;
+	background: #ffd980;
+	margin-left: 35px;
+
+}
+
+
+.clear__state__wan {
+	padding: 2px 14px;
+	display: inline-block;
+	border: 3px solid  #ccff99 ;
+	outline: none;
+	border-radius: 10px;
+	font-size: 19px;
+	font-weight: 600;
+	background: #ccff99;
+	margin-left: 35px;
+}
+
+
+.profile__small {
+	height: 60px;
+	width: 60px;
+	object-fit: cover;
+    border-radius: 100%;
+    border: 2px solid #eee ;
+    padding: 3px;
+}
+
+h6 {
+	font-weight: 600;
+}
+
+.btn__list {
+	margin-right: 8px;
+	margin-top: 20px;
+	border-radius: 12px;
+	padding: 5px 10px;
+	text-align: center;
+	font-size: 19px;
+	border: 1px solid lightgray;
+
+}
+
+
+.location__btn {
+	float: right;
+}
+
+.main__board {
+	background-color: #f7f7f7;
+	
+}
+
+.size__cont {
+	width: 90%;
+}
 
 
 
@@ -400,10 +572,31 @@ function ajaxFun(url, method, query, dataType, fn) {
 	});
 }
 
+$(function(){
+	listPage(1);
+});
+
+
+function listPage(page){
+	let url = "${pageContext.request.contextPath}/project/list_main_pro.do";
+
+	let query = "pageNo="+page;
+	let selector = "#proList";
+	
+	const fn = function(data){
+		 $(selector).html(data);
+		 
+	};
+	
+	ajaxFun(url, "get", query, "html", fn);
+	
+}
+
+
 $(document).ready(
 	function listNoticeAll() {
 		let url = "${pageContext.request.contextPath}/comp_notice/mainList.do";
-		let query = "";
+		let query = "page="+1;
 		
 		let selector = "#board";
 		
@@ -617,37 +810,14 @@ $(document).ready(
 					</div>
 
 					<!-- 플젝 -->
-					<div class="row border rounded-3 shadow mt-3">
-					<div class="div-project">
+					<div class="row border rounded-3 shadow" style="margin-top: 30px;">
+					<div class="div-project ">
 						<div class="div-title">&nbsp;프로젝트 현황</div>
-						<table class="table table-hover"
-							style="table-layout: fixed; margin-top: 20px;">
-							<tr>
-								<th
-									style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
-									안녕하세요 사원님 9월 콘텐츠 촬영 소품 구매 건으로 쪽지드립니다.</th>
-							</tr>
-							<tr>
-								<th
-									style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
-									안녕하세요 사원님 9월 콘텐츠 촬영 소품 구매 건으로 쪽지드립니다.</th>
-							</tr>
-							<tr>
-								<th
-									style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
-									안녕하세요 사원님 9월 콘텐츠 촬영 소품 구매 건으로 쪽지드립니다.</th>
-							</tr>
-							<tr>
-								<th
-									style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
-									안녕하세요 사원님 9월 콘텐츠 촬영 소품 구매 건으로 쪽지드립니다.</th>
-							</tr>
-							<tr>
-								<th
-									style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
-									안녕하세요 사원님 9월 콘텐츠 촬영 소품 구매 건으로 쪽지드립니다.</th>
-							</tr>
-						</table>
+						<div class="div-tabmenu">
+						</div>
+						<div>
+							<div class="mypro" id="proList" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"></div>
+						</div>
 
 					</div>
 				</div>	

@@ -69,12 +69,73 @@ public class ProjectServlet extends MyServlet{
 			detailClear(req, resp);
 		} else if(uri.indexOf("list__filter.do") != -1) { //메인 챕터 - 필터
 			filter(req, resp);
-		} 
+		} else if(uri.indexOf("list_main_pro.do") != -1) { //메인 프로리스트 
+			mainProList(req, resp);
+		}
 		
 	}
 
 
 
+	private void mainProList(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		// 메인 프로젝트 출력
+		ProjectDAO dao = new ProjectDAO();
+		MyUtil util = new MyUtilBootstrap();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+
+		try {
+			
+			ProjectDTO dto = new ProjectDTO();
+			//내 사번 + 페이징
+			dto.setPj_id(info.getId());
+			String page = req.getParameter("pageNo");
+			
+			int current_page = 1;
+			if(page!=null) {
+				current_page = Integer.parseInt(page);
+			}
+			
+			//데이터 개수
+			int dataCount = dao.dataCount(dto);
+			int size = 1;
+			int total_page = util.pageCount(dataCount, size);
+			
+
+			if(total_page < current_page) {
+				current_page = total_page;
+			}
+			
+			int offset = (current_page - 1) * size;
+			if(offset < 0) offset = 0;
+			
+			
+			//프로젝트 리스트 출력
+			List<ProjectDTO> list = null;
+			list = dao.listProject(dto, offset, size);
+			
+			String paging = util.pagingMethod(current_page, total_page, "listPage");
+			
+			//포워딩할 JSP 에 넘길 속성
+			req.setAttribute("list", list);
+			req.setAttribute("dataCount", dataCount);
+			req.setAttribute("pageNo", current_page);
+			req.setAttribute("total_page", total_page);
+			req.setAttribute("paging", paging);
+			
+			forward(req, resp, "/WEB-INF/views/project/pro_list_main.jsp");
+			
+			return;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		resp.sendError(400);
+		
+	}
+		
 	private void filter(HttpServletRequest req, HttpServletResponse resp) {
 		// 프로젝트 필터..  (클릭 이벤트)
 		ProjectDAO dao = new ProjectDAO();
