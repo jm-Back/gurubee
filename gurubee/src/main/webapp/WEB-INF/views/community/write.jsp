@@ -48,7 +48,6 @@ body {
 #title {
 	font-family: 'Pretendard-Regular', sans-serif;
 	font-size: 22px;
-	margin-top: 68px;
 }
 
 </style>
