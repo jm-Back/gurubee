@@ -373,7 +373,7 @@ ul.tabs li.current {
 	background: #01d6b7;
 	width: 930px;
 	height: 80px;
-	margin-top: 86px;
+	margin-top: 100px;
 	font-size: 23px;
 	vertical-align: middle;
 	border-radius: 10px;
@@ -381,6 +381,18 @@ ul.tabs li.current {
 	padding-top: 20px;
 	padding-left: 20px;
 	font-weight: 600;
+}
+
+.sch__btn__cont {
+	width: 930px;
+	height: 48px;
+	border: 1px solid #eee;
+	margin-left: -20px;
+	border-radius: 10px;
+}
+
+.sch__btn:hover {
+	cursor: pointer;
 }
 
 
@@ -795,7 +807,9 @@ $(document).ready(
 						</div>
 					</div>
 					<div class="sch__btn shadow">
-					 	<div><i class="fa-regular fa-calendar-check "></i>&nbsp; 내 일정 보러가기</div>
+					 	<div onclick="location.href='${pageContext.request.contextPath}/schedule/main.do'"><i class="fa-regular fa-calendar-check "></i>&nbsp; 내 일정 보러가기</div>
+					</div>
+					<div class="sch__btn__cont shadow">
 					</div>
 					
 				</div>
