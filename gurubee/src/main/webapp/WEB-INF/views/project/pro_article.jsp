@@ -579,6 +579,7 @@ $(function(){
 });
 
 
+
 //챕터 수정...
 $(function(){
 	$("body").on("click", ".update__detail", function(){
@@ -611,37 +612,6 @@ $(function(){
 });
 
 
-/*
-//프로젝트 챕터 수정 -> 해당 프로젝트 정보 (update 로 변경, 모달로 변경)
-$(function(){
-	$("body").on("click", ".update__detail", function(){
-		
-
-		let pd_subject = $("#form-pd_subject").val();
-		let pd_content = $(".detail__content__textarea").val();
-		let pd_sdate = $("#form-pd_sdate").val();
-		let pd_edate = $("#form-pd_edate").val();
-		
-		let pd_code = $("#form-pd_code").val();
-		
-		$("input[name=pd_subject]").val(pd_subject);
-		$(".pd_content").val(pd_content);
-		$("input[name=pd_sdate]").val(pd_sdate);
-		$("input[name=pd_edate]").val(pd_edate);
-		
-		$("#detail__addLabel2").html("챕터 수정하기");
-		$("#guide").html("수정할 내용을 입력하세요!");
-		
-		$("#add__detail__submit").html(" 수정 완료 ");
-		$("#add__detail__submit").attr("data-mode", "update");
-		$("#add__detail__cancle").html(" 수정 취소 ");
-		
-		$("#detail__add").modal("show");
-	
-	});
-	
-});
-*/
 
 
 function check(){
