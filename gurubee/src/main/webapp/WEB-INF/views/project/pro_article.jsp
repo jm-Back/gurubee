@@ -886,7 +886,7 @@ $(function(){
 			</div>	
 			<div class="pro_master_profile mb-4 mt-2 shadow p-1 rounded" >
 				<div class="box_photo">
-					<img class="profile" src="${pageContext.request.contextPath}/resources/images/${dto.pro_profile}" >
+					<img class="profile" src="${pageContext.request.contextPath}/resources/images/lee_jj.jpg" >
 				<div class="pt-5 mt-6">
 					<div class="profile__font"> ${dto.pro_master}</div>
 					<div class="profile__font2"><i class="fa-solid fa-circle-user"></i>&nbsp;${dto.pos_name} / ${dto.dep_name}</div>
