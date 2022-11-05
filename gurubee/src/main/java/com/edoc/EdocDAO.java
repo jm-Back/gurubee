@@ -1693,7 +1693,7 @@ public class EdocDAO {
 					+ "    ) er "
 					+ "    ON er.app_num = al.app_num "
 					+ " JOIN EMPLOYEE e ON e.id=al.id "
-					+ " WHERE (temp=1) AND INSTR(idList, ?) > 0 "
+					+ " WHERE (temp NOT IN 0) AND INSTR(idList, ?) > 0 "
 					+ "  ORDER BY al.app_num DESC ";
 
 			pstmt = conn.prepareStatement(sql);

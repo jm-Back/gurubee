@@ -421,8 +421,10 @@ function deleteFile(fileNum, app_num) {
 						</tr>
 					</table>
 					<div style="text-align: right;">
+						<c:if test="${mode!='update'}">
 						<button type="button" onclick="saveOk();"
 							class="btn btn-secondary" style="font-size: 17px;">임시작성</button>
+						</c:if>
 					</div>
 
 					<div style="text-align: center;">
