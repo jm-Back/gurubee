@@ -14,6 +14,38 @@
 body {
 	font-family: 'Pretendard-Regular', sans-serif;
 }
+
+.active>.page-link, .page-link.active {
+	z-index: 3;
+    color: var(--bs-pagination-active-color);
+    background-color: #00d1b3;
+    border-color: #00d1b3;
+    height: 40px;
+}
+
+.page-link {
+	position: relative;
+    display: block;
+    padding: var(--bs-pagination-padding-y) var(--bs-pagination-padding-x);
+    font-size: var(--bs-pagination-font-size);
+    border: var(--bs-pagination-border-width) solid var(--bs-pagination-border-color);
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    color: #00d1b3;
+    height: 40px;
+}
+
+.btn {
+	background-color: #00d1b3;
+	color: white;
+	margin: 0 3px;
+	border: 0px;
+}
+
+.btn:hover {
+	background-color: #00d1b3;
+	color: white;
+	font-weight: bold;
+}
 </style>
 
 <div class='reply-info'>

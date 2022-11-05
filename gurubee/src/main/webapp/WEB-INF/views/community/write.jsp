@@ -31,7 +31,25 @@ body {
 	font-family: 'Pretendard-Regular', sans-serif;
 }
 
+#title {
+	color: #00d1b3;
+	border-bottom: 3px solid #00d1b3;
+}
 
+#mint {
+	background: #00d1b3;
+	color: white;
+}
+
+#mint:hover {
+	font-weight: bold;
+}
+
+#title {
+	font-family: 'Pretendard-Regular', sans-serif;
+	font-size: 22px;
+	margin-top: 68px;
+}
 
 </style>
 
@@ -87,7 +105,7 @@ function check() {
 	<div class="container">
 		<div class="body-container">	
 			<div class="body-title">
-				<h3>익명 커뮤니티</h3>
+				<h3 id="title">익명 커뮤니티</h3>
 			</div>
 			
 			<div class="body-main">
@@ -149,7 +167,7 @@ function check() {
 					<table class="table table-borderless">
 	 					<tr>
 							<td class="text-center">
-								<button type="submit" class="btn btn-dark">${mode=='update'?'수정완료':'등록하기'}&nbsp;<i class="bi bi-check2"></i></button>
+								<button type="submit" id="mint" class="btn">${mode=='update'?'수정완료':'등록하기'}&nbsp;<i class="bi bi-check2"></i></button>
 								<button type="reset" class="btn btn-light">다시입력</button>
 								<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/community/list.do';">${mode=='update'?'수정취소':'등록취소'}&nbsp;<i class="bi bi-x"></i></button>
 								<c:if test="${mode=='update'}">

@@ -33,11 +33,6 @@ body {
 	color : #00d1b3;
 }
 
-.btn {
-	background-color: #00d1b3;
-	color: white;
-	border: 0px;
-}
 
 .btn:hover {
 	background-color: #00d1b3;
@@ -52,7 +47,11 @@ body {
     font-style: normal;
 }
 
-
+#mint {
+	background-color: #00d1b3;
+	color: white;
+	border: 0px;
+}
 
 </style>
 
@@ -170,7 +169,7 @@ function check() {
 					<table class="table table-borderless">
 	 					<tr>
 							<td class="text-center">
-								<button type="submit" class="btn btn-dark">${mode=='update'?'수정완료':'등록하기'}&nbsp;<i class="bi bi-check2"></i></button>
+								<button type="submit" id="mint" class="btn">${mode=='update'?'수정완료':'등록하기'}&nbsp;<i class="bi bi-check2"></i></button>
 								<button type="reset" class="btn btn-light">다시입력</button>
 								<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/comp_notice/list.do';">${mode=='update'?'수정취소':'등록취소'}&nbsp;<i class="bi bi-x"></i></button>
 								<c:if test="${mode=='update'}">

@@ -13,6 +13,11 @@
 
 <style type="text/css">
 
+body {
+	font-family: 'Pretendard-Regular', sans-serif; 
+	font-size: 15px;
+}
+
 .body-container {
 	max-width: 800px;
 	min-height: 800px;
@@ -53,6 +58,7 @@
 .btn {
 	background-color: #00d1b3;
 	color: white;
+	margin: 0 3px;
 }
 
 .btn:hover {
@@ -115,6 +121,39 @@
 	margin-top:22px;
 }
 
+.search {
+    line-height: 18px;
+    font-weight: 400;
+    color: #3c4144;
+    font-family: 'Pretendard-Regular', sans-serif;
+    display: flex;
+    margin-bottom: 30px;
+    margin-top: 30px;
+}
+
+#keyword {
+	background: hsla(0,0%,96.8%,6.6);
+	border: 0;
+    padding: 10px 48px 10px 14px;
+    font-size: 14px;
+    width: 226px;
+}
+
+#keyword:hover {
+	color: #00d1b3;
+}
+
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+#title {
+	font-family: 'Pretendard-Regular', sans-serif;
+}
+
 </style>
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board2.css" type="text/css">
@@ -139,13 +178,31 @@ function searchList() {
 	<div class="container">
 		<div class="body-container">
 			<div class="body-title">
-				<h3>회사 공지사항</h3>
+				<h3 id="title">회사 공지사항</h3>
 			</div>
 			<div class="body-main">
-				<div class="row board-list-header">
-					<div class="col-auto me-auto">${dataCount}개(${page}/${total_page} 페이지)</div>
-					<div class="col-auto">&nbsp;</div>
-				</div>
+				<div class=" text"> <!-- row board-list-footer -->
+					
+					<div class="col-6 text-center">
+						<form class="row" name="searchForm" action="${pageContext.request.contextPath}/comp_notice/list.do" method="post">
+							<div class="search">
+								<select name="condition" class="btn">
+									<option value="all" ${condition=="all"?"selected='selected'":""}>제목+내용</option>
+									<!-- <option value="name" ${condition=="name"?"selected='selected'":""}>작성부서</option> -->
+									<option value="reg_date" ${condition=="reg_date"?"selected='selected'":""}>등록일</option>
+									<option value="com_title" ${condition=="com_title"?"selected='selected'":""}>제목</option>
+									<option value="com_contents" ${condition=="com_content"?"selected='selected'":""}>내용</option>
+								</select>
+								<input id="keyword" class="btn" type="text" name="keyword" value="${keyword}">
+								<button type="button" class="btn btn-light" onclick="searchList()"><i class="fa-solid fa-magnifying-glass"></i></button>
+								<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/comp_notice/list.do';"><i class="fa-solid fa-repeat"></i></button>
+							</div>
+						</form>
+					</div>
+					<div class="col text-end">
+						<button type="button" hidden="hidden" class="btn btn-light bm" onclick="location.href='${pageContext.request.contextPath}/comp_notice/write.do';">글올리기</button>
+					</div>
+				</div>	
 				
 				<table class="table table-hover board-list">
 					<thead class="table-light">
@@ -200,34 +257,13 @@ function searchList() {
 				<div class="page-navigation">
 					${dataCount == 0 ? "등록된 공지사항이 없습니다." : paging}
 				</div>
-				
+				<!-- 
 				<div class="row board-list-footer">
-					<div class="col">
-						<button type="button" class="btn btn-light bm" onclick="location.href='${pageContext.request.contextPath}/comp_notice/list.do';">새로고침</button>
-					</div>
-					<div class="col-6 text-center">
-						<form class="row" name="searchForm" action="${pageContext.request.contextPath}/comp_notice/list.do" method="post">
-							<div class="col-auto p-1">
-								<select name="condition" class="form-select">
-									<option value="all" ${condition=="all"?"selected='selected'":""}>제목+내용</option>
-									<option value="name" ${condition=="name"?"selected='selected'":""}>작성자</option>
-									<option value="reg_date" ${condition=="reg_date"?"selected='selected'":""}>등록일</option>
-									<option value="notice_title" ${condition=="notice_title"?"selected='selected'":""}>제목</option>
-									<option value="notice_content" ${condition=="notice_content"?"selected='selected'":""}>내용</option>
-								</select>
-							</div>
-							<div class="col-auto p-1">
-								<input type="text" name="keyword" value="${keyword}" class="form-control">
-							</div>
-							<div class="col-auto p-1">
-								<button type="button" class="btn btn-light" onclick="searchList()">검색</button>
-							</div>
-						</form>
-					</div>
-					<div class="col text-end">
-						<button type="button" class="btn btn-light bm" onclick="location.href='${pageContext.request.contextPath}/comp_notice/write.do';">글올리기</button>
-					</div>
-				</div>
+					<div class="row board-list-header">
+						<div class="col-auto me-auto">${dataCount}개(${page}/${total_page} 페이지)</div>
+						<div class="col-auto">&nbsp;</div>
+					</div> 
+				</div>  -->
 			</div>
 			<a href='${pageContext.request.contextPath}/comp_notice/write.do' class="float"><i class="fa fa-plus my-float"></i></a>
 		</div>

@@ -62,6 +62,12 @@ body {
     padding-bottom: 35px;
 }
 
+#title {
+	font-family: 'Pretendard-Regular', sans-serif;
+	font-size: 22px;
+	margin-top: 70px;
+}
+
 </style>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board2.css" type="text/css">
 

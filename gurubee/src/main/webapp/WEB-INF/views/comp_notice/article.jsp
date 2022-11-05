@@ -16,6 +16,24 @@
 .body-container {
 	max-width: 800px;
 }
+
+.btn {
+	background-color: #00d1b3;
+	color: white;
+	margin: 0 3px;
+}
+
+.btn:hover {
+	background-color: #00d1b3;
+	color: white;
+	font-weight: bold;
+}
+
+#title {
+	color: #00d1b3;
+	border-bottom: 3px solid #00d1b3;
+}
+
 </style>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board2.css" type="text/css">
 
@@ -274,7 +292,7 @@ $(function(){
 	<div class="container">
 		<div class="body-container">	
 			<div class="body-title">
-				<h3>회사 공지사항</h3>
+				<h3 id="title">회사 공지사항</h3>
 			</div>
 			
 			<div class="body-main">

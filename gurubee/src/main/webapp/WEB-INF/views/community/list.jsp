@@ -186,6 +186,11 @@ h3 {
 .my-float{
 	margin-top:22px;
 }
+
+#title {
+	font-family: 'Pretendard-Regular', sans-serif;
+	font-size: 22px;
+}
 </style>
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board2.css" type="text/css">
@@ -212,7 +217,7 @@ function searchList() {
 	<div class="container">
 		<div class="body-container">
 			<div><!--  class="body-title" -->
-				<h3>익명 커뮤니티</h3>
+				<h3 id="title">익명 커뮤니티</h3>
 			</div>
 			<div class="body-main">
 				

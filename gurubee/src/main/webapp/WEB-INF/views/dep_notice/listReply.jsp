@@ -3,6 +3,40 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
+<style>
+
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+body {
+	font-family: 'Pretendard-Regular', sans-serif;
+}
+
+.active>.page-link, .page-link.active {
+	z-index: 3;
+    color: var(--bs-pagination-active-color);
+    background-color: #00d1b3;
+    border-color: #00d1b3;
+    height: 40px;
+}
+
+.page-link {
+	position: relative;
+    display: block;
+    padding: var(--bs-pagination-padding-y) var(--bs-pagination-padding-x);
+    font-size: var(--bs-pagination-font-size);
+    border: var(--bs-pagination-border-width) solid var(--bs-pagination-border-color);
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    color: #00d1b3;
+    height: 40px;
+}
+
+</style>
+
 <div class='reply-info'>
 	<span class='reply-count'>댓글 ${replyCount}개</span>
 	<span>[${pageNo}/${total_page} 페이지]</span>
