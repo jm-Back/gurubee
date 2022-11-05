@@ -40,12 +40,6 @@ font-size :20px
 
 }
 
- .end__btn__design {
-	background: #01d6b7;
-	font-weight: 600;
-	color: #fff;
-	border: none;
-	padding: 10px 20px;
 	
 	
 }
@@ -68,6 +62,10 @@ font-size :20px
    
 tbody th:nth-child(2n){
 background-color:#bbd3fb;
+}
+
+.joinbtn {
+background : 
 }
 
 .listcontainer::-webkit-scrollbar {
@@ -143,8 +141,7 @@ function searchList() {
 						   </div>
 						   </div>
 				 <div class="col-12  text-end ">
-		           <button class="btn btn-primary btn-sm end__btn__design shadow-sm" type="button" onclick=""><i class="bi bi-printer"></i>&nbsp;인사정보인쇄</button>
-		           <button class="btn btn-primary btn-sm end__btn__design shadow-sm" type="button"  type="button" onclick="location.href='${pageContext.request.contextPath}/employee/write.do';"> 신입사원등록 &nbsp; <i class="bi bi-person-plus"></i></button>
+		          <button class=" btn btn-primary btn-sm" type="button" style="background-color : #01d6b7 ; border: 1px solid;" onclick="location.href='${pageContext.request.contextPath}/employee/write.do';"> 신입사원등록 &nbsp; <i class="bi bi-person-plus"></i></button>
 		            </div>
 		         </div>
 		         
@@ -173,7 +170,7 @@ function searchList() {
 					<tbody>
 						<c:forEach var="dto" items="${list}" varStatus="status">
 							<tr>
-								<td><input type='checkbox' name='check' value='selectemployee'></td>
+								<td><input type='radio' name='check' value='selectemployee'></td>
 								<td>${dto.type}</td>
 								<td>${dto.id}</td>
 								<td>${dto.dept_name}</td>
@@ -184,7 +181,7 @@ function searchList() {
 								<td>${dto.email}</td>
 								<td>${dto.tel}</td>
 								<td>${dto.date_iss}</td>
-								<td><button class="btn btn-primary btn-sm end__btn__design shadow-sm" type="button" onclick="update('${dto.id}')">수정</button></td>
+								<td><button class=" btn btn-primary btn-sm" type="button" style="background-color : #01d6b7 ; border: 1px solid;" onclick="update('${dto.id}')">수정</button></td>
 			
 				
 							</tr>
