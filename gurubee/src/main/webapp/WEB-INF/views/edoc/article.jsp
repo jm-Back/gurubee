@@ -230,9 +230,9 @@ $(function(){
 
 							<c:forEach var="vo" items="${listFile}">
 								<tr>
-									<td colspan="2">파일 : <a
+									<th class="fs-6" colspan="2">파일 : <a
 										href="${pageContext.request.contextPath}/edoc/download.do?fileNum=${vo.fileNum}">${vo.originalFilename}</a>
-									</td>
+									</th>
 								</tr>
 							</c:forEach>
 						</table>
